@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import * as apiHttp from "../../api/index";
 export default {
   name: 'register',
   data () {
@@ -91,15 +92,8 @@ export default {
         this.$vux.toast.text('请先勾选用户使用协议')
         return
       }
-      this.$http.post('/amoy/auth/register', {
-        mobile: this.mobile,
-        type: 'register',
-        sms_code: this.smsCode,
-        invite_code: this.invite_code,
-        password: this.password,
-        re_password: this.re_password
-      }, true).then(res => {
-        if (res.code === 0) {
+      apiHttp.register(this.mobile, this.smsCode,this.password,this.invite_code).then(res => {
+        if (res.code === 1) {
           this.$vux.toast.text(res.msg)
           this.$router.push('/login')
         } else {
@@ -121,13 +115,13 @@ export default {
         this.$vux.toast.text('请输入正确的手机号')
         return
       }
+      if (!/[0-9]{11}/.test(this.invite_code)) {
+        this.$vux.toast.text('请输入正确的邀请号码')
+        return
+      }
       if (this.timerFlag === false) {
-        this.$http.post('/amoy/auth/sms-verifycode', {
-          mobile: this.mobile,
-          type: 'register'
-        }, true, true).then(res => {
-          // this.invite = res.data.isNeedInvite !== '0'
-          if (res.code === 0) {
+       apiHttp.sendCode(this.mobile, this.invite_code).then(res => {
+          if (res.code === 1) {
             this.timerFlag = !this.timerFlag
             this.$vux.toast.text(res.msg)
             this.countDown(60)

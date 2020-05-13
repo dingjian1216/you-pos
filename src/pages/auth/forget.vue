@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import * as apiHttp from "../../api/index";
 export default {
   name: 'forget',
   data () {
@@ -49,14 +50,9 @@ export default {
         this.$vux.toast.text('两次密码不一致')
         return
       }
-      this.$http.post('/amoy/auth/reset', {
-        mobile: this.mobile,
-        sms_code: this.smsCode,
-        password: this.password,
-        re_password: this.re_password
-      }, true).then(res => {
-        if (res.code === 0) {
-          this.$vux.toast.text(res.msg)
+     apiHttp.findpassword(this.mobile, this.smsCode, this.password).then(res => {
+        if (res.code === 1) {
+          this.$vux.toast.text(res.data)
           this.$router.push('/login')
         } else {
           this.$vux.toast.text(res.msg)
@@ -70,10 +66,7 @@ export default {
         return
       }
       if (this.timerFlag === false) {
-        this.$http.post('/amoy/auth/sms-verifycode', {
-          type: 'reset',
-          mobile: this.mobile
-        }, true).then(res => {
+        apiHttp.fsendCode(this.mobile).then(res => {
           this.timerFlag = !this.timerFlag
           this.$vux.toast.text(res.msg)
           this.countDown(60)

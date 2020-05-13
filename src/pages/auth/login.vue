@@ -37,18 +37,13 @@
           @click="jumpTo('/forget')"
           :style="{color: $store.state.global.theme.mainColor}"
         >忘记密码?</li>
-        <span :style="{color: $store.state.global.theme.mainColor}">|</span>
-        <li
-          class="li2"
-          :style="{color: $store.state.global.theme.mainColor}"
-          @click="jumpTo('/mobileLogin')"
-        >验证码登录</li>
       </ul>
     </div>
   </div>
 </template>
 
 <script>
+import * as apiHttp from "../../api/index";
 export default {
   name: "wechat_login",
   data() {
@@ -65,32 +60,13 @@ export default {
         return;
       }
       let that = this;
-      this.$http
-        .post("/amoy/auth/login", {
-          mobile: this.mobile,
-          password: this.password,
-          registration_id: that.$store.state.global.registrationId
-        })
-        .then(res => {
+      apiHttp.login(this.mobile,this.password).then(res => {
           console.log(res);
-          if (res.code === 0) {
-            this.$store.commit("setToken", res.data.token);
-            // this.$store.commit('setUserInfo', res.data)
-            this.$store.commit("setUserInfo", res.data);
-            this.$store.commit("setCouponpassMoney", res.data.couponpass_money);
-            this.$http.post("/amoy/user/bind-all").then(response => {
-              if (response.code == 0 && response.data.status == 0) {
-                // this.reload();
-                this.$router.push(this.$store.state.global.firstNav);
-                // this.$router.push("/wxbind");
-              } else if (response.code == 0 && response.data.status == 3) {
-                this.$router.push("/binding");
-              } else if (response.code == 0 && response.data.status == 2) {
-                this.$router.push("/wxbind");
-              } else if (response.code == 0 && response.data.status == 4) {
-                this.$router.push("/selectAddress");
-              }
-            });
+          if (res.code === 1) {
+            that.$store.commit("setToken", res.data.token);
+            that.$store.commit("setUserInfo", res.data);
+            that.reload();
+            that.$router.push("/home");
           }
         });
     }

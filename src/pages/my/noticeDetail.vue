@@ -1,12 +1,13 @@
 <template>
     <div class="noticeDetail" v-if="data">
       <div class="title">{{data.title}}</div>
-      <div class="time">{{data.created_at}}</div>
+      <div class="time">{{data.create_time}}</div>
       <div class="content" v-html="data.content"></div>
     </div>
 </template>
 
 <script>
+import * as apiHttp from "../../api/index";
 export default {
   name: 'noticeDetail',
   components: {},
@@ -17,9 +18,7 @@ export default {
   },
   methods: {
     getInfo () {
-      this.$http.post('/amoy/home/announcement-detail', {
-        id: this.$route.query.id
-      }, true).then(res => {
+      apiHttp.newsDetails(this.$route.query.id).then(res => {
         this.data = res.data
       })
     }

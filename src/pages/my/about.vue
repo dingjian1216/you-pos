@@ -1,10 +1,11 @@
 <template>
     <div class="about" v-if="data">
-      <div v-html="data" class="content"></div>
+      <div v-html="data.content" class="content"></div>
     </div>
 </template>
 
 <script>
+import * as apiHttp from "../../api/index";
 export default {
   name: 'about',
   components: {},
@@ -15,7 +16,7 @@ export default {
   },
   methods: {
     getInfo () {
-      this.$http.post('/amoy/user/get-user-agreement', {}, true).then(res => {
+      apiHttp.getuserXieyi().then(res => {
         this.data = res.data
       })
     }

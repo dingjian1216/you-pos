@@ -56,20 +56,7 @@ let router = new Router({
           path: '/home',
           name: 'home',
           component: resolve => require(['@/pages/home/'], resolve),
-          meta: {title: '首页', keepAlive: true, isShowSearch: false, isShowTab: true, routerZindex: 1}
-        },
-       
-        {
-          path: '/classify',
-          name: 'classify',
-          component: resolve => require(['@/pages/home/classify'], resolve),
-          meta: {title: '分类', keepAlive: true, isShowSearch: false, isShowTab: false, routerZindex: 2}
-        },
-        {
-          path: '/otherclassify',
-          name: 'otherclassify',
-          component: resolve => require(['@/pages/home/otherclassify'], resolve),
-          meta: {title: '分类', keepAlive: true, isShowSearch: false, isShowTab: false, routerZindex: 2}
+          meta: {title: '首页', keepAlive: true, isShowSearch: true, isShowTab: true, isShowHead: false}
         },
         {
           path: '/search',
@@ -77,37 +64,65 @@ let router = new Router({
           component: resolve => require(['@/pages/home/search'], resolve),
           meta: {title: '搜索', keepAlive: false, isShowSearch: true, isShowTab: false, routerZindex: 2}
         },
-
-      
+        {
+          path: '/goodDetails',
+          name: 'goodDetails',
+          component: resolve => require(['@/pages/home/goodDetails'], resolve),
+          meta: {title: '商品详情', keepAlive: false, isShowSearch: false, isShowTab: false,isShowHead: true, routerZindex: 2}
+        },
+        {
+          path: '/confirmOrder',
+          name: 'confirmOrder',
+          component: resolve => require(['@/pages/home/confirmOrder'], resolve),
+          meta: {title: '确认订单', keepAlive: false, isShowSearch: false, isShowTab: false,isShowHead: true, routerZindex: 3}
+        },
+        {
+          path: '/payMent',
+          name: 'payMent',
+          component: resolve => require(['@/pages/home/payMent'], resolve),
+          meta: {title: '支付方式', keepAlive: false, isShowSearch: false, isShowTab: false,isShowHead: true, routerZindex: 3}
+        },
+        {
+          path: '/paySuccess',
+          name: 'paySuccess',
+          component: resolve => require(['@/pages/home/paySuccess'], resolve),
+          meta: {title: '支付成功', isShowHead: false, routerZindex: 13}
+        },
+        {
+          path: '/material',
+          name: 'material',
+          component: resolve => require(['@/pages/material/'], resolve),
+          meta: {title: '商学院', keepAlive: true, isShowSearch: false, isShowTab: true,isShowHead: false }
+        },
+        {
+          path: '/materialDetails',
+          name: 'materialDetails',
+          component: resolve => require(['@/pages/material/materialDetails'], resolve),
+          meta: {title: '详情', keepAlive: false, isShowSearch: false,  isShowHead: true,routerZindex: 2}
+        },
+        {
+          path: '/machine',
+          name: 'machine',
+          component: resolve => require(['@/pages/machine'], resolve),
+          meta: {title: '设备', keepAlive: true, isShowSearch: false, isShowTab: true,isShowHead: false}
+        },
+        {
+          path: '/machineOrder',
+          name: 'machineOrder',
+          component: resolve => require(['@/pages/machine/machineOrder'], resolve),
+          meta: {title: '报单订单', keepAlive: false, isShowSearch: false, isShowTab: false, isShowHead: true,routerZindex: 2}
+        },
+        {
+          path: '/machineOrderDetails',
+          name: 'machineOrderDetails',
+          component: resolve => require(['@/pages/machine/machineOrderDetails'], resolve),
+          meta: {title: '报单详情', keepAlive: false, isShowSearch: false, isShowTab: false, isShowHead: true,routerZindex: 3}
+        },
         {
           path: '/my',
           name: 'my',
           component: resolve => require(['@/pages/my'], resolve),
-          meta: {title: '我的', keepAlive: true, isShowSearch: false, isShowTab: true, routerZindex: 1}
-        },
-        {
-          path: '/my1',
-          name: 'my1',
-          component: resolve => require(['@/pages/my/index1'], resolve),
-          meta: {title: '我的', keepAlive: true, isShowSearch: false, isShowTab: true, routerZindex: 1}
-        },
-        {
-          path: '/my2',
-          name: 'my2',
-          component: resolve => require(['@/pages/my/index2'], resolve),
-          meta: {title: '我的', keepAlive: true, isShowSearch: false, isShowTab: true, routerZindex: 1}
-        },
-        {
-          path: '/my3',
-          name: 'my3',
-          component: resolve => require(['@/pages/my/index3'], resolve),
-          meta: {title: '我的', keepAlive: true, isShowSearch: false, isShowTab: true, routerZindex: 1}
-        },
-        {
-          path: '/my4',
-          name: 'my4',
-          component: resolve => require(['@/pages/my/index4'], resolve),
-          meta: {title: '我的', keepAlive: true, isShowSearch: false, isShowTab: true, routerZindex: 1}
+          meta: {title: '我的', keepAlive: true, isShowSearch: false, isShowTab: true,isShowHead: false}
         },
         {
           path: '/info',
@@ -116,28 +131,16 @@ let router = new Router({
           meta: {title: '个人信息', keepAlive: false, isShowSearch: false, isShowTab: false, routerZindex: 2}
         },
         {
+          path: '/realName',
+          name: 'realName',
+          component: resolve => require(['@/pages/my/realName'], resolve),
+          meta: {title: '实名认证', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
+        },
+        {
           path: '/revise',
           name: 'revise',
           component: resolve => require(['@/pages/my/revise'], resolve),
           meta: {title: '修改密码', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
-        },
-        {
-          path: '/contact',
-          name: 'contact',
-          component: resolve => require(['@/pages/my/contact'], resolve),
-          meta: {title: '联系客服', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 2}
-        },
-        {
-          path: '/contacts',
-          name: 'contacts',
-          component: resolve => require(['@/pages/my/contacts'], resolve),
-          meta: {title: '联系客服', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 2}
-        },
-        {
-          path: '/beginnerGuider',
-          name: 'beginnerGuider',
-          component: resolve => require(['@/pages/my/beginnerGuider'], resolve),
-          meta: {title: '新手指南', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
         },
         {
           path: '/linkman',
@@ -157,13 +160,6 @@ let router = new Router({
           component: resolve => require(['@/pages/my/noticeDetail'], resolve),
           meta: {title: '消息详情', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
         },
-
-        {
-          path: '/binding',
-          name: 'binding',
-          component: resolve => require(['@/pages/my/binding'], resolve),
-          meta: {title: '绑定微信', keepAlive: true, isShowHead: true, isShowTab: false, routerZindex: 2}
-        },
         {
           path: '/withdraw',
           name: 'withdraw',
@@ -175,79 +171,35 @@ let router = new Router({
           path: '/withdrawlist',
           name: 'withdrawlist',
           component: resolve => require(['@/pages/my/withdrawlist'], resolve),
-          meta: {title: '提现明细', keepAlive: false, isShowHead: false, isShowTab: false, routerZindex: 3}
+          meta: {title: '资金明细', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
         },
-        {
-          path: '/join',
-          name: 'join',
-          component: resolve => require(['@/pages/my/join'], resolve),
-          meta: {title: '加入运营商', isShowHead: true}
-        },
-        {
-          path: '/upgradeAgency',
-          name: 'upgradeAgency',
-          component: resolve => require(['@/pages/my/upgradeAgency'], resolve),
-          meta: {title: '升级运营总监', isShowHead: true, routerZindex: 9}
-        },
-        {
-          path: '/freeUpgrade',
-          name: 'freeUpgrade',
-          component: resolve => require(['@/pages/my/freeUpgrade'], resolve),
-          meta: {title: '升级运营商', isShowHead: false, routerZindex: 9}
-        },
+       
 
-        {
-          path: '/partnership',
-          name: 'partnership',
-          component: resolve => require(['@/pages/my/partnership'], resolve),
-          meta: {title: '申请代理', isShowHead: true, routerZindex: 2}
-        },
-
- 
-        {
-          path: '/homeFirmOrder',
-          name: 'firmOrder',
-          component: resolve => require(['@/pages/firmOrder/index'], resolve),
-          meta: {title: '确认订单', isShowHead: false, routerZindex: 11}
-        },
-        {
-          path: '/addOrder',
-          name: 'addOrder',
-          component: resolve => require(['@/pages/firmOrder/addOrder'], resolve),
-          meta: {title: '添加地址', isShowHead: false, routerZindex: 12}
-        },
-        {
-          path: '/updateOrder',
-          name: 'updateOrder',
-          component: resolve => require(['@/pages/firmOrder/updateOrder'], resolve),
-          meta: {title: '修改地址', isShowHead: false, routerZindex: 13}
-        },
-        {
-          path: '/payGiftBag',
-          name: 'payGiftBag',
-          component: resolve => require(['@/pages/firmOrder/payGiftBag'], resolve),
-          meta: {title: '支付方式', isShowHead: false, routerZindex: 12}
-        },
-        {
-          path: '/payGiftBagSuccess',
-          name: 'payGiftBagSuccess',
-          component: resolve => require(['@/pages/firmOrder/paySuccess'], resolve),
-          meta: {title: '支付成功', isShowHead: false, routerZindex: 13}
-        },
+        
         {
           path: '/team',
           name: 'team',
-          component: resolve => require(['@/pages/my/team'], resolve),
-          meta: {title: '团队', keepAlive: false, isShowHead: false, isShowTab: false, routerZindex: 2}
+          component: resolve => require(['@/pages/team'], resolve),
+          meta: {title: '团队', keepAlive: false, isShowHead: false, isShowTab: true, routerZindex: 1}
         },
-
+        {
+          path: '/teamDetails',
+          name: 'teamDetails',
+          component: resolve => require(['@/pages/team/teamDetails'], resolve),
+          meta: {title: '团队详情', keepAlive: false, isShowHead: false, isShowTab: false, routerZindex: 2}
+        },
         {
           path: '/invite',
           name: 'invite',
           component: resolve => require(['@/pages/my/invite'], resolve),
           meta: {title: '邀请', keepAlive: true, isShowHead: true, isShowTab: false, routerZindex: 10}
         },
-    
+        {
+          path: '/about',
+          name: 'about',
+          component: resolve => require(['@/pages/my/about'], resolve),
+          meta: {title: '用户协议', keepAlive: true, isShowHead: true, isShowTab: false, routerZindex: 10}
+        },
         {
           path: '/order',
           name: 'order',
@@ -255,33 +207,38 @@ let router = new Router({
           meta: {title: '我的订单', keepAlive: false, isShowHead: false, isShowTab: false, routerZindex: 2}
         },
         {
-          path: '/orderlist',
-          name: 'orderlist',
-          component: resolve => require(['@/pages/my/orderlist'], resolve),
-          meta: {title: '订单列表', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
-        },
- 
-        {
-          path: '/materials',
-          name: 'materials',
-          component: resolve => require(['@/pages/materials'], resolve),
-          meta: {title: '素材', keepAlive: true, isShowSearch: false, isShowTab: true, routerZindex: 1}
+          path: '/orderDetails',
+          name: 'orderDetails',
+          component: resolve => require(['@/pages/my/orderDetails'], resolve),
+          meta: {title: '订单详情', keepAlive: false, isShowHead: false, isShowTab: false, routerZindex: 4}
         },
         {
-          path: '/materials1',
-          name: 'materials1',
-          component: resolve => require(['@/pages/materials/index1'], resolve),
-          meta: {title: '素材', keepAlive: true, isShowSearch: false, isShowTab: true, routerZindex: 1}
+          path: '/address',
+          name: 'address',
+          component: resolve => require(['@/pages/my/address'], resolve),
+          meta: {title: '收货地址', isShowHead: false, routerZindex: 13}
+        },
+        {
+          path: '/addAddress',
+          name: 'addAddress',
+          component: resolve => require(['@/pages/my/addAddress'], resolve),
+          meta: {title: '添加地址', isShowHead: false, routerZindex: 14}
+        },
+        {
+          path: '/addressUpdate',
+          name: 'addressUpdate',
+          component: resolve => require(['@/pages/my/addressUpdate'], resolve),
+          meta: {title: '修改地址', isShowHead: false, routerZindex: 14}
         },
       ]
     }
   ],
   scrollBehavior (to, from, savedPosition) {
-    return {x: 0, y: 0}
+    return { x: 0, y: 0 }
   }
 })
 
-const whiteList = ['login', 'about', 'register', 'newIndex', 'forget', 'mobileLogin', 'wechatLogin', 'guide', 'wxbind', 'sort', 'super', 'my', 'my1', 'my2', 'my3', 'my4', 'materials', 'materials1', 'materials2', 'supergoods', 'supergoods2', 'search', 'results', 'list', 'fastrob', 'personSpeak', 'personArticle', 'discounts', 'circle', 'otherclassify', 'classify', 'liveBroadcast', 'dayingList', 'daying', 'comment', 'mallHome', 'mallHomeDetail', 'mallBusiness', 'mallSeller', 'mallUnderShop', 'mallUnderdetail', 'mallProductList', 'mallShopProductList', 'mallCategory', 'mallSecthList', 'mallNews', 'mallSearch', 'mallArticleList', 'mallArticleInfo', 'select','home']
+const whiteList = ['login', 'about', 'register',  'forget',  'guide',  'home']
 router.beforeEach(function (to, from, next) {
   var firstPage = ['/home', '/newIndex', '/sort', '/fastrobNew', '/materials', '/materials2', '/super', '/materials1', '/my', '/newIndex', '/mall/home', '/mall/business', '/mall/underShop', '/mall/underShop', '/mall/my', '/mall/cart', '/upgradeOperator']
   var currentRoute = to.path
@@ -292,12 +249,6 @@ router.beforeEach(function (to, from, next) {
   }
   // 登录拦截
   store.commit('hide')
-  // if (!utils.storage.get('Uquanyun')) {
-  //   utils.storage.set('Uquanyun', 'gone')
-  //   next({
-  //     path: '/guide'
-  //   })
-  // } else
   if (whiteList.indexOf(to.name) < 0 && !store.state.user.token) {
     next({
       path: '/login'

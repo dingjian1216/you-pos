@@ -7,12 +7,14 @@ import qs from 'qs'
 axios.defaults.timeout = 5000
 let baseApiUrl = window.location.host
 if (baseApiUrl.indexOf('192.168') !== -1 || baseApiUrl.indexOf('localhost') !== -1) {
-  baseApiUrl = '/api/' + config.bizId
+  baseApiUrl = '/api/agent/'
 } else {
-  baseApiUrl = 'http://lwup.lwvip.com.cn/api/' + config.bizId
+  baseApiUrl = ' http://uat.xingciji.com/agent/'
 }
 axios.defaults.baseURL = baseApiUrl
 
+
+console.log(baseApiUrl)
 // 设置默认请求头
 axios.defaults.headers = {
   'X-Requested-With': 'XMLHttpRequest',
@@ -39,7 +41,7 @@ axios.interceptors.request.use(
     }
     const token = store.state.user.token
     if (token) {
-      config.headers.token = token
+      config.data['token'] = token
     }
     return config
   },
@@ -87,6 +89,7 @@ export default {
   // get请求
   get (url, param, loading) {
     return new Promise((resolve, reject) => {
+      
       if (loading) {
         store.commit('show')
       }
@@ -145,7 +148,7 @@ export default {
         if (!res) {
           return
         }
-        if (res.code === 0) {
+        if (res.code === 1) {
           resolve(res)
         } else {
           if (show) {

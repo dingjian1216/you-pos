@@ -25,7 +25,7 @@
                 <p>{{data.referrer.mobile}} <img src="../../assets/img/my/fuzhi.png"></p>
               </div>
               <div class="copy-item" @click="copyText(data.referrer.wx_number, '微信号')">
-                <div><img src="../../assets/img/balance/weixin.png">微信号</div>
+                <!-- <div><img src="../../assets/img/balance/weixin.png">微信号</div> -->
                 <p>{{data.referrer.wx_number || '无'}} <img src="../../assets/img/my/fuzhi.png"></p>
               </div>
             </div>
@@ -119,10 +119,6 @@ export default {
         htmlNodata: '<p class="upwarp-nodata">-- END --</p>',
         htmlLoading: '',
         noMoreSize: 5,
-        toTop: {
-          src: './static/img/auth/back_top.png',
-          offset: 1000
-        },
         empty: {
           warpId: 'empty',
           icon: './static/img/auth/kong.png',

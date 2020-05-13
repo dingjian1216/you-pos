@@ -1,95 +1,126 @@
 <template>
-  <div id="my" class="tbkMy">
-    <mescroll-vue ref="mescroll"  :down="mescrollDown"  @init="mescrollInit">
-    <div v-if="moneyBoxBj" class="moneyBoxBj" :style="{background: moneyBoxBj,height:settingH + 4.3+'rem'}"></div>
-    <div v-else class="moneyBoxBj" :style="{background: '#FF4466',height:settingH + 4.3+'rem'}"></div>
-    <div class="moneysBox">
-      <img src="../../assets/img/my/setting.png" :style="{top: settingH + 0.15 + 'rem'}" alt="" class="setting" @click="jumpTo('/info')">
-      <div class="headBox" :style="{marginTop: settingH + 0.6 + 'rem'}">
-        <img v-if="headBoxBjImg" class="headBoxBjImg" :src="headBoxBjImg" alt="">
-        <img v-else class="headBoxBjImg" src="../../assets/img/my/usernamebj.png" alt="">
-        <div class="top">
-          <div class="avater"  :style="{backgroundImage: 'url(' + data.avatar + ')'}" v-if="data && data.avatar" @click="jumpTo('/info')">
-          </div>
-          <div class="avater" v-else @click="jumpTo('/info')">
-          </div>
-          <div class="isLogoBox">
-            <div class="logoTitleBox">
-              <p class="name" v-if="data">{{data.nickname}}</p>
-              <div class="lv" v-if="data"><img src="../../assets/img/my/newLv.png" alt=""><span>{{data.lv}}</span></div>
-              <p class="name" v-else @click="jumpTo('wechatLogin')">
-                <span v-if="moneyBoxBj" :style="{color: moneyBoxBj}">登录/注册</span>
-                <span v-else style="color: #FF4466">登录/注册</span>
-              </p>
+  <div id="my" class="tbkMy" v-if="data">
+    <mescroll-vue ref="mescroll" :down="mescrollDown" @init="mescrollInit">
+      <div class="head">
+        <img src="../../assets/img/my/my_head.png" alt class="bg" />
+        <img
+          src="../../assets/img/my/setting.png"
+          :style="{top: settingH + 'rem'}"
+          alt
+          class="setting"
+          @click="jumpTo('/info')"
+        />
+        <div class="box">
+          <div
+            class="avater"
+            :style="{backgroundImage: 'url(' + data.picture + ')'}"
+            v-if="data.picture"
+            @click="jumpTo('/info')"
+          ></div>
+          <div class="avater" v-else @click="jumpTo('/info')"></div>
+          <div class="info" v-if="$store.state.user.token">
+            <div class="tou">
+              <p class="name">{{data.nickname}}</p>
+              <span v-if="data.level >=0">
+                <img src="../../assets/img/my/lvIcon.png" alt />
+                v{{data.level + 1}}
+              </span>
             </div>
-            <p class="invite"  @click="onCopy(data.invite_code)" v-if="data && data.invite_code"><span>邀请码：</span><span>{{data.invite_code}}</span><span class="copyObj">复制</span></p>
+            <!--<p class="uid">ID：{{data.uid}}</p>-->
+            <p class="invite" @click="onCopy(data.username)" v-if="data.username">
+              <span>邀请码：</span>
+              <span>{{data.username}}</span>
+              <span class="copyObj">复制</span>
+            </p>
           </div>
-        </div>
-        <div class="balanceOuterBox">
-          <div v-if="moneyBoxBj" class="balanceOuterBoxBj" :style="{boxShadow: 0 +'px ' + 3 + 'px '+49+'px ' + 2 + 'px ' + moneyBoxBj}"></div>
-          <div v-else class="balanceOuterBoxBj" :style="{boxShadow: 0 +'px ' + 3 + 'px '+49+'px ' + 2 + 'px ' + '#FF4466'}"></div>
-          <!-- <img class="balanceOuterBoxBj" src="../../assets/img/my/usermoneybj.png" alt=""> -->
-          <div class="balanceInsideBox" style="background: #333333;">
-            <div class="balanceTextBox">
-              <p class="balanceTitleNum" style="color: #FFC962;">余额: ￥<span v-if="data && data.credit3">{{data.credit3}}</span><span v-else>0.00</span></p>
-              <div class="balanceDesc" style="color: #D9CBB0;"><span>每月{{data.withdraw_mode}}号可提现上月结算收益</span><img class="balanceDescIcon" src="../../assets/img/my/jinr.png" alt=""></div>
-            </div>
-            <div class="outMoneyBtn" style="background: linear-gradient(-90deg,rgba(255,201,98,1),rgba(255,217,145,1));color: #333333;" @click="jumpTo('/withdraw')">立即提现</div>
+          <div v-else class="info">
+            <p class="login" @click="jumpTo('login')">登录/注册</p>
           </div>
         </div>
       </div>
-      <template v-for="item of myContent">
-        <edit-slide v-if="item.name === 'edit-slide' && slide"  :data="item.params" ref="editSlide" :key="item.id" ></edit-slide>
-        <component v-if="item.name !== 'edit-slide' && item.name !== 'edit-my-header'" v-bind:is="item.name" :money="data" :data="item.params" :key="item.id"></component>
-      </template>
-    </div>
+      <div class="moneysBox">
+        <div class="buttom">
+          <div class="bos">
+            <div class="profitBox">
+              <div class="profit" @click="jumpTo('/withdrawlist')">
+                <p v-if="profit">￥{{profit.ktx}}</p>
+                <p v-else>0.00</p>
+                <p>可提现金额</p>
+              </div>
+              <div class="profit" @click="jumpTo('/withdrawlist')">
+                <p v-if="profit">￥{{profit.bktx}}</p>
+                <p v-else>0.00</p>
+                <p>不可提现金额</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="option orderBox">
+          <div @click="jumpTo('/realName')">
+            <div class="imgBox">
+              <img src="../../assets/img/my/realname.png" alt />
+            </div>
+            <div>认证</div>
+          </div>
+          <div @click="jumpTo('/withdraw')">
+            <div class="imgBox">
+              <img src="../../assets/img/my/mt.png" alt />
+            </div>
+            <div>提现</div>
+          </div>
+          <div @click="jumpTo('/invite')">
+            <div class="imgBox">
+              <img src="../../assets/img/my/ms.png" alt />
+            </div>
+            <div>邀请好友</div>
+          </div>
+          <div @click="jumpTo('/order')">
+            <div class="imgBox">
+              <img src="../../assets/img/my/mts.png" alt />
+            </div>
+            <div>订单</div>
+          </div>
+        </div>
+        <div class="tool">
+          <div class="headers">我的工具</div>
+          <div class="option">
+            <div @click="jumpTo('/notice')">
+              <div class="imgBox">
+                <img src="../../assets/img/my/messages.png" alt />
+              </div>
+              <span class="newsNum" v-if="newsNum.gg_num > 0">{{newsNum.gg_num}}</span>
+              <div>系统消息</div>
+            </div>
+            <div @click="jumpTo('/address')">
+              <div class="imgBox">
+                <img src="../../assets/img/my/address.png" alt />
+              </div>
+              <div>收货地址</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </mescroll-vue>
   </div>
 </template>
 
 <script>
-import {Group, Cell} from 'vux'
-import MescrollVue from 'mescroll.js/mescroll.vue'
-import * as utils from '../../utils'
-import EditSlide from '../../components/EditSlide'
-import EditNav from '../../components/EditNav'
-import EditBlank from '../../components/EditBlank'
-import EditRichText from '../../components/EditRichText'
-import EditText from '../../components/EditText'
-import EditImg from '../../components/EditImg'
-import EditCube from '../../components/EditCube'
-import EditNavGroup from '../../components/EditNavGroup'
-import EditNavGroup2 from '../../components/EditNavLine'
-import EditMyEarnings from '../../components/EditNavMoney'
+import { Group, Cell } from "vux";
+import * as apiHttp from "../../api/index";
+import MescrollVue from "mescroll.js/mescroll.vue";
+import * as utils from "../../utils";
 export default {
-  name: 'my',
+  name: "my2",
   components: {
     Group,
     Cell,
-    MescrollVue,
-    EditSlide,
-    EditNav,
-    EditBlank,
-    EditRichText,
-    EditImg,
-    EditCube,
-    EditText,
-    EditNavGroup,
-    EditNavGroup2,
-    EditMyEarnings
+    MescrollVue
   },
-  data () {
+  data() {
     return {
-      headBoxBjImg: '',/* 个人信息卡的背景图 */
-      balanceOuterBoxBj: '',/* 余额框的背景图 */
-      moneyBoxBj: '',/* 背景色 */
-      slide: true,
-      settingH: '',
-      data: '',
-      profit: '',
-      list: '',
-      show: '',
-      cate: '',
+      settingH: "",
+      data: "",
+      profit: "",
       mescroll: null,
       mescrollDown: {
         use: !!this.$store.state.user.token,
@@ -101,190 +132,107 @@ export default {
       lastScrollTop: 0, // 路由切换时滚动条的位置
       lastBounce: null, // 路由切换时是否禁止ios回弹,
       model: null,
-      signInfo: ''
-    }
-  },
-  computed: {
-    myContent () {
-      var that = this
-      var infoList = that.$store.state.global.myContent
-      console.log(that.$store.state.global.myContent)
-      if(infoList){
-        for (let i = 0; i < infoList.length; i++) {
-          if(infoList[i].name == 'edit-my-header') {
-            that.headBoxBjImg = infoList[i].params.bg
-            that.moneyBoxBj = infoList[i].params.bgColor
-          }
-        }
-      }
-      return this.$store.state.global.myContent
-    }
-  },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.slide = false
-      vm.$nextTick(() => {
-        vm.slide = true
-      })
-    })
+      signInfo: "",
+      newsNum: ""
+    };
   },
   methods: {
-    showLogin () {
-      if (!this.$store.state.user.token) {
-        this.$router.push('/wechatLogin')
-        return
-      }
-      let that = this
-      let aliBC = api.require('aliBC')
-      aliBC.asyncInit({
-      }, function (ret, err) {
-        if (ret.status) {
-          let aliBC = api.require('aliBC')
-          aliBC.showLogin(function (ret, err) {
-            if (ret.status) {
-              that.$vux.toast.text('授权成功')
-            } else {
-              that.$vux.toast.text(err.message)
+    mescrollInit(mescroll) {
+      this.mescroll = mescroll;
+    },
+    carryCash() {
+      this.$router.push("/withdraw");
+    },
+    onCopy(code) {
+      let that = this;
+      let clipBoard = api.require("clipBoard");
+      clipBoard.set(
+        {
+          value: code
+        },
+        function(ret, err) {
+          if (ret) {
+            utils.storage.set("copyWord", code);
+            that.$vux.toast.text("复制成功");
+          } else {
+            that.$vux.toast.text("请重试");
+          }
+        }
+      );
+    },
+    getInfo() {
+      if (this.$store.state.user.token) {
+        apiHttp
+          .getAgentDetall()
+          .then(res => {
+            if (res.code === 1) {
+              this.data = res.data;
+              this.$store.commit("setUserInfo", res.data);
+              this.mescroll.endSuccess(res.data.length);
             }
           })
-        }
-      })
-    },
-    mescrollInit (mescroll) {
-      this.mescroll = mescroll
-    },
-    other (item) {
-      this.$router.push('/help?title=' + item.title + '&type=' + item.id)
-    },
-    carryCash () {
-      this.$router.push('/withdraw')
-    },
-    onCopy (code) {
-      let that = this
-      let clipBoard = api.require('clipBoard')
-      clipBoard.set({
-        value: code
-      }, function (ret, err) {
-        if (ret) {
-          utils.storage.set('copyWord', code)
-          that.$vux.toast.text('复制成功')
-        } else {
-          that.$vux.toast.text('请重试')
-        }
-      })
-    },
-    getInfo () {
-      if (this.$store.state.user.token) {
-        this.$http.post('/amoy/user/user-info', {}).then(res => {
-          if (res.code === 0) {
-            this.data = res.data
-            utils.storage.set('signInfo', res.data.creditTitleInfo)
-            this.$store.commit('setUserInfo', res.data)
-            this.$store.commit('setCouponpassMoney', res.data.couponpass_money)
-            this.mescroll.endSuccess(res.data.length)
-          }
-        }).catch((e) => {
-          this.mescroll.endErr()
-        })
+          .catch(e => {
+            this.mescroll.endErr();
+          });
       }
-      this.$http.post('/amoy/user/get-cate', {}, false, true).then((res) => {
-        if (res.code === 0) {
-          this.cate = res.data
+    },
+    getProfit() {
+      apiHttp.getMyReward().then(res => {
+        if (res.code == 1) {
+          this.profit = res.data;
         }
-      })
-      this.$http.post('/amoy/app/design', {
-        type: 2,
-        version: api.appVersion,
-        device: (api.systemType === 'android') ? 1 : 2
-      }, true, true).then(res => {
-        if (res.code === 0 && res.data.content) {
-          this.$store.commit('setMyContent', JSON.parse(res.data.content))
+      });
+      apiHttp.getNewsNum().then(res => {
+        if (res.code == 1) {
+          this.newsNum = res.data;
         }
-      })
+      });
     }
   },
-  activated () {
-    this.data = this.$store.state.user.userInfo
-    this.getInfo()
+  activated() {
+    this.data = this.$store.state.user.userInfo;
+    this.getInfo();
+    this.getProfit();
   },
-  mounted () {
-    let size = (document.documentElement.clientWidth / 7.5)
-    this.settingH = (api.safeArea.top / size)
+  mounted() {
+    let size = document.documentElement.clientWidth / 7.5;
+    this.settingH = api.safeArea.top / size + 0.6;
   }
-}
+};
 </script>
 <style lang="less">
-  /* #my{
-    .moneysBox{
-      .EditNav{
-        .allBox{
-          border-radius: 10px;
-          .allList{
-            padding: 0.3rem 0;
-            img{
-              // width: .6rem;
-              // height: .6rem;
-              border-radius: 0;
-              margin-bottom: 0.2rem;
-            }
-          }
-        }
-      }
-    }
-  } */
-</style>
-<style lang="less">
-  .tbkMy{
-    position: relative;
-    overflow: hidden;
-    .mescroll{
-      position: relative;
-      bottom: 0 !important;
+.tbkMy {
+  .mescroll {
+    bottom: 0 !important;
+  }
+}
+#my {
+  position: relative;
+  /*._v-content{*/
+  /*padding-bottom: 30px;*/
+  /*}*/
+  .vux-cell-primary {
+    line-height: 0.4rem;
+    margin-left: 0.2rem;
+    .vux-label {
+      font-size: 0.28rem;
     }
   }
-  #my{
-    /*._v-content{*/
-      /*padding-bottom: 30px;*/
-    /*}*/
+  .weui-cells {
+    margin-top: 0;
+    .weui-cell:before {
+      right: 15px;
+    }
+  }
+  .weui-cells:after,
+  .weui-cells:before {
+    display: none;
+  }
+}
+</style>
 
-    .vux-cell-primary{
-      line-height: .4rem;
-      margin-left: .2rem;
-      .vux-label{
-        font-size: .28rem;
-      }
-    }
-    .weui-cells{
-      margin-top: 0;
-      .weui-cell:before{
-        right: 15px;
-      }
-    }
-    .weui-cells:after,.weui-cells:before{
-      display: none;
-    }
-  }
-</style>
 <style scoped lang="less">
 @import "../../assets/less/common";
-#my{
-    .moneysBox{
-      /deep/.EditNav{
-        /deep/.allBox{
-          border-radius: 10px;
-          /deep/.allList{
-            padding: 0.3rem 0;
-            img{
-              width: .85rem !important;
-              height: .85rem !important;
-              border-radius: 0;
-              margin-bottom: 0.2rem;
-            }
-          }
-        }
-      }
-    }
-  }
 .tops{
   padding-top: 2px;
 }
@@ -292,303 +240,218 @@ export default {
   position: relative;
   height: 100%;
   background: #f7f7f7;
-  .moneyBoxBj{
-    position: absolute;
-    width: 100%;
-  }
-  .moneysBox{
-    // background: url("../../assets/img/my/mybg.png") no-repeat;
-    background-size: contain;
-    font-size: 0.3rem;
+  .head{
+    overflow: hidden;
     position: relative;
-    padding: .2rem;
-    z-index: 100;
-    /*background-color: #fff;*/
+    width: 100%;
+    height: 3.59rem;
+    .bg{
+      position: absolute;
+      width: 100%;
+      height: 3.59rem;
+      left: 0;
+      top: 0;
+    }
+    .t{
+      width: 100%;
+      position: absolute;
+      left: 0;
+      top: .65rem;
+      height: .55rem;
+      line-height: .55rem;
+      text-align: center;
+      font-size: .36rem;
+      color: #fff;
+    }
     .setting{
       position: absolute;
-      right: .3rem;
-      width: .4rem;
-      top: .3rem;
+      right: .25rem;
+      top: .85rem;
+      width: .45rem;
+      height: .45rem;
+      z-index: 100;
     }
-    .headBox{
-      position: relative;
-      margin-top: 1rem;
-      width: 100%;
-      height: 3.5rem;
-      margin-bottom: 0rem;
-      background: linear-gradient(to right, #fcb798, #fc9298);
-      border-radius: .2rem;
-      text-align: center;
-      .headBoxBjImg{
+    .share{
+      position: absolute;
+      top: 1.5rem;
+      right: -.4rem;
+      width: 1.81rem;
+      height: .55rem;
+      display: flex;
+      align-items: center;
+      background: -webkit-linear-gradient(left,#ff9914,#ffcb6e);
+      border-radius: .27rem;
+      font-size: 0.28rem;
+      img{
         position: absolute;
-        top: 0;
         left: 0;
-        width: 100%;
-        height: 3.5rem;
+        top: 0;
+        width: 1.91rem;
+        height: 100%;
       }
-      .top{
-        border-radius: .2rem;
-        // background: #fff;
-        height: 2.2rem;
-        position: relative;
+      span{
+        /*position: absolute;*/
+        /*left: .3rem;*/
+        /*top: .07rem;*/
+        /*display: inline-block;*/
+        /*height: .55rem;*/
+        /*line-height: .55rem;*/
+        text-indent: .5rem;
+        font-size: 12px;
+        color: #fff;
+        z-index: 100;
+      }
+      .isVip{
+        text-indent: .5rem;
+      }
+    }
+    .box{
+      position: absolute;
+      top: 1.5rem;
+      left: 0;
+      width: 100%;
+      height: 1.5rem;
+      padding-left: .26rem;
+      display: flex;
+      box-sizing: border-box;
+      overflow: hidden;
+      .avater{
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: url('../../assets/img/my/avater.png');
+      }
+      .info{
+        flex: 1;
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-        .avater{
-          width: 1rem;
-          height: 1rem;
-          margin-left: 0.38rem;
-          border-radius: 50%;
-          border: .08rem solid #fff;
-          background-size: cover;
-          background-color: #fff;
-          background-repeat: no-repeat;
-          background-position: center;
-          background-image: url('../../assets/img/my/avater.png');
-          position: relative;
-          /* position: absolute;
-          top: -0.5rem;
-          left: 50%;
-          transform: translate(-50%, 0); */
+        justify-content: space-around;
+        flex-direction: column;
+        /*padding: .2rem 0;*/
+        margin-left: .2rem;
+        .login{
+          font-size: .3rem;
+          color: #fff;
         }
-        .isLogoBox{
-          position: relative;
-          flex: 1;
+        .uid{
+          font-size: .28rem;
+          color: #fff;
+        }
+        .tou{
           display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
           align-items: center;
-          .logoTitleBox{
-            width: 100%;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            .name{
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              max-width: 188px;
-              height: 0.6rem;
-              box-sizing: border-box;
-              font-size: .32rem;
-              color: #333;
-              overflow: hidden;
-              white-space: nowrap;
-              text-overflow: ellipsis;
-              padding: 0.04rem 0.2rem 0.04rem;
-            }
-            .lv{
-              padding: 0 .1rem;
-              // position: absolute;
-              // left: 0.9rem;
-              // bottom: 0;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: .2rem;
-              height: .34rem;
-              border: 1px solid #FF4466;
-              background: #fff;
-              border-top-left-radius: 0.2rem;
-              border-bottom-right-radius: 0.2rem;
-              span{
-                font-size: .2rem;
-                word-break: keep-all;
-                white-space: nowrap;
-                color: #FF4466;
-              }
-              img{
-                width: .25rem;
-                height: .25rem;
-                margin-right: 0.05rem;
-              }
-            }
+          overflow: hidden;
+          .name{
+            text-align: left;
+            font-size: .32rem;
+            color: #fff;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+            line-height: .4rem;
+            max-width: 3.6rem;
+            /*display: flex;*/
+            /*align-items: center;*/
           }
-          .invite{
-            width: 100%;
-            margin-top: 0.15rem;
-            box-sizing: border-box;
-            padding-left: 0.2rem;
-            padding-right: 0.2rem;
-            display: flex;
-            justify-content: flex-start;
-            font-size: .26rem;
-            .copyObj{
-              display: flex;
-              align-items: center;
-              background: #FFB0BE;
-              color: #FF4061;
-              height: .4rem;
-              box-sizing: border-box;
-              font-size: .22rem;
-              line-height: 0.22rem;
-              border-radius: .2rem;
-              padding: 0.09rem 0.2rem 0.09rem 0.2rem;
-              margin-left: .2rem;
+          span {
+            position: relative;
+            background: #3a3b40;
+            flex-shrink: 0;
+            margin-left: .1rem;
+            margin-right: .4rem;
+            color: #f7bd01;
+            font-size: .22rem;
+            height: .4rem;
+            text-align: left;
+            padding-right: .2rem;
+            padding-left: .4rem;
+            line-height: .4rem;
+            border-radius: .2rem;
+            img{
+              position: absolute;
+              left: 0.05rem;
+              top: 0.05rem;
+              width: .3rem;
+              height: .3rem;
             }
           }
         }
-        .profitBox{
-          overflow: hidden;
-          position: absolute;
-          left: 0;
-          bottom: 0;
-          border-top: 1px solid #EEEEEE;
-          padding: 0.1rem 0;
-          height: 1rem;
-          width: 100%;
-          display: flex;
-          .profit{
-            flex: 1;
-            justify-content: center;
+        .invite{
+          text-align: left;
+          font-size: .26rem;
+          color: #fff;
+          span:first-of-type{
+            color: #ffd57c;
+            margin-right: .1rem;
+          }
+          span:last-of-type{
+            font-size: .20rem;
+            display: inline-block;
+            width: .68rem;
+            height: .3rem;
             text-align: center;
-            flex-direction: column;
-            position: relative;
-            p:first-of-type{
-              font-size: .32rem;
-              color: #FF5847;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              text-align: center;
-              margin-bottom: 0.1rem;
-            }
-            p:last-of-type{
-              text-align: center;
-              font-size: .24rem;
-              color: #666;
-            }
-          }
-          .profit:after{
-            content: '';
-            height: 80%;
-            position: absolute;
-            top: 10%;
-            right: 0;
-            border-right: 1px solid #dadada;
-            transform-origin: 0 0;
-            transform: scaleX(.5);
-          }
-          .profit:last-of-type:after{
-            display: none;
+            line-height: .34rem;
+            border-radius: .2rem;
+            margin-left: .2rem;
+            background-color: rgba(255, 255, 255, 0.4);
           }
         }
       }
-      .bot{
-        height: .8rem;
-        padding: 0 0.5rem 0 0.2rem;
+    }
+  }
+
+  .moneysBox{
+    font-size: 0.3rem;
+    position: relative;
+    margin: .2rem .2rem .2rem;
+    z-index: 100;
+    /*background-color: #fff;*/
+    .buttom{
+      width: 100%;
+      background-color: #fff;
+      border-radius: 10px;
+      margin-top: 0.2rem;
+      overflow: hidden;
+      .tos{
+        padding: 0 0.2rem;
         width: 100%;
         line-height: 1rem;
+        height: 1rem;
         font-size: 0.3rem;
         box-sizing: border-box;
         position: relative;
-        color: #fff;
         div:nth-child(1){
-          height: .8rem;
-          display: flex;
-          align-items: center;
           float: left;
           span:nth-child(2){
-            color: #FF5847;
+            color: #fc3357;
             margin-left: 0.2rem;
           }
         }
         div:nth-child(2){
-          height: .8rem;
           float: right;
           font-size: 0.24rem;
-          display: flex;
-          align-items: center;
+          color: #999;
         }
         .look{
           display: inline-block;
           margin-right: 0.1rem;
         }
       }
-      .bot:after{
-        content: " ";
-        display: inline-block;
-        height: 6px;
-        width: 6px;
-        border-width: 2px 2px 0 0;
-        border-color: #fff;
-        border-style: solid;
-        -webkit-transform: matrix(.71,.71,-.71,.71,0,0);
-        transform: matrix(.71,.71,-.71,.71,0,0);
-        position: absolute;
-        top: 50%;
-        margin-top: -5px;
-        right: .2rem;
+      .bos{
+        height: 1.6rem;
       }
-      .balanceOuterBox{
+      .tos:before{
+        content: '';
         position: absolute;
-        overflow: hidden;
-        width: 7.5rem;
-        height: 0.96rem;
-        left: calc(50% - 3.75rem);
-        bottom: -2px;
-        z-index: 1000;
-        .balanceOuterBoxBj{
-          position: absolute;
-          width: 8rem;
-          height: 1.28rem;
-          left: calc( 50% - 4rem );
-          top: 0.4rem;
-          background: #f7f7f7;
-          border-top-right-radius: 100%;
-          border-top-left-radius: 100%;
-        }
-        .balanceInsideBox{
-          position: relative;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          width: 6.52rem;
-          height: 0.96rem;
-          margin: auto;
-          border-radius: 0.48rem;
-          .balanceTextBox{
-            margin-left: 0.38rem;
-            .balanceTitleNum{
-              text-align: left;
-              font-size: 0.3rem;
-              font-weight: 500;
-              line-height: 0.5rem;
-            }
-            .balanceDesc{
-              display: flex;
-              height: 0.24rem;
-              justify-content: flex-start;
-              align-items: center;
-              font-size: 0;
-              span{
-                display: block;
-                height: 0.24rem;
-                font-size: 0.18rem;
-                font-weight: 400;
-              }
-              .balanceDescIcon{
-                width: 0.08rem;
-                height: 0.11rem;
-                margin-left: 0.1rem;
-              }
-            }
-          }
-          .outMoneyBtn{
-            margin-right: 0.3rem;
-            width: 1.29rem;
-            height: 0.4rem;
-            box-sizing: border-box;
-            padding-top: 0.09rem;
-            padding-bottom: 0.08rem;
-            border-radius: 0.2rem;
-            font-size: 0.23rem;
-            font-weight: 400;
-            line-height: 0.23rem;
-            text-align: center;
-          }
-        }
+        left: 0;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        height: 1px;
+        background-color: #eeeeee;
       }
     }
     .profitBox{
@@ -597,7 +460,7 @@ export default {
        height: 1rem;
        width: 100%;
        .profit{
-         width: 33.33%;
+         width: 50%;
          float: left;
          justify-content: center;
          text-align: center;
@@ -711,6 +574,33 @@ export default {
         float: right;
         height: 100%;
         line-height: 1.2rem;
+      }
+    }
+    .tool{
+      margin-top: 0.2rem;
+      border-radius: 10px;
+      background: #fff;
+      .option{
+        margin-top: 0;
+      }
+      .headers{
+        float: left;
+        line-height: 1rem;
+        font-size: 0.3rem;
+        width: 100%;
+        padding-left: 0.2rem;
+        position: relative;
+        box-sizing: border-box;
+        text-align: left !important;
+      }
+      .headers:before{
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        background-color: #eeeeee;
+        bottom: 0;
+        left: 0;
       }
     }
     .grow{

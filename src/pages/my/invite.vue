@@ -4,53 +4,27 @@
         <div class="swiperBox">
           <swiper :options="swiperOption" class="swiper">
             <swiper-slide v-for="(item, index) in imgs" :key="index" :class="{active:index === 0, shadow:true}">
-              <!--<img :src="item.article_banner" style="width: 100%;height: 100%">-->
-              <!--<div>-->
-              <img :src="item" alt="" @click="showBig(index)">
-                <!--<div class="banner" :style="{backgroundImage: 'url('+ item +')'}">-->
-                  <!--<img :src="item" alt="">-->
-                <!--</div>-->
-              <!--</div>-->
+              <img :src="link + item" alt="" @click="showBig(index)">
             </swiper-slide>
           </swiper>
-          <!--<div class="swiper-pagination"></div>-->
-          <!--<div class="swiper-pagination" slot="pagination"></div>-->
         </div>
-        <div class="info" v-if="data.appDownRules">
-          <div class="t"><span>邀请规则</span></div>
-          <div v-html="data.appDownRules" class="rules"></div>
-          <!--<p class="rule">1. 专属海报中的二维码已包含您的邀请码信息</p>-->
-          <!--<p class="rule">2. 好友通过您的二维码海报下载APP并注册成为会员后，Ta即永久成为您的粉丝，未来Ta升级市场运营或领券下单时产生的奖励收入</p>-->
-          <!--<p class="rule">3. 通过您注册的所有用户领券下单并确认收货后，您均将获得相应的消费佣金奖励。</p>-->
-        </div>
+     
       </div>
       <div class="footer" :style="{bottom: h}">
-      <!--<div class="footer" >-->
-        <!--<span  @click="keepImgs"><img src="../../assets/img/my/down.png" alt="">保存图片</span>-->
-        <p @click="showShare(1)">分享邀请链接</p>
-        <p @click="showShare(2)">分享邀请海报</p>
+        <p @click="keepImgs()">保存当前海报</p>
+        <p @click="copy()">复制邀请链接</p>
+        <!-- <p @click="showShare(1)">分享邀请链接</p>
+        <p @click="showShare(2)">分享邀请海报</p> -->
       </div>
-      <div class="share_to" v-transfer-dom>
+      <!-- <div class="share_to" v-transfer-dom>
         <div class="weui-mask" @click="showToast = false" v-if="showToast"  ></div>
         <div class="classBox"  v-if="showToast"  >
           <div><img src="../../assets/img/home/goods/wechat.png" alt="" @click="shareFri(1)"><p>微信好友</p></div>
           <div><img src="../../assets/img/home/goods/friend_circle.png" alt="" @click="shareFri(2)"><p>朋友圈</p></div>
           <div><img src="../../assets/img/home/goods/qq.png" alt="" @click="shareQq()"><p>QQ</p></div>
-          <!--<div><img src="../../assets/img/auth/QQk.png" alt="" @click="shareQq()"><p>QQ空间</p></div>-->
         </div>
-      </div>
-      <div v-transfer-dom>
-        <div v-if="bigSwiper" class="bigSwiper">
-          <div class="weui-mask" v-if="bigSwiper"></div>
-            <swiper :options="swiperOption1" class="swiperList" ref="swiperList">
-              <swiper-slide v-for="(item, index) in imgs" :key="index" >
-                <img :src="item" alt="" @click="hideBig">
-              </swiper-slide>
-            </swiper>
-            <div class="swiper-pagination" slot="pagination" v-if="bigSwiper"></div>
-            <img src="../../assets/img/my/downLoad.png" alt="" class="downLoad" @click.stop="downImg" v-if="bigSwiper">
-        </div>
-      </div>
+      </div> -->
+
     </div>
 </template>
 
@@ -58,6 +32,8 @@
 import {swiper, swiperSlide} from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import {XDialog, TransferDomDirective as TransferDom} from 'vux'
+import * as apiHttp from "../../api/index";
+import store from "../../store";
 let imgIndex = 0
 export default {
   name: 'invite',
@@ -71,13 +47,10 @@ export default {
   },
   data () {
     return {
-      bigSwiper: false,
       imgs: [],
-      info: this.$store.state.user.userInfo,
-      arr: [],
+      link: this.link,
       index: 0,
       showToast: false,
-      // h: api.safeArea.bottom + 'px',
       h: 0 + 'px',
       swiperOption: {
         effect: 'coverflow',
@@ -104,74 +77,22 @@ export default {
         }
       },
       downImgIndex: 0,
-      swiperOption1: {
-        pagination: {
-          el: '.swiper-pagination'
-        },
-        on: {
-          transitionEnd: () => {
-            if (this.$refs.swiperList.swiper) {
-              this.downImgIndex = this.$refs.swiperList.swiper.activeIndex
-            }
-          },
-          sliderMove: function (event) {
-            window.canRightSlipBack = false
-          },
-          touchEnd: function (event) {
-            setTimeout(() => {
-              window.canRightSlipBack = true
-            }, 600)
-          }
-        }
-      },
       type: '',
       data: ''
     }
   },
   beforeRouteLeave (to, from, next) {
     this.showToast = false
-    this.bigSwiper = false
     next()
   },
   methods: {
     hideBig () {
-      this.bigSwiper = false
     },
     showBig (index) {
       this.swiperOption1.initialSlide = index
       this.downImgIndex = index
-      this.$nextTick(() => {
-        this.bigSwiper = true
-      })
     },
-    downImg () {
-      const that = this
-      let format = 'share' + new Date().getTime() + '.jpg'
-      api.download({
-        url: that.imgs[this.downImgIndex],
-        savePath: 'fs://' + format,
-        report: true,
-        cache: true,
-        allowResume: true
-      }, function (ret, err) {
-        if (ret.state === 1) {
-          api.saveMediaToAlbum({
-            path: 'fs://' + format
-          }, function (ret, err) {
-            if (ret && ret.status) {
-              console.log('相册成功：' + JSON.stringify(ret))
-              that.$vux.toast.text('保存成功')
-            } else {
-              console.log('相册失败：' + JSON.stringify(err))
-            }
-          })
-          console.log('成功：' + JSON.stringify(ret))
-        } else {
-          that.$vux.toast.text('保存失败')
-          console.log('失败：' + JSON.stringify(err))
-        }
-      })
-    },
+
     shareFri (type) {
       let that = this
       this.showToast = false
@@ -194,12 +115,11 @@ export default {
             thumb: 'fs://' + format,
             contentUrl: that.data.downloadUrl
           }, function (ret, err) {
-            that.$http.post('/amoy/task/collection', {}, false, true).then()
-            // if (ret.status) {
-            //   alert('分享成功')
-            // } else {
-            //   alert(err.code)
-            // }
+            if (ret.status) {
+              alert('分享成功')
+            } else {
+              alert(err.code)
+            }
           })
         })
       } else {
@@ -221,7 +141,6 @@ export default {
             scene: way,
             contentUrl: 'fs://' + format
           }, function (ret, err) {
-            that.$http.post('/amoy/task/collection', {}, false, true).then()
           })
         })
       }
@@ -261,13 +180,12 @@ export default {
       this.showToast = true
     },
     getSwiper () {
-      this.$http.post('/amoy/user/invite', {}, true, true).then(res => {
-        if (res.code === 0) {
-          this.imgs = []
-          res.data.img.forEach((item) => {
-            this.imgs.push(this.link + '/amoy/user/invite?tpl=' + item + '&uid=' + this.info.uid + '&invite_code=' + this.info.invite_code)
-          })
-          this.data = res.data
+      let userInfo = store.state.user.userInfo
+      console.log(userInfo)
+      let link = this.link + "/agent/#/register?agent_code=" + userInfo.mobile + ""
+      apiHttp.getMask(link).then(res => {
+        if (res.code === 1) {
+          this.imgs = res.data
         }
       })
     },
@@ -278,7 +196,7 @@ export default {
         text: '保存中...'
       })
       api.download({
-        url: that.imgs[imgIndex],
+        url: that.link +  that.imgs[imgIndex],
         savePath: 'fs://' + format,
         report: true,
         cache: true,
@@ -304,12 +222,31 @@ export default {
         }
       })
     },
+    copy(){
+     let that = this;
+     let userInfo = store.state.user.userInfo
+     let text = this.link + "/agent/#/register?agent_code=" + userInfo.mobile + ""
+      let clipBoard = api.require("clipBoard");
+      clipBoard.set(
+        {
+          value: text
+        },
+        function(ret, err) {
+          if (ret) {
+            that.$vux.toast.text("复制成功");
+          } else {
+            that.$vux.toast.text("请重试");
+          }
+        }
+      );
+    },
     share () {
       let that = this
       that.$vux.loading.show({
         text: '加载中'
       })
       let format = 'share' + new Date().getTime() + '.jpg'
+
       api.download({
         url: that.imgs[imgIndex],
         savePath: 'fs://' + format,
@@ -334,15 +271,6 @@ export default {
     }
   },
   mounted () {
-    // let baseApiUrl = window.location.host
-    // if (baseApiUrl.indexOf('192.168') !== -1 || baseApiUrl.indexOf('localhost') !== -1) {
-    // } else {
-    //   let This = this
-    //   api.setStatusBarStyle({
-    //     style: 'light',
-    //     color: This.colorInfo[0]
-    //   })
-    // }
     this.getSwiper()
   },
   activated () {
@@ -484,6 +412,7 @@ export default {
   .swiperBox{
     position: relative;
     margin-bottom: 0.5rem;
+    margin-top: 1rem;
     .swiper{
       margin-top: 0.2rem;
       margin-bottom: 0.4rem;

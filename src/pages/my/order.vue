@@ -1,376 +1,427 @@
 <template>
-    <div class="order">
-      <div class="head">
-        <i class="iconfont icon-back" @click="$router.go(-1)"></i>
-        <div class="searchBox">
-          <div class="search">
-            <div class="show-placeholder" v-if="!isSearching && keyword==''"><i class="iconfont icon-search"></i>搜索订单号</div>
-            <input type="search" @keyup.enter="search" v-model="keyword" @focus="isSearching=true" @blur="isSearching=false">
-          </div>
-        </div>
-        <div class="select-type" @click="(showSelect=!showSelect)">
-          <span>{{companyList[selectedCompanyIndex]}}</span>
-          <i class="iconfont icon-unfold" :style="{color: $store.state.global.theme.mainColor}"></i>
-          <div class="select-box" v-if="showSelect">
-            <div class="select-item" v-for="(item, index) in companyList" :key="index" v-if="index!=selectedCompanyIndex" @click="changeCompany(index)">{{item}}</div>
-          </div>
-        </div>
+  <div class="fixing_order">
+    <div class="header">
+      <x-header slot="header" :left-options="{showBack: false}">
+        <a @click="goBack()" slot="left" class="backBox">
+          <i class="iconfont icon-back"></i>
+        </a>
+        订单
+      </x-header>
+      <div class="tab">
+        <tab
+          :line-width="2"
+          active-color="#fc3357"
+          height="700px"
+          custom-bar-width=".8rem"
+          v-model="index"
+        >
+          <tab-item
+            class="vux-center"
+            :selected="index===ind"
+            v-for="(item, ind) in tab"
+            @on-item-click="getListIn(item.sort)"
+            :key="ind"
+          >{{item.title}}</tab-item>
+        </tab>
       </div>
-      <tab :line-width="2" class="my-or-team" custom-bar-width=".4rem" :active-color="$store.state.global.theme.mainColor" default-color="#333" v-model="type" v-if="!isSearchResult">
-        <tab-item @on-item-click="reset(0)">我的订单</tab-item>
-        <tab-item @on-item-click="reset(1)">团队订单</tab-item>
-      </tab>
-      <tab :line-width="2" custom-bar-width=".4rem" :active-color="$store.state.global.theme.mainColor" default-color="#333" v-if="!isSearchResult" v-model="statusTabIndex">
-        <tab-item @on-item-click="resetStatus('all')">全部</tab-item>
-        <tab-item @on-item-click="resetStatus(1)">已结算</tab-item>
-        <tab-item @on-item-click="resetStatus(0)">已付款</tab-item>
-        <tab-item @on-item-click="resetStatus(2)">已失效</tab-item>
-      </tab>
-      <div class="listBox" :style="{height: isSearchResult? 'calc(100% - 1.6rem)' :'calc(100% - 88px - 1.6rem)'}">
-        <mescroll-vue ref="mescroll" :down="mescrollDown" :up="mescrollUp" @init="mescrollInit">
-          <div class="high"></div>
-          <div class="list" v-for="(item, index) of list" :key="index">
-            <div class="top">
-              <p>订单：{{item.trade_id}}</p>
-              <span v-if="item.status === '已失效'">{{item.order_status}}</span>
-              <span class="active" :style="{color: $store.state.global.theme.mainColor}"  v-else>{{item.order_status}}</span>
+    </div>
+    <confirm v-model="show" :close-on-confirm="false" @on-confirm="confirm">
+      <p style="text-align:center;">您确定要删除？</p>
+    </confirm>
+    <confirm v-model="showquxiao" :close-on-confirm="false" @on-confirm="confirm1">
+      <p style="text-align:center;">您确定要取消该订单？</p>
+    </confirm>
+    <div class="mescrollBox">
+      <mescroll-vue ref="mescroll" :down="mescrollDown" :up="mescrollUp" @init="mescrollInit">
+        <div class="content">
+          <div id="d9"></div>
+          <div class="content_main list" v-for="(items,index) in shopList" :key="index">
+            <div class="header_main" @click="handDetail(items.id)">
+              <div class="left">
+                <img src="../../assets/img/logo.png" alt />
+                <span>优享兑</span>
+              </div>
+              <div class="right">
+                <span>{{items.statusName}}</span>
+              </div>
             </div>
-            <div class="centerBox">
-              <img v-lazy="item.picUrl" alt="" :key="item.picUrl">
-              <div class="info">
-                <p class="t">{{item.title}}</p>
-                <div class="money" :style="{color: $store.state.global.theme.mainColor}">
-                  <p class="price" >¥<span>{{item.payment_price}}</span></p>
-                  <p class="profit">预估收益：{{item.price}}</p>
+            <div class="mail" @click="handDetail(items.id)">
+              <div class="left">
+                <img :src="items.goods_img" alt />
+              </div>
+              <div class="right">
+                <div class="div1">{{items.goods_name}}</div>
+                <div class="div2">
+                  <!-- <div>{{item.goodsField}}</div> -->
+                  <div>×{{items.goods_num}}</div>
+                </div>
+                <div class="div3">
+                  <div class="price_main">
+                    <span>¥</span>
+                    {{items.goods_price}}
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="bot">
-              <div class="time">
-                <span>创建时间：{{item.created_at*1000 | dateFormat}}</span>
-              </div>
+            <div class="price">
+              <label>共{{items.goods_num}}件商品，合计:</label>
+              <span>¥</span>
+              {{items.total_money}}
+            </div>
+            <div class="status" v-if="items.order_status == 0">
+              <div class="btn1" @click="handShow(index,items.id)">取消订单</div>
+              <div
+                class="btn"
+                @click="jumpTo({name:'payMent',query:{orderId:items.id,total_money:items.total_money}})"
+              >去支付</div>
+            </div>
+            <div class="status" v-if="items.order_status == 2">
+              <div class="btn" @click="receipt(index,items.id)">确认收货</div>
             </div>
           </div>
-          <div id="empty"></div>
-        </mescroll-vue>
-      </div>
+        </div>
+      </mescroll-vue>
     </div>
+  </div>
 </template>
 
 <script>
-import {Tab, TabItem, dateFormat} from 'vux'
-import MescrollVue from 'mescroll.js/mescroll.vue'
+import { Tab, TabItem, Confirm } from "vux";
+import Vue from "vue";
+import * as utils from "../../utils";
+import * as apiHttp from "../../api/index";
+import MescrollVue from "mescroll.js/mescroll.vue";
 export default {
-  name: 'order',
-  components: {
-    Tab, TabItem, MescrollVue
-  },
-  filters: {
-    dateFormat
-  },
-  data () {
+  name: "fixing_order",
+  data() {
     return {
-      data: '',
-      showSelect: false,
-      isSearching: false,
-      companyList: ['淘宝', '京东', '拼多多'],
-      selectedCompanyIndex: 0,
-      keyword: '',
-      type: 0,
-      selectedStatus: 'all',
-      statusTabIndex: 0,
-      list: [],
-      page: 1,
+      tab: [
+        { sort: -2, title: "全部" },
+        { sort: 0, title: "待付款" },
+        { sort: 1, title: "待发货" },
+        { sort: 2, title: "待收货" },
+        { sort: 3, title: "已完成" }
+      ],
+      sort: utils.storage.get('orderId') ? utils.storage.get('orderId') : '-2',
+      index: utils.storage.get('orderId') ? utils.storage.get('orderId') : 0,
+      shopList: [],
+      loading: false,
       finish: false,
+      show: false,
+      indexNum: null,
+      order: null,
+      showquxiao: false,
       mescroll: null,
       mescrollDown: {
         auto: false,
-        use: false
+        callback: this.refresh
       },
       mescrollUp: {
         callback: this.upCallback,
         page: {
-          num: 0,
-          size: 10
+          num: 0
         },
-        htmlNodata: '<p class="upwarp-nodata">-- END --</p>',
-        htmlLoading: '',
+        htmlNodata: '<p class="upwarp-nodata">—— 我也是有底线的 ——</p>',
         noMoreSize: 5,
-        toTop: {
-          src: './static/img/auth/back_top.png',
-          offset: 1000
-        },
         empty: {
-          warpId: 'empty',
-          icon: './static/img/auth/kong.png',
-          tip: '暂无相关数据~'
+          warpId: "d9",
+          icon: "./static/img/kong.png",
+          tip: "暂无相关订单~"
         }
-      },
-      dataList: [],
-      lastScrollTop: 0, // 路由切换时滚动条的位置
-      lastBounce: null // 路由切换时是否禁止ios回弹
-    }
+      }
+    };
   },
-  computed: {
-    isSearchResult () {
-      return this.keyword != ''
+  components: {
+    Tab,
+    TabItem,
+    Confirm,
+    MescrollVue
+  },
+   beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (vm.mescroll && from.name == 'orderDetails') {
+        // 滚动到之前列表的位置
+        if (vm.lastScrollTop) {
+          vm.mescroll.setScrollTop(vm.lastScrollTop)
+          setTimeout(() => { // 需延时,因为setScrollTop内部会触发onScroll,可能会渐显回到顶部按钮
+            vm.mescroll.setTopBtnFadeDuration(0) // 设置回到顶部按钮显示时无渐显动画
+          }, 16)
+        }
+        // 恢复到之前设置的isBounce状态
+        if (vm.lastBounce != null) vm.mescroll.setBounce(vm.lastBounce)
+      }
+      if(from.name == 'my'){
+        utils.storage.set("orderId", 0);
+        vm.index = 0
+      }
+    })
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.mescroll) {
+      this.lastScrollTop = this.mescroll.getScrollTop(); // 记录当前滚动条的位置
+      this.mescroll.hideTopBtn(0); // 隐藏回到顶部按钮,无渐隐动画
+      this.lastBounce = this.mescroll.optUp.isBounce; // 记录当前是否禁止ios回弹
+      this.mescroll.setBounce(true); // 允许bounce
     }
+    if (to.name == "paySuccess") {
+      this.$router.push("/home");
+    }
+    next();
+  },
+  mounted: function() {
+    // 删除
+    this.sort = utils.storage.get("orderId");
   },
   methods: {
-    search () {
-      this.mescrollUp.page.num = 1
-      this.upCallback(this.mescrollUp.page, this.mescroll)
+    mescrollInit(mescroll) {
+      this.mescroll = mescroll;
     },
-    changeCompany (index) {
-      this.selectedCompanyIndex = index
-      this.keyword = ''
-      this.mescrollUp.page.num = 1
-      this.upCallback(this.mescrollUp.page, this.mescroll)
-    },
-    mescrollInit (mescroll) {
-      this.mescroll = mescroll
-    },
-    upCallback (page, mescroll) {
-      this.mescrollUp.htmlLoading = '<p class="upwarp-progress mescroll-rotate"></p><p class="upwarp-tip">加载中..</p>'
-      let param = {}
-      if (this.isSearchResult) {
-        // 是搜索订单时
-        param.trade_id = this.keyword
-      } else {
-        // 不是搜索订单时
-        param = {
-          type: this.type + 1,
-          page: page.num,
-          order_type: this.selectedCompanyIndex + 1,
-          order_status: this.selectedStatus
-        }
+    upCallback(page, mescroll) {
+      let sort;
+      if(utils.storage.get("orderId") == 0){
+        sort = -2
+      }else{
+        sort = utils.storage.get("orderId") - 1
       }
-      this.$http.post('/amoy/user/order-list', param, true, true).then((res) => {
-        if (res.code === 0) {
-          let arr = res.data
-          if (page.num === 1) this.list = []
-          this.list = this.list.concat(arr)
-          this.$nextTick(() => {
-            mescroll.endSuccess(arr.length)
-          })
-        } else {
-          mescroll.endErr()
+      apiHttp
+        .getOrderList(page.num, 10, sort)
+        .then(res => {
+          if (res.code === 1) {
+            let arr = res.data.data === "" ? [] : res.data.data;
+            if (page.num === 1) this.shopList = [];
+            this.shopList = this.shopList.concat(arr);
+            console.log(this.shopList);
+            this.$nextTick(() => {
+              mescroll.endSuccess(res.data.data.length, true);
+            });
+          }
+        })
+        .catch(e => {
+          mescroll.endErr();
+        });
+    },
+    refresh: function() {
+      this.finish = false;
+      let This = this;
+      this.mescrollUp.page.num = 1;
+      this.upCallback(this.mescrollUp.page, this.mescroll);
+    },
+    getListIn(type) {
+      if(type == -2){
+        utils.storage.set("orderId", 0);
+      }else {
+        utils.storage.set("orderId", type + 1);
+      }
+      this.shopList = [];
+      this.page = 1;
+      this.sort = type;
+      this.upCallback(this.mescrollUp.page, this.mescroll);
+    },
+    handDelete(index, order) {
+      console.log(index);
+      this.show = true;
+      this.index = index;
+      this.order = order;
+    },
+    receipt(index, order) {
+      this.indexNum = index;
+      this.order = order;
+      apiHttp.receipt(this.order).then(res => {
+        this.$vux.toast.text(res.msg);
+        this.refresh();
+      });
+    },
+    handShow(index, order) {
+      this.indexNum = index;
+      this.order = order;
+      this.showquxiao = true;
+    },
+    confirm() {
+      // apiHttp.orderDelete(this.order).then(response => {
+      //   if (response.code === 0) {
+      //     console.log(this.index);
+      //     this.shopList.splice(this.index, 1);
+      //     this.$vux.toast.text("删除成功");
+      //     this.show = false;
+      //   }
+      // });
+    },
+    confirm1() {
+      apiHttp.cancelOrder(this.order).then(response => {
+        if (response.code === 1) {
+          this.showquxiao = false;
+          this.$vux.toast.text("取消成功");
+          this.refresh();
         }
-      }).catch((e) => {
-        mescroll.endErr()
-      })
+      });
     },
-    reset (type) {
-      this.type = type
-      this.mescrollUp.page.num = 1
-      this.upCallback(this.mescrollUp.page, this.mescroll)
-    },
-    resetStatus (data) {
-      this.selectedStatus = data
-      this.mescrollUp.page.num = 1
-      this.upCallback(this.mescrollUp.page, this.mescroll)
+    handDetail(orderId) {
+      this.$router.push({
+        name: "orderDetails",
+        query: {
+          orderId: orderId
+        }
+      });
     }
-  },
-  mounted () {
   }
-}
+};
 </script>
 
-<style scoped lang="less">
-  @import "../../assets/less/common";
-.order{
-  height: 100%;
-  overflow-y: auto;
-  .head{
+<style lang="less" scope>
+@import "../../assets/less/common";
+.fixing_order {
+  .vux-header {
+    position: absolute !important;
+  }
+  .mescrollBox {
     width: 100%;
-    position: relative;
-    background: white;
-    padding-top: .5rem;
-    .icon-back{
-      position: absolute;
-      left: .3rem;
-      font-size: .4rem;
-      line-height: 1.1rem;
-    }
-    .searchBox{
-      height: 1.1rem;
-      display: flex;
+    position: absolute;
+    top: 1.9rem;
+    bottom: 0;
+    height: auto !important;
+  }
+}
+.fixing_order {
+  ._v-container {
+    height: 100%;
+  }
+  ._v-content {
+    padding-bottom: 100px;
+  }
+  .tab {
+    padding: 0;
+    height: 1rem;
+    background: #fff;
+    position: absolute;
+    width: 100%;
+    top: @margin-top;
+    z-index: 999;
+    .scrollable .vux-tab-item {
+      flex: 0 0 20%;
       align-items: center;
-      .search{
-        position: relative;
-        height: .7rem;
-        width: 5rem;
-        background: #eee;
-        display: flex;
-        padding: 0 .35rem;
-        box-sizing: border-box;
-        border-radius: .35rem;
-        align-items: center;
-        margin-left: 1.04rem;
-        .show-placeholder{
-          width: 100%;
-          position: absolute;
-          left: 0;
-          top: 0;
-          line-height: .7rem;
-          text-align: center;
-          width: 100%;
-          i{
-            font-size: .25rem;
-          }
-        }
-        input{
-          flex: 1;
-          position: relative;
-          z-index: 1;
-          background: none;
-          outline: none;
-          border: none;
-        }
-      }
+      line-height: 1rem;
+      font-size: @font-big;
     }
-    .select-type{
-      position: absolute;
-      right: .23rem;
-      top: .5rem;
-      font-size: .28rem;
-      line-height: 1.1rem;
-      i{
-        font-size: .21rem;
-      }
-      .select-box{
-        position: absolute;
-        right: 0;
-        top: 100%;
-        border-radius: .1rem;
-        background: white;
-        padding: 0 .2rem;
-        width: 1.8rem;
-        z-index: 1;
-        box-shadow:0px 3px 8px 0px rgba(0, 0, 0, 0.2);
-        text-align: center;
-        line-height: .7rem;
-        .select-item:not(:last-child){
-          border-bottom: 1px solid #eee;
-        }
-      }
+    .vux-tab-container {
+      height: 1rem;
+    }
+    .vux-tab {
+      height: 1rem;
+      bottom: 0;
     }
   }
-  .vux-tab-wrap.my-or-team{
-    .vux-tab-container{
-      .vux-tab{
-        .vux-tab-item{
-          position: relative;
-        }
-        .vux-tab-item:first-child:after{
-          content: '';
-          position: absolute;
-          right: 0;
-          height: .6rem;
-          top: .14rem;
-          border-radius: .01rem;
-          width: .02rem;
-          background: #eee;
-        }
-      }
-    }
+  .header {
+    background: #f4f4f4;
+    height: 2rem;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    z-index: 10;
   }
-  .listBox{
-    position: relative;
-    background: #f7f7f7;
-    height: calc(100% - 88px - 1.6rem);
-    .list{
-      overflow: hidden;
+  .content {
+    .content_main {
+      padding: 0 0.3rem;
       background: #fff;
-      margin: .2rem;
-      border-radius: .05rem;
-      .top{
-        background: #fff;
+      margin-bottom: 0.2rem;
+      .list {
+        margin-top: 0.1rem;
+      }
+      .header_main {
+        height: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: @font-nomal;
+        color: @font-light-color;
+        border-bottom: 1px solid @border-color;
+        .left {
+          display: flex;
+          align-items: center;
+        }
+        .right {
+          color: @main-red-color;
+        }
+        img {
+          width: 0.26rem;
+          height: 0.26rem;
+          border-radius: 20%;
+          margin-right: 0.15rem;
+        }
+      }
+      .mail {
+        padding: 0.3rem 0;
+        display: flex;
+        border-bottom: 1px solid @border-color;
+        .left {
+          img {
+            width: 1.6rem;
+            height: 1.6rem;
+            border-radius: 5px;
+            margin-right: 0.25rem;
+          }
+        }
+        .right {
+          width: 4.8rem;
+          .div1 {
+            text-align: left;
+            line-height: 20px;
+            color: @font-main-color;
+            font-size: @font-big;
+          }
+          .div2 {
+            margin-top: 0.1rem;
+            color: @font-light-color;
+            display: flex;
+            font-size: @font-nomal;
+            justify-content: space-between;
+          }
+          .div3 {
+            text-align: left;
+            margin-top: 0.1rem;
+            font-size: @font-big;
+            color: @font-main-color;
+            span {
+              font-size: @font-small;
+            }
+          }
+        }
+      }
+      .price {
+        height: 0.9rem;
+        border-bottom: 1px solid @border-color;
+        width: 100%;
+        line-height: 0.9rem;
+        text-align: right;
+        color: @main-red-color;
+        font-size: @font-more-big;
+        label {
+          color: #999999;
+          padding-right: 0.1rem;
+          font-size: @font-big;
+        }
+        span {
+          font-size: @font-small;
+        }
+      }
+      .status {
+        height: 1.2rem;
         display: flex;
         align-items: center;
-        height: .8rem;
-        padding: 0 .3rem;
-        img{
-          width: .34rem;
-          margin-right: .2rem;
+        justify-content: flex-end;
+        .btn1 {
+          padding: 0.09rem 0.29rem;
+          font-size: @font-more-big;
+          border: 1px solid #c6c6c6;
+          color: #999999;
+          margin-right: 0.2rem;
+          border-radius: 20px;
         }
-        p{
-          color: #666;
-          font-size: .28rem;
-          flex: 1;
-        }
-        span{
-          font-size: .3rem;
-        }
-      }
-      .centerBox{
-        background: #fff;
-        display: flex;
-        padding: 0 .3rem .3rem;
-        position: relative;
-        img{
-          width: 1.8rem;
-          height: 1.8rem;
-          margin-right: .3rem;
-        }
-        .info{
-          /*height: 1.6rem;*/
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          .t{
-            font-size: .26rem;
-          }
-          .money{
-            display: flex;
-            justify-content: space-between;
-            .price{
-              font-size: .26rem;
-              span{
-                font-size: .38rem;
-              }
-            }
-            .profit{
-              font-size: .26rem;
-              padding: 0 .2rem;
-              height: .56rem;
-              line-height: .56rem;
-              border-radius: .28rem;
-            }
-          }
-        }
-      }
-      .centerBox:after{
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: 1px;
-        border-bottom: 1px solid #e0e0e0;
-        transform-origin: 0 0;
-        transform: scaleY(.5);
-      }
-      .bot{
-        background: #fff;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        padding: 0.1rem .3rem;
-        .order{
-          text-align: right;
-          color: #666;
-          font-size: .28rem;
-          padding: .1rem 0;
-        }
-        .time{
-          text-align: right;
-          font-size: .24rem;
-          color: #999;
-          span{
-            margin-left: .4rem;
-          }
+        .btn {
+          padding: 0.1rem 0.3rem;
+          font-size: @font-more-big;
+          color: #fff;
+          background: @main-btn1-color;
+          border-radius: 20px;
         }
       }
     }

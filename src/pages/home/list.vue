@@ -65,10 +65,6 @@ export default {
         htmlNodata: '<p class="upwarp-nodata">-- END --</p>',
         htmlLoading: '',
         noMoreSize: 5,
-        toTop: {
-          src: './static/img/auth/back_top.png',
-          offset: 1000
-        },
         empty: {
           warpId: 'empty',
           icon: './static/img/auth/kong.png',
