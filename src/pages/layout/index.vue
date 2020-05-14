@@ -46,7 +46,7 @@
       <tabbar-item :selected="$route.name === 'material'" link="/material">
         <img slot="icon" src="../../assets/img/layout/school.png" alt />
         <img slot="icon-active" src="../../assets/img/layout/school1.png" alt />
-        <span slot="label">文学院</span>
+        <span slot="label">商学院</span>
       </tabbar-item>
 
       <tabbar-item :selected="$route.name === 'my'" link="/my">

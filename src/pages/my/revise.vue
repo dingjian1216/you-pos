@@ -30,7 +30,7 @@ export default {
     return {
       getCode: '获取验证码',
       timerFlag: false,
-      mobile: this.$store.state.user.userInfo.mobile,
+      mobile: this.$store.state.user.userInfo.username,
       old_password: '',
       password: '',
       new_password: ''
@@ -83,6 +83,5 @@ export default {
 </style>
 <style scoped lang="less">
 @import "../../assets/less/common";
-.revise{
-}
+
 </style>

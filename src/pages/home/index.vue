@@ -10,9 +10,9 @@
     </div>
     <div class="homeBox" :style="{marginTop:statusH + 'rem'}">
       <mescroll-vue ref="mescroll" :down="mescrollDown" :up="mescrollUp" @init="mescrollInit">
-        <swiper class="banner_list" :options="swiperOption">
-          <swiper-slide class="allBox">
-            <img src="../../assets/img/banner.png" alt class="bg" />
+        <swiper class="banner_list" :options="swiperOption" v-if="banner.length > 0">
+          <swiper-slide class="allBox" v-for="(item,index) in banner" :key="index">
+            <img :src="item" alt class="bg" />
           </swiper-slide>
         </swiper>
         <div class="goodsBox">
@@ -53,6 +53,7 @@ export default {
     return {
       statusH: "",
       keyword: "",
+      banner: [],
       shopList: [],
       swiperOption: {
         loop: true,
@@ -90,6 +91,9 @@ export default {
     let size = document.documentElement.clientWidth / 7.5;
     this.statusH = api.safeArea.top / size;
   },
+  mounted(){
+    this.getBanner()
+  },
   methods: {
     search() {
       this.list = [];
@@ -120,6 +124,13 @@ export default {
       this.list = [];
       this.mescrollUp.page.num = 1;
       this.upCallback(this.mescrollUp.page, this.mescroll);
+    },
+    getBanner() {
+      apiHttp.getBanner().then(res => {
+        if (res.code == 1) {
+          this.banner = res.data;
+        }
+      });
     },
     handDetail(id) {
       this.$router.push({
@@ -203,7 +214,7 @@ export default {
         width: 3.35rem;
         display: inline-block;
         background: #ffffff;
-        margin-bottom: 0.2rem; 
+        margin-bottom: 0.2rem;
         border-radius: 0.1rem;
         img {
           width: 3.35rem;
@@ -223,7 +234,7 @@ export default {
           text-overflow: ellipsis;
           height: 0.6rem;
         }
-        .shop_name{
+        .shop_name {
           padding: 0 0.2rem;
         }
         .price {

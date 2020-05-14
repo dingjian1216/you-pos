@@ -32,7 +32,7 @@
       <div class="high"></div>
       <div class="account">
         <p class="t">提现到</p>
-        <div class="number">
+        <div class="number" @click="jumpTo('/realName')">
           <img src="../../assets/img/my/zfb.png" alt v />
           <div class="info">
             <p class="name" v-if="alipay">支付宝</p>

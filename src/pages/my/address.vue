@@ -13,7 +13,7 @@
         <div class="site-item" v-for="(item,index) in list" :key="index">
           <div class="site-info">
             <div>
-              <p>收货人：{{item.username}}</p>
+              <p>收货人：{{item.name}}</p>
               <span>{{item.mobile}}</span>
             </div>
             <p>{{item.province+item.city+item.county+item.detail_address}}</p>
@@ -205,6 +205,7 @@ export default {
         align-items: center;
         color: @font-middle-color;
         font-size: @font-big;
+        position: relative;
         p{
           display: flex;
           align-items: center;

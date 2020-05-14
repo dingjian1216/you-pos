@@ -28,6 +28,7 @@
             <span  v-if="item.status === 1">待审核</span>
             <span  v-if="item.status === 2">审核驳回</span>
             <span  v-if="item.status === 3">通过审核</span>
+            <span  v-if="item.status === 0">已完成</span>
           </div>
         </div>
         <div id="empty"></div>
@@ -154,8 +155,9 @@ export default {
   .widthBox {
     position: absolute;
     left: 0;
-    top: 0.88rem;
+    top: calc(0.88rem + 50px);
     bottom: 0;
+    height: auto;
     width: 100%;
   }
   .high {
@@ -176,9 +178,12 @@ export default {
     }
   }
   .lists {
-    height: calc(100% - 1.4rem);
-    overflow-y: auto;
-    position: relative;
+    position: absolute;
+    left: 0;
+    top:  44px;
+    bottom: 0;
+    height: auto;
+    width: 100%;
   }
   .listBox{
     padding:  0 0.3rem;
@@ -190,7 +195,8 @@ export default {
   }
   .list {
     position: relative;
-    height: 1.2rem;
+    // height: 1rem;
+    padding-bottom: 0.2rem;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -210,8 +216,8 @@ export default {
   .list:after {
     content: "";
     position: absolute;
-    left: 0.3rem;
-    right: 0.3rem;
+    left: 0rem;
+    right: 0rem;
     bottom: 0;
     height: 1px;
     border-bottom: 1px solid #e7e7e7;

@@ -239,6 +239,10 @@ export const getuserXieyi = function () {
 }
 
 
+// banner
+export const getBanner = function () {
+  return http.post('/Goods/getBanner',{},true)
+}
 
 
 

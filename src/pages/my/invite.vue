@@ -182,7 +182,7 @@ export default {
     getSwiper () {
       let userInfo = store.state.user.userInfo
       console.log(userInfo)
-      let link = this.link + "/agent/#/register?agent_code=" + userInfo.mobile + ""
+      let link = this.link + "/home/index/register/user_code/"+ userInfo.username
       apiHttp.getMask(link).then(res => {
         if (res.code === 1) {
           this.imgs = res.data
@@ -225,7 +225,7 @@ export default {
     copy(){
      let that = this;
      let userInfo = store.state.user.userInfo
-     let text = this.link + "/agent/#/register?agent_code=" + userInfo.mobile + ""
+     let text = this.link + "/home/index/register/user_code/"+ userInfo.username
       let clipBoard = api.require("clipBoard");
       clipBoard.set(
         {

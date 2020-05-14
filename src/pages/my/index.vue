@@ -21,9 +21,9 @@
           <div class="info" v-if="$store.state.user.token">
             <div class="tou">
               <p class="name">{{data.nickname}}</p>
-              <span v-if="data.level >=0">
+              <span v-if="data.level_name">
                 <img src="../../assets/img/my/lvIcon.png" alt />
-                v{{data.level + 1}}
+                {{data.level_name}}
               </span>
             </div>
             <!--<p class="uid">ID：{{data.uid}}</p>-->
@@ -393,7 +393,7 @@ export default {
             width: .68rem;
             height: .3rem;
             text-align: center;
-            line-height: .34rem;
+            line-height: .3rem;
             border-radius: .2rem;
             margin-left: .2rem;
             background-color: rgba(255, 255, 255, 0.4);
@@ -509,9 +509,23 @@ export default {
         text-align: center;
         font-size: 0.24rem;
         color: #666;
+        position: relative;
+        .newsNum{
+          position: absolute;
+          top: -0.1rem;
+          right: 0.4rem;
+          border-radius: 50%;
+          background: #fb3775;
+          color: #fff;
+          font-size: 0.20rem;
+          width: 0.4rem;
+          height: 0.4rem;
+          line-height: 0.4rem;
+          display: inline-block;
+        }
         div:nth-child(1){
-          width: 0.36rem;
-          height: 0.36rem;
+          width: 0.5rem;
+          height: 0.5rem;
           margin: 0 auto;
           margin-bottom: 0.14rem;
           img{
