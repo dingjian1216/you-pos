@@ -4,7 +4,7 @@
       
       {{$route.meta.title}}
     </x-header>-->
-    <i class="iconfont icon-close" @click="goBack"></i>
+    <i class="iconfont icon-close" @click="goBack()"></i>
     <div class="login_img">
       <img src="../../assets/img/logo.png" alt />
     </div>

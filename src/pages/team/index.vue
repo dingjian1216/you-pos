@@ -13,21 +13,22 @@
             />
           </div>
         </div>
-        <span class="searchBtn"  v-if="keyword === ''" @click="reset">取消</span>
-        <span class="searchBtn" @click="reset" v-else>搜索</span>
+        <!-- <span class="searchBtn"  v-if="keyword === ''" @click="reset">取消</span> -->
+        <span class="searchBtn" @click="reset" >搜索</span>
       </div>
       <div class="t">您的推荐人</div>
       <div class="headbox shadow">
         <div class="info">
           <img :src="data.picture" v-if="data.picture" alt class="avater" />
           <img src="../../assets/img/logo.png" class="avater" alt v-else />
-          <div class="nickname">
+          <div class="nickname" v-if="data.nickname">
             <p class="name">
               <span v-if="data.nickname">{{data.nickname}}</span>
               <span v-if="data.username">{{data.username}}</span>
               <span v-if="data.mobile">{{data.level_name}}</span>
             </p>
           </div>
+          <div v-else>{{data}}</div>
         </div>
       </div>
       <div class="numBox">
@@ -57,6 +58,10 @@
                 {{item.nickname}}
                 <span v-if="item.level_name">{{item.level_name}}</span>
               </p>
+              <div class="account">
+                <span>累计销量: {{item.leijixl_size}}</span>  
+                <span class="num">零售销量: {{item.lingshou_size}}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -242,7 +247,6 @@ export default {
     }
     .nickname {
       padding: 0.1rem 0;
-      border-bottom: 1px solid #f7f7f7;
       .name {
         font-size: 0.3rem;
         span:nth-of-type(2) {
@@ -297,15 +301,15 @@ export default {
     width: 6.9rem;
     border-radius: 0.1rem;
     .top {
-      height: 2.56rem;
+      height: 2.2rem;
       align-items: center;
       display: flex;
       justify-content: space-around;
       position: relative;
       .num {
         position: relative;
-        width: 1.82rem;
-        height: 1.82rem;
+        width: 1.5rem;
+        height: 1.5rem;
         border-radius: 50%;
         background: #f7f7f7;
         display: flex;
@@ -431,15 +435,15 @@ export default {
       background: #fff;
       border-radius: 0.1rem;
       .slef {
-        padding: 0.3rem;
+        padding: 0.2rem 0.3rem;
         position: relative;
         display: flex;
         .avater {
           background-size: cover;
           background-repeat: no-repeat;
           background-position: center;
-          width: 1.08rem;
-          height: 1.08rem;
+          width: 1rem;
+          height: 1rem;
           margin-right: 0.2rem;
           border-radius: 50%;
         }
@@ -449,7 +453,7 @@ export default {
           flex-direction: column;
           justify-content: space-around;
           .name {
-            font-size: 0.3rem;
+            font-size: 0.28rem;
             color: #333;
             span {
               height: 0.4rem;
@@ -468,8 +472,12 @@ export default {
             }
           }
           .account {
-            color: #999;
+            color: #fe8548;
             font-size: 0.24rem;
+            .num{
+              margin-left: 0.1rem;
+              color: #03a9f4;
+            }
           }
         }
         .recommend {

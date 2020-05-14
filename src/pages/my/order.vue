@@ -10,7 +10,7 @@
       <div class="tab">
         <tab
           :line-width="2"
-          active-color="#fc3357"
+          active-color="#ff7512"
           height="700px"
           custom-bar-width=".8rem"
           v-model="index"

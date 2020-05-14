@@ -286,10 +286,10 @@ export default {
     margin: 0 .1rem;
     display: inline-block;
     background-color: #fff;
-    border: 1px solid #fc3357;
+    border: 1px solid #ff7512;
   }
   .my-bullet-active{
-    background: #fc3357;
+    background: #ff7512;
   }
   .invite .swiper-pagination{
     bottom: -1.1rem;

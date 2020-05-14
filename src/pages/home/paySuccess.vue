@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     handOrder() {
-      utils.storage.set('orderId', 1)
+      utils.storage.set('orderId', 2)
       this.$router.push({
         name: "order"
       });

@@ -31,7 +31,7 @@
                 <x-circle
                   :percent="datas.straight/datas.operator.invitation*100 < 100 ? datas.straight/datas.operator.invitation*100 : 100 "
                   :stroke-width="2"
-                  stroke-color="#fc3357"
+                  stroke-color="#ff7512"
                   anticlockwise>
                   <span>{{datas.operator.invitation}}人</span>
                 </x-circle>
@@ -46,7 +46,7 @@
                 <x-circle
                   :percent="datas.team/datas.operator.team*100 < 100 ? datas.team/datas.operator.team*100 : 100"
                   :stroke-width="2"
-                  stroke-color="#fc3357"
+                  stroke-color="#ff7512"
                   anticlockwise>
                   <span>{{datas.operator.team}}人</span>
                 </x-circle>
@@ -62,7 +62,7 @@
                 <x-circle
                   :percent="datas.orderquantity/datas.operator.orderquantity*100 < 100 ? datas.orderquantity/datas.operator.orderquantity*100 : 100"
                   :stroke-width="2"
-                  stroke-color="#fc3357"
+                  stroke-color="#ff7512"
                   anticlockwise>
                   <span>{{datas.operator.orderquantity}}单</span>
                 </x-circle>
@@ -77,7 +77,7 @@
                 <x-circle
                   :percent="datas.profit/datas.operator.profit*100 < 100 ? datas.profit/datas.operator.profit*100 : 100"
                   :stroke-width="3"
-                  stroke-color="#fc3357"
+                  stroke-color="#ff7512"
                   anticlockwise>
                   <span>{{datas.operator.profit}}元</span>
                 </x-circle>
@@ -207,7 +207,7 @@ export default {
           display: block;
           text-align: center;
           font-size: 0.36rem;
-          color: #fc3357;
+          color: #ff7512;
         }
         span:nth-child(2){
           font-size: 0.24rem;

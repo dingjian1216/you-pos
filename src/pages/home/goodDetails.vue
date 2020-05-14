@@ -3,7 +3,11 @@
     <div class="detailsBox">
       <div class="top">
         <div class="goodImg">
-          <img :src="data.goods_img" />
+          <swiper v-if="data.album" :options="swiperOption" ref="mySwiper" style="height:100%;">
+            <swiperSlide v-for="(item,index) in goodImgs" :key="index">
+              <img :src="item" alt style="width:100%;height:6.2rem;" />
+            </swiperSlide>
+          </swiper>
         </div>
         <div class="goodMsg">
           <div class="goodName">{{data.goods_name}}</div>
@@ -43,13 +47,16 @@
 </template>
 <script>
 import { Popup, TransferDom, XNumber, Popover, Confirm } from "vux";
+import { swiper, swiperSlide } from "vue-awesome-swiper";
 import * as apiHttp from "../../api/index";
 export default {
   components: {
     Popup,
     XNumber,
     Popover,
-    Confirm
+    Confirm,
+    swiper,
+    swiperSlide
   },
   directives: {
     TransferDom
@@ -57,16 +64,40 @@ export default {
   data() {
     return {
       data: "",
+      goodImgs: [],
       show_select: false,
       changeValue: 1,
-      id: this.$route.query.id
+      id: this.$route.query.id,
+      swiperOption: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+        hideOnClick: true,
+        disabledClass: "my-button-disabled",
+        hiddenClass: "my-button-hidden",
+        spaceBetween: 5,
+        autoplay: true,
+        pagination: {
+          el: ".swiper-pagination",
+          type: "fraction"
+        },
+        on: {
+          sliderMove: function(event) {
+            window.canRightSlipBack = false;
+          },
+          touchEnd: function(event) {
+            setTimeout(() => {
+              window.canRightSlipBack = true;
+            }, 600);
+          }
+        }
+      }
     };
   },
   mounted() {
     apiHttp.getGoodsDetail(this.$route.query.id).then(res => {
       if (res.code == 1) {
         this.data = res.data;
-        
+        this.goodImgs = res.data.album.split(",");
       }
     });
   },
@@ -97,12 +128,12 @@ export default {
     left: 0;
     right: 0;
     bottom: 1rem;
-    height: auto !important;
+    overflow-y: auto;
     .top {
       background-color: #fff;
-      .goodImg{
+      .goodImg {
         height: 6rem;
-        img{
+        img {
           width: 100%;
           height: 6rem;
         }
@@ -125,14 +156,14 @@ export default {
       color: #757575;
       padding-bottom: 1rem;
       .contBox {
-        margin: 0.3rem;
         position: relative;
         word-break: break-all;
         .shuoming {
           font-size: 0.28rem;
           font-weight: 500;
+          margin: 0.3rem ;
           border-bottom: 1px solid #999;
-          padding-bottom: 0.2rem !important;
+          padding: 0.2rem 0;
         }
         .describe {
           padding-top: 0.3rem !important;
@@ -146,6 +177,7 @@ export default {
     right: 0;
     bottom: 0;
     height: 1rem;
+    z-index: 100;
     line-height: 1rem;
     background: #e83632;
     text-align: center;

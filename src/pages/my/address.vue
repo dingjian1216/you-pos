@@ -20,7 +20,7 @@
           </div>
           <div class="site-change">
             <p>
-              <i class="iconfont icon-roundcheckfill" @click="checkdefault(index,item.id)" :style="{'color' : item.is_default == '1' ? '#fc3357' : '#a1a1a1'}"></i>
+              <i class="iconfont icon-roundcheckfill" @click="checkdefault(index,item.id)" :style="{'color' : item.is_default == '1' ? '#ff7512' : '#a1a1a1'}"></i>
               设为默认
             </p>
             <div class="item1" style="position: absolute;right: 1.5rem;" @click="updateAddress(item)">

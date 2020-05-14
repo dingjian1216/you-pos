@@ -173,7 +173,7 @@ export default {
           margin: .3rem 1.225rem;
         }
         p{
-          color: #fc3357;
+          color: #ff7512;
           text-align: center;
           font-size: .26rem;
         }

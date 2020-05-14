@@ -245,5 +245,16 @@ export const getBanner = function () {
 }
 
 
+// 达标返现
+export const exchange_detail = function (id) {
+  return http.post('/machine/exchange_detail',{id: id},true)
+}
+
+// 机主价格表
+export const gradeIndex = function () {
+  return http.post('/bank/index',{},true)
+}
+
+
 
 

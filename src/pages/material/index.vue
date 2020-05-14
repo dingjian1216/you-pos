@@ -13,20 +13,20 @@
         <i class="iconfont icon-search"></i>
         <input placeholder="输入您当前要搜索的内容" type="search" @keyup.enter="search" v-model='keyword' />
       </div>
-      <span @click="search" v-if="keyword === ''">取消</span>
-      <span @click="search" v-else>搜索</span>
+      <!-- <span @click="search" v-if="keyword === ''">取消</span> -->
+      <span @click="search">搜索</span>
     </div>
     <div class='materialBox' :style="{marginTop:statusH + 'rem'}">
        <mescroll-vue ref="mescroll" :down="mescrollDown" :up="mescrollUp" @init="mescrollInit">
          <div id='d0'></div>
          <div class = 'materialList' v-for="(item,index) in list" :key='index' @click="jumpTo({name: 'materialDetails',query:{ky_id: item.id}})">
-           <img v-lazy='item.cover' class='cover' v-if='index%2!==0'>
-           <div class='materialMsg' :class="index%2 ==0 ? 'oneList': ''">
+           <!-- <img v-lazy='item.cover' class='cover' v-if='index%2!==0'> -->
+           <div class='materialMsg' >
              <div class='name'>{{item.title}}</div>
              <div class= 'abstract'>{{item.abstract}}</div>
              <p class='time'>{{item.create_time | formatDate}}</p>
            </div>
-           <img  v-lazy='item.cover' class='cover' v-if='index%2==0'>
+           <img  v-lazy='item.cover' class='cover'>
          </div>
        </mescroll-vue>
     </div>
@@ -165,7 +165,8 @@ export default {
     justify-content: space-around;
     align-items: center;
     height: 0.88rem;
-    background-image: url("../../assets/img/my/my_head.png");
+    // background-image: url("../../assets/img/my/my_head.png");
+    background: #ff7512;
     .icon-back {
       font-size: 0.4rem;
       color: #000;

@@ -3,7 +3,7 @@
     <div class="tab">
       <tab
         :line-width="2"
-        active-color="#fc3357"
+        active-color="#ff7512"
         height="700px"
         custom-bar-width=".8rem"
         v-model="index"
@@ -24,7 +24,7 @@
           <p class="note">{{item.note}}</p>
           <div class="list">
             <span style="font-size:0.24rem">{{item.create_time | formatDate}}</span>
-            <div class="money"> <span v-if="sort == 1">+</span> {{item.money}}</div>
+            <div class="money"> <span v-if="sort == 1">+</span>{{item.money}}</div>
             <span  v-if="item.status === 1">待审核</span>
             <span  v-if="item.status === 2">审核驳回</span>
             <span  v-if="item.status === 3">通过审核</span>
@@ -200,14 +200,9 @@ export default {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    span {
-      color: #333;
-      font-size: 0.3rem;
-      flex: 1;
-      text-align: center;
-    }
+    font-size: 0.3rem;
     .money{
-      color: #fc3357;
+      color: #ff7512;
       font-size: 0.3rem;
       flex: 1;
       text-align: center;

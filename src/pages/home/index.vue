@@ -5,8 +5,8 @@
         <i class="iconfont icon-search"></i>
         <input placeholder="输入您当前要搜索的商品" type="search" @keyup.enter="search" v-model="keyword" />
       </div>
-      <span @click="search" v-if="keyword === ''">取消</span>
-      <span @click="search" v-else>搜索</span>
+      <!-- <span @click="search" v-if="keyword === ''">取消</span> -->
+      <span @click="search">搜索</span>
     </div>
     <div class="homeBox" :style="{marginTop:statusH + 'rem'}">
       <mescroll-vue ref="mescroll" :down="mescrollDown" :up="mescrollUp" @init="mescrollInit">
@@ -154,7 +154,8 @@ export default {
     justify-content: space-around;
     align-items: center;
     height: 0.88rem;
-    background-image: url("../../assets/img/my/my_head.png");
+    // background-image: url("../../assets/img/my/my_head.png");
+    background: #ff7512;
     .icon-back {
       font-size: 0.4rem;
       color: #000;
@@ -209,6 +210,7 @@ export default {
       }
     }
     .goodsBox {
+      margin-top: 0.2rem;
       padding: 0 0.3rem;
       .goodList {
         width: 3.35rem;
@@ -242,10 +244,10 @@ export default {
           justify-content: space-between;
           align-items: center;
           .price_main {
-            color: #fc3357;
+            color: #ff7512;
             font-size: 0.25rem;
             span {
-              color: #fc3357;
+              color: #ff7512;
               font-size: 0.36rem;
               font-weight: 580;
             }

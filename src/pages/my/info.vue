@@ -15,7 +15,7 @@
     <div class="photo">
       <div :style="{backgroundImage: 'url(' + data.picture + ')'}" v-if="data.picture"></div>
       <div v-else></div>
-      <p>ID：{{data.id}}</p>
+      <p>ID：{{data.id + 1000}}</p>
       <span @click="handlePhoto(1)" :style="{background: $store.state.global.theme.mainColor}">更换头像</span>
     </div>
     <group>

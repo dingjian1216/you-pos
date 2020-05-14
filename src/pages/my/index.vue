@@ -1,8 +1,8 @@
 <template>
-  <div id="my" class="tbkMy" v-if="data">
+  <div id="my"  v-if="data">
     <mescroll-vue ref="mescroll" :down="mescrollDown" @init="mescrollInit">
       <div class="head">
-        <img src="../../assets/img/my/my_head.png" alt class="bg" />
+        <!-- <img src="../../assets/img/my/my_head.png" alt class="bg" /> -->
         <img
           src="../../assets/img/my/setting.png"
           :style="{top: settingH + 'rem'}"
@@ -10,7 +10,7 @@
           class="setting"
           @click="jumpTo('/info')"
         />
-        <div class="box">
+        <div class="box" :style="{top: settingH1 + 'rem'}">
           <div
             class="avater"
             :style="{backgroundImage: 'url(' + data.picture + ')'}"
@@ -26,12 +26,16 @@
                 {{data.level_name}}
               </span>
             </div>
-            <!--<p class="uid">ID：{{data.uid}}</p>-->
             <p class="invite" @click="onCopy(data.username)" v-if="data.username">
               <span>邀请码：</span>
               <span>{{data.username}}</span>
               <span class="copyObj">复制</span>
             </p>
+            <div class="jian">
+              <span v-if="parentAgent.nickname">推荐人: {{parentAgent.nickname}}</span>
+              <span v-if="parentAgent.username">手机号: {{parentAgent.username}}</span>
+            </div>
+            <!-- <div v-else>{{parentAgent}}</div> -->
           </div>
           <div v-else class="info">
             <p class="login" @click="jumpTo('login')">登录/注册</p>
@@ -40,17 +44,80 @@
       </div>
       <div class="moneysBox">
         <div class="buttom">
+          <div class="tos">
+            <div>
+              <span>今日积分分润</span>
+              <span v-if="data && data.today_sum_jf_money">￥{{data.today_sum_jf_money}}</span>
+              <span v-else>0.00</span>
+            </div>
+            
+          </div>
           <div class="bos">
             <div class="profitBox">
-              <div class="profit" @click="jumpTo('/withdrawlist')">
-                <p v-if="profit">￥{{profit.ktx}}</p>
+              <div class="profit" >
+                <p v-if="data && data.sum_integral">{{data.sum_integral}}万</p>
                 <p v-else>0.00</p>
-                <p>可提现金额</p>
+                <p>累积兑换积分</p>
+              </div>
+              <div class="profit" >
+                <p v-if="data && data.sum_jf_money">￥{{data.sum_jf_money}}</p>
+                <p v-else>0.00</p>
+                <p>累积积分分润</p>
+              </div>
+              <div class="profit">
+                <p v-if="data && data.today_sum_integral">{{data.today_sum_integral}}万</p>
+                <p v-else>0.00</p>
+                <p>今日累积积分</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="buttom">
+          <div class="tos">
+            <div>
+              <span>今日团队销售</span>
+              <span v-if="data && data.today_sum_stock_size">￥{{data.today_sum_stock_size}}</span>
+              <span v-else>0.00</span>
+            </div>
+            
+          </div>
+          <div class="bos">
+            <div class="profitBox">
+              <div class="profit" >
+                <p v-if="data && data.sum_td_stock_size">￥{{data.sum_td_stock_size}}</p>
+                <p v-else>0.00</p>
+                <p>累积设备销售</p>
+              </div>
+              <div class="profit" >
+                <p v-if="data && data.sum_stock_jl">￥{{data.sum_stock_jl}}</p>
+                <p v-else>0.00</p>
+                <p>累积设备奖励</p>
+              </div>
+              <div class="profit" >
+                <p v-if="data && data.today_sum_stock_jl">￥{{data.today_sum_stock_jl}}</p>
+                <p v-else>0.00</p>
+                <p>今日设备奖励</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="buttom">
+          <div class="bos">
+            <div class="profitBox">
+              <div class="profit"  @click="jumpTo('/withdrawlist')">
+                <p v-if="data.sum_money">￥{{data.sum_money}}</p>
+                <p v-else>0.00</p>
+                <p>累计佣金</p>
               </div>
               <div class="profit" @click="jumpTo('/withdrawlist')">
-                <p v-if="profit">￥{{profit.bktx}}</p>
+                <p v-if="data.kytx_money">￥{{data.kytx_money}}</p>
                 <p v-else>0.00</p>
-                <p>不可提现金额</p>
+                <p>可提现佣金</p>
+              </div>
+              <div class="profit" @click="jumpTo('/withdrawlist')">
+                <p v-if="data.butx_money">￥{{data.butx_money}}</p>
+                <p v-else>0.00</p>
+                <p>不可提现佣金</p>
               </div>
             </div>
           </div>
@@ -81,6 +148,7 @@
             <div>订单</div>
           </div>
         </div>
+
         <div class="tool">
           <div class="headers">我的工具</div>
           <div class="option">
@@ -96,6 +164,12 @@
                 <img src="../../assets/img/my/address.png" alt />
               </div>
               <div>收货地址</div>
+            </div>
+            <div @click="jumpTo('/price')">
+              <div class="imgBox">
+                <img src="../../assets/img/my/price.png" alt />
+              </div>
+              <div>机主价格表</div>
             </div>
           </div>
         </div>
@@ -119,6 +193,7 @@ export default {
   data() {
     return {
       settingH: "",
+      settingH1: '',
       data: "",
       profit: "",
       mescroll: null,
@@ -133,7 +208,8 @@ export default {
       lastBounce: null, // 路由切换时是否禁止ios回弹,
       model: null,
       signInfo: "",
-      newsNum: ""
+      newsNum: "",
+      parentAgent: "" //上级推荐人
     };
   },
   methods: {
@@ -187,6 +263,11 @@ export default {
           this.newsNum = res.data;
         }
       });
+      apiHttp.getMyTeamData().then(res => {
+        if (res.code == 1) {
+          this.parentAgent = res.data.parentAgent;
+        }
+      });
     }
   },
   activated() {
@@ -196,7 +277,8 @@ export default {
   },
   mounted() {
     let size = document.documentElement.clientWidth / 7.5;
-    this.settingH = api.safeArea.top / size + 0.6;
+    this.settingH = api.safeArea.top / size + 0.3;
+    this.settingH1  =  api.safeArea.top / size + 0.5;
   }
 };
 </script>
@@ -206,116 +288,49 @@ export default {
     bottom: 0 !important;
   }
 }
-#my {
-  position: relative;
-  /*._v-content{*/
-  /*padding-bottom: 30px;*/
-  /*}*/
-  .vux-cell-primary {
-    line-height: 0.4rem;
-    margin-left: 0.2rem;
-    .vux-label {
-      font-size: 0.28rem;
-    }
-  }
-  .weui-cells {
-    margin-top: 0;
-    .weui-cell:before {
-      right: 15px;
-    }
-  }
-  .weui-cells:after,
-  .weui-cells:before {
-    display: none;
-  }
-}
 </style>
 
 <style scoped lang="less">
 @import "../../assets/less/common";
-.tops{
+.tops {
   padding-top: 2px;
 }
-#my{
+#my {
   position: relative;
   height: 100%;
   background: #f7f7f7;
-  .head{
+  .head {
     overflow: hidden;
     position: relative;
     width: 100%;
-    height: 3.59rem;
-    .bg{
+    height: 3rem;
+    background: #ff7512;
+    .bg {
       position: absolute;
       width: 100%;
       height: 3.59rem;
       left: 0;
       top: 0;
     }
-    .t{
-      width: 100%;
+    .setting {
       position: absolute;
-      left: 0;
-      top: .65rem;
-      height: .55rem;
-      line-height: .55rem;
-      text-align: center;
-      font-size: .36rem;
-      color: #fff;
-    }
-    .setting{
-      position: absolute;
-      right: .25rem;
-      top: .85rem;
-      width: .45rem;
-      height: .45rem;
+      right: 0.25rem;
+      top: 0.6rem;
+      width: 0.45rem;
+      height: 0.45rem;
       z-index: 100;
     }
-    .share{
+    .box {
       position: absolute;
-      top: 1.5rem;
-      right: -.4rem;
-      width: 1.81rem;
-      height: .55rem;
-      display: flex;
-      align-items: center;
-      background: -webkit-linear-gradient(left,#ff9914,#ffcb6e);
-      border-radius: .27rem;
-      font-size: 0.28rem;
-      img{
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 1.91rem;
-        height: 100%;
-      }
-      span{
-        /*position: absolute;*/
-        /*left: .3rem;*/
-        /*top: .07rem;*/
-        /*display: inline-block;*/
-        /*height: .55rem;*/
-        /*line-height: .55rem;*/
-        text-indent: .5rem;
-        font-size: 12px;
-        color: #fff;
-        z-index: 100;
-      }
-      .isVip{
-        text-indent: .5rem;
-      }
-    }
-    .box{
-      position: absolute;
-      top: 1.5rem;
+      top: 0.8rem;
       left: 0;
       width: 100%;
       height: 1.5rem;
-      padding-left: .26rem;
+      padding-left: 0.26rem;
       display: flex;
       box-sizing: border-box;
       overflow: hidden;
-      .avater{
+      .avater {
         flex-shrink: 0;
         width: 1.5rem;
         height: 1.5rem;
@@ -323,35 +338,34 @@ export default {
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
-        background-image: url('../../assets/img/my/avater.png');
+        background-image: url("../../assets/img/my/avater.png");
       }
-      .info{
+      .info {
         flex: 1;
         display: flex;
         justify-content: space-around;
         flex-direction: column;
-        /*padding: .2rem 0;*/
-        margin-left: .2rem;
-        .login{
-          font-size: .3rem;
+        margin-left: 0.2rem;
+        .login {
+          font-size: 0.3rem;
           color: #fff;
         }
-        .uid{
-          font-size: .28rem;
+        .uid {
+          font-size: 0.28rem;
           color: #fff;
         }
-        .tou{
+        .tou {
           display: flex;
           align-items: center;
           overflow: hidden;
-          .name{
+          .name {
             text-align: left;
-            font-size: .32rem;
+            font-size: 0.32rem;
             color: #fff;
             overflow: hidden;
-            text-overflow:ellipsis;
+            text-overflow: ellipsis;
             white-space: nowrap;
-            line-height: .4rem;
+            line-height: 0.4rem;
             max-width: 3.6rem;
             /*display: flex;*/
             /*align-items: center;*/
@@ -360,62 +374,65 @@ export default {
             position: relative;
             background: #3a3b40;
             flex-shrink: 0;
-            margin-left: .1rem;
-            margin-right: .4rem;
+            margin-left: 0.1rem;
+            margin-right: 0.4rem;
             color: #f7bd01;
-            font-size: .22rem;
-            height: .4rem;
+            font-size: 0.22rem;
+            height: 0.4rem;
             text-align: left;
-            padding-right: .2rem;
-            padding-left: .4rem;
-            line-height: .4rem;
-            border-radius: .2rem;
-            img{
+            padding-right: 0.2rem;
+            padding-left: 0.4rem;
+            line-height: 0.4rem;
+            border-radius: 0.2rem;
+            img {
               position: absolute;
               left: 0.05rem;
               top: 0.05rem;
-              width: .3rem;
-              height: .3rem;
+              width: 0.3rem;
+              height: 0.3rem;
             }
           }
         }
-        .invite{
+        .invite {
           text-align: left;
-          font-size: .26rem;
+          font-size: 0.26rem;
           color: #fff;
-          span:first-of-type{
+          span:first-of-type {
             color: #ffd57c;
-            margin-right: .1rem;
+            margin-right: 0.1rem;
           }
-          span:last-of-type{
-            font-size: .20rem;
+          span:last-of-type {
+            font-size: 0.2rem;
             display: inline-block;
-            width: .68rem;
-            height: .3rem;
+            width: 0.68rem;
+            height: 0.3rem;
             text-align: center;
-            line-height: .3rem;
-            border-radius: .2rem;
-            margin-left: .2rem;
+            line-height: 0.3rem;
+            border-radius: 0.2rem;
+            margin-left: 0.2rem;
             background-color: rgba(255, 255, 255, 0.4);
           }
+        }
+        .jian {
+          color: #fff;
+          font-size: 0.28rem;
         }
       }
     }
   }
 
-  .moneysBox{
+  .moneysBox {
     font-size: 0.3rem;
     position: relative;
-    margin: .2rem .2rem .2rem;
+    margin: 0.2rem 0.2rem 0.2rem;
     z-index: 100;
-    /*background-color: #fff;*/
-    .buttom{
+    .buttom {
       width: 100%;
       background-color: #fff;
       border-radius: 10px;
       margin-top: 0.2rem;
       overflow: hidden;
-      .tos{
+      .tos {
         padding: 0 0.2rem;
         width: 100%;
         line-height: 1rem;
@@ -423,28 +440,28 @@ export default {
         font-size: 0.3rem;
         box-sizing: border-box;
         position: relative;
-        div:nth-child(1){
+        div:nth-child(1) {
           float: left;
-          span:nth-child(2){
-            color: #fc3357;
+          span:nth-child(2) {
+            color: #ff7512;
             margin-left: 0.2rem;
           }
         }
-        div:nth-child(2){
+        div:nth-child(2) {
           float: right;
           font-size: 0.24rem;
           color: #999;
         }
-        .look{
+        .look {
           display: inline-block;
           margin-right: 0.1rem;
         }
       }
-      .bos{
+      .bos {
         height: 1.6rem;
       }
-      .tos:before{
-        content: '';
+      .tos:before {
+        content: "";
         position: absolute;
         left: 0;
         bottom: 0;
@@ -454,106 +471,106 @@ export default {
         background-color: #eeeeee;
       }
     }
-    .profitBox{
-       overflow: hidden;
-       padding: 0.4rem 0;
-       height: 1rem;
-       width: 100%;
-       .profit{
-         width: 50%;
-         float: left;
-         justify-content: center;
-         text-align: center;
-         flex-direction: column;
-         position: relative;
-         p:first-of-type{
-           font-size: .32rem;
-           color: #fc3357;
-           overflow: hidden;
-           text-overflow: ellipsis;
-           white-space: nowrap;
-           text-align: center;
-           margin-bottom: 0.1rem;
-         }
-         p:last-of-type{
-           text-align: center;
-           font-size: .24rem;
-           color: #666;
-         }
-       }
-       .profit:after{
-         content: '';
-         height: 80%;
-         position: absolute;
-         top: 10%;
-         right: 0;
-         border-right: 1px solid #dadada;
-         transform-origin: 0 0;
-         transform: scaleX(.5);
-       }
-       .profit:last-of-type:after{
-         display: none;
-       }
-     }
-    .option{
+    .profitBox {
+      overflow: hidden;
+      padding: 0.4rem 0;
+      height: 1rem;
+      width: 100%;
+      .profit {
+        width: 33.33%;
+        float: left;
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+        position: relative;
+        p:first-of-type {
+          font-size: 0.32rem;
+          color: #ff7512;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          text-align: center;
+          margin-bottom: 0.1rem;
+        }
+        p:last-of-type {
+          text-align: center;
+          font-size: 0.24rem;
+          color: #666;
+        }
+      }
+      .profit:after {
+        content: "";
+        height: 80%;
+        position: absolute;
+        top: 10%;
+        right: 0;
+        border-right: 1px solid #dadada;
+        transform-origin: 0 0;
+        transform: scaleX(0.5);
+      }
+      .profit:last-of-type:after {
+        display: none;
+      }
+    }
+    .option {
       width: 100%;
       padding: 0.26rem 0 0;
       box-sizing: border-box;
       /*border-radius: 10px;*/
       flex-wrap: wrap;
       overflow: hidden;
-      >div{
-        margin-bottom: .4rem;
+      > div {
+        margin-bottom: 0.4rem;
         float: left;
         width: 25%;
         text-align: center;
         font-size: 0.24rem;
         color: #666;
         position: relative;
-        .newsNum{
+        .newsNum {
           position: absolute;
           top: -0.1rem;
           right: 0.4rem;
           border-radius: 50%;
           background: #fb3775;
           color: #fff;
-          font-size: 0.20rem;
+          font-size: 0.2rem;
           width: 0.4rem;
           height: 0.4rem;
           line-height: 0.4rem;
           display: inline-block;
         }
-        div:nth-child(1){
+        div:nth-child(1) {
           width: 0.5rem;
           height: 0.5rem;
           margin: 0 auto;
           margin-bottom: 0.14rem;
-          img{
+          img {
             width: 100%;
             height: 100%;
           }
         }
       }
     }
-    .orderBox{
+    .orderBox {
       background: #fff;
       border-radius: 10px;
       margin-top: 0.2rem;
-      padding-bottom: .26rem;
-      div{
+      padding-bottom: 0.26rem;
+      div {
         margin-bottom: 0;
       }
     }
-    .imgsBox{
+    .imgsBox {
       margin-top: 0.2rem;
       width: 100%;
       /*height: 1.15rem;*/
-      img{
+      img {
         width: 100%;
         height: 100%;
       }
     }
-    .upgrade{
+    .upgrade {
       border-radius: 10px;
       overflow: hidden;
       width: 100%;
@@ -562,42 +579,42 @@ export default {
       margin-top: 0.2rem;
       padding: 0.2rem 0.3rem;
       box-sizing: border-box;
-      div{
+      div {
         float: left;
       }
-      div:nth-child(1){
+      div:nth-child(1) {
         width: 1.2rem;
         height: 1.2rem;
-        img{
+        img {
           width: 100%;
           height: 100%;
         }
       }
-      div:nth-child(2){
+      div:nth-child(2) {
         margin-left: 0.3rem;
         font-size: 0.28rem;
         padding-top: 0.1rem;
         color: black;
-        p:nth-child(2){
+        p:nth-child(2) {
           font-size: 0.24rem;
           color: #999999;
           margin-top: 0.14rem;
         }
       }
-      div:nth-child(3){
+      div:nth-child(3) {
         float: right;
         height: 100%;
         line-height: 1.2rem;
       }
     }
-    .tool{
+    .tool {
       margin-top: 0.2rem;
       border-radius: 10px;
       background: #fff;
-      .option{
+      .option {
         margin-top: 0;
       }
-      .headers{
+      .headers {
         float: left;
         line-height: 1rem;
         font-size: 0.3rem;
@@ -607,8 +624,8 @@ export default {
         box-sizing: border-box;
         text-align: left !important;
       }
-      .headers:before{
-        content: '';
+      .headers:before {
+        content: "";
         position: absolute;
         width: 100%;
         height: 1px;
@@ -617,35 +634,35 @@ export default {
         left: 0;
       }
     }
-    .grow{
+    .grow {
       height: 3.6rem;
       width: 100%;
       margin-top: 0.2rem;
       background-color: #fff;
       border-radius: 10px;
-      .title{
+      .title {
         width: 100%;
         height: 1rem;
-        padding: 0 .2rem;
+        padding: 0 0.2rem;
         box-sizing: border-box;
         line-height: 1rem;
-        div:nth-child(1){
+        div:nth-child(1) {
           float: left;
           font-size: 0.3rem;
         }
-        div:nth-child(2){
+        div:nth-child(2) {
           float: right;
           color: #999;
           font-size: 0.24rem;
-          span:nth-child(1){
+          span:nth-child(1) {
             margin-right: 0.1rem;
           }
         }
       }
-      .imgsbox{
+      .imgsbox {
         width: 100%;
         height: 2.6rem;
-        img{
+        img {
           width: 100%;
           height: 100%;
         }

@@ -6,14 +6,14 @@
         <div>代理详情</div>
       </div>
       <div class="info">
-         <img :src="data.picture" v-if="data.picture" alt class="avater" />
-          <img src="../../assets/img/logo.png" class="avater" alt v-else />
+        <img :src="data.picture" v-if="data.picture" alt class="avater" />
+        <img src="../../assets/img/logo.png" class="avater" alt v-else />
         <div class="nickname">
           <p class="name">
             <span>{{data.nickname}}</span>
             <span>V{{data.level}}</span>
           </p>
-          <p>{{data.username}}</p>
+          <p class="mobile">{{data.username}}</p>
         </div>
       </div>
       <div class="data-line flex">
@@ -21,13 +21,21 @@
           <p>{{data.myTeam_sum_money}}</p>
           <span>累计兑换</span>
         </div>
+        <div class="data-item right-border">
+          <p>{{data.myTeam_sum_integral}}万</p>
+          <span>累计积分</span>
+        </div>
+        <div class="data-item right-border">
+          <p>{{data.leijixl_size}}</p>
+          <span>累计销量</span>
+        </div>
         <div class="data-item">
-          <p>{{data.myTeam_sum_integral}}</p>
-          <span>累计消耗积分</span>
+          <p>{{data.lingshou_size}}</p>
+          <span>零售销量</span>
         </div>
       </div>
     </div>
-    <div class="detail" >
+    <div class="detail">
       <div class="detail-line flex">
         <div class="right-border">
           <p>
@@ -150,9 +158,9 @@ export default {
         font-size: 0.24rem;
       }
     }
-    .account {
-      font-size: 0.24rem;
-      color: #666;
+    .mobile {
+      font-size: 0.3rem;
+      margin-top: 0.1rem;
     }
   }
 }
@@ -210,9 +218,9 @@ export default {
 }
 .data-line {
   display: flex;
-  padding: 0.3rem;
+  padding: 0.3rem 0;
   > div {
-    width: 50%;
+    width: 25%;
     box-sizing: border-box;
     font-size: 0.3rem;
     div {

@@ -197,8 +197,8 @@ export default {
           font-size: .32rem;
           color: #333;
           &.active {
-            color: #fc3357;
-            border-bottom: 2px solid #fc3357;
+            color: #ff7512;
+            border-bottom: 2px solid #ff7512;
           }
         }
       }

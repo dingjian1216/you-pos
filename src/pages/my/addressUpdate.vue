@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="change">
-        <i class="iconfont icon-roundcheckfill" @click="checkdefault" :style="{'color' : status == '1' ? '#fc3357' : '#a1a1a1'}"></i>
+        <i class="iconfont icon-roundcheckfill" @click="checkdefault" :style="{'color' : status == '1' ? '#ff7512' : '#a1a1a1'}"></i>
         <span>设为默认地址</span>
       </div>
       <div class="confirm" @click="submit">

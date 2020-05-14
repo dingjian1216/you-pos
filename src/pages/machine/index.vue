@@ -5,23 +5,24 @@
         <i class="iconfont icon-search"></i>
         <input placeholder="输入您当前要搜索的设备" type="search" @keyup.enter="search" v-model='keyword' />
       </div>
-      <span @click="search" v-if="keyword === ''">取消</span>
-      <span @click="search" v-else>搜索</span>
+      <!-- <span @click="search" v-if="keyword === ''">取消</span> -->
+      <span @click="search">搜索</span>
     </div>
     <div class="machineBox"  :style="{marginTop:statusH + 'rem'}">
       <mescroll-vue ref="mescroll" :down="mescrollDown" :up="mescrollUp" @init="mescrollInit">
         <div id="empty"></div>
-        <div class="machineList" v-for="(item,index) in machineList" :key="index" @click="jumpTo({name:'machineOrder',query:{id:item.id}})">
+        <div class="machineList" v-for="(item,index) in machineList" :key="index" @click ="jumpTo({name:'machineOrder',query:{id:item.id}})">
           <div class="left">
             <img src="../../assets/img/my/avater.png" alt />
           </div>
           <div class="right">
-            <p class="sn">{{item.sn}}</p>
+            <p class="sn">{{item.stock_name}} {{item.sn}}</p>
             <div class="allNum">
               <span class="money">累计兑换: {{item.sum_money}}</span>
               <span class="integral">累计积分: {{item.sum_integral}}万</span>
             </div>
           </div>
+           <span @click.stop="daBiao(item.id)" class="rightDaBiao">达标返现</span>
            <span class="iconfont icon-right1 rightOne"></span>
         </div>
       </mescroll-vue>
@@ -89,6 +90,14 @@ export default {
       this.list = [];
       this.mescrollUp.page.num = 1;
       this.upCallback(this.mescrollUp.page, this.mescroll);
+    },
+    daBiao(id){
+      this.$router.push({
+        name: "achievement",
+        query: {
+          id: id
+        }
+      });
     }
   }
 };
@@ -103,7 +112,8 @@ export default {
     justify-content: space-around;
     align-items: center;
     height: 0.88rem;
-    background-image: url("../../assets/img/my/my_head.png");
+    // background-image: url("../../assets/img/my/my_head.png");
+    background: #ff7512;
     .icon-back {
       font-size: 0.4rem;
       color: #000;
@@ -176,9 +186,15 @@ export default {
       }
       .rightOne{
         position: absolute;
-        top: 0.5rem;
+        top: 0.6rem;
         right: 0.3rem;
         font-size: 0.4rem;
+      }
+      .rightDaBiao{
+        position: absolute;
+        top: 0.2rem;
+        right: 0.3rem;
+        color: #757575
       }
     }
   }

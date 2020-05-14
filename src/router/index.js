@@ -119,6 +119,12 @@ let router = new Router({
           meta: {title: '报单详情', keepAlive: false, isShowSearch: false, isShowTab: false, isShowHead: true,routerZindex: 3}
         },
         {
+          path: '/achievement',
+          name: 'achievement',
+          component: resolve => require(['@/pages/machine/achievement'], resolve),
+          meta: {title: '达标详情', keepAlive: false, isShowSearch: false, isShowTab: false, isShowHead: true,routerZindex: 4}
+        },
+        {
           path: '/my',
           name: 'my',
           component: resolve => require(['@/pages/my'], resolve),
@@ -172,6 +178,12 @@ let router = new Router({
           name: 'withdrawlist',
           component: resolve => require(['@/pages/my/withdrawlist'], resolve),
           meta: {title: '资金明细', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
+        },
+        {
+          path: '/price',
+          name: 'price',
+          component: resolve => require(['@/pages/my/price'], resolve),
+          meta: {title: '机主价格表', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
         },
        
 
