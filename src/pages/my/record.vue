@@ -21,15 +21,10 @@
       <mescroll-vue ref="mescroll" :down="mescrollDown" :up="mescrollUp" @init="mescrollInit">
         <div class="high"></div>
         <div class="listBox" v-for="item of list" :key="item.id">
-          <p class="note">{{item.note}}</p>
+          <p class="note">提现到支付宝({{item.alipay}}){{item.name}}</p>
           <div class="list">
-            <span style="font-size:0.24rem">{{item.create_time | formatDate}}</span>
-            <div class="money"> <span v-if="sort == 1">+</span>{{item.money}}</div>
-            <span>{{item.status_name}}</span>
-            <!-- <span  v-if="item.status === 1">待审核</span>
-            <span  v-if="item.status === 2">审核驳回</span>
-            <span  v-if="item.status === 3">通过审核</span>
-            <span  v-if="item.status === 0">已完成</span> -->
+            <span style="font-size:0.24rem">{{item.create_time}}</span>
+            <div class="money"> {{item.money}}</div>
           </div>
         </div>
         <div id="empty"></div>
@@ -63,8 +58,9 @@ export default {
   data() {
     return {
       tab: [
-        { sort: 1, title: "来源明细" },
-        { sort: 0, title: "消耗明细" }
+        { sort: 1, title: "待审核" },
+        { sort: 2, title: "审核驳回" },
+        { sort: 3, title: "审核通过" }
       ],
       sort: 1,
       index: 0,
@@ -110,7 +106,7 @@ export default {
       this.mescrollUp.htmlLoading =
         '<p class="upwarp-progress mescroll-rotate"></p><p class="upwarp-tip">加载中..</p>';
       apiHttp
-        .getRewardSoure(this.sort, page.num, 15)
+        .getApplyList(this.sort, page.num, 15)
         .then(res => {
           if (res.code === 1) {
             let arr = res.data.data;
@@ -199,14 +195,12 @@ export default {
     // height: 1rem;
     padding-bottom: 0.2rem;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     font-size: 0.3rem;
     .money{
       color: #ff7512;
       font-size: 0.3rem;
-      flex: 1;
-      text-align: center;
     }
   }
   .list:after {

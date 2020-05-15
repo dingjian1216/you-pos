@@ -66,7 +66,7 @@
           </div>
         </div>
       </div>
-      <div id="empty"></div>
+      <div id="d2"></div>
     </mescroll-vue>
   </div>
 </template>
@@ -106,7 +106,7 @@ export default {
         htmlLoading: "",
         noMoreSize: 5,
         empty: {
-          warpId: "empty",
+          warpId: "d2",
           icon: "./static/img/auth/kong.png",
           tip: "暂无相关数据~"
         }

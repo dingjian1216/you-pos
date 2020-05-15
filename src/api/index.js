@@ -256,5 +256,11 @@ export const gradeIndex = function () {
 }
 
 
+// 提现记录
+export const getApplyList = function (status,page,limit) {
+  return http.post('/My/apply_list',{status:status,page:page,limit:limit},true)
+}
+
+
 
 

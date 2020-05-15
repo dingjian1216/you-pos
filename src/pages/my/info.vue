@@ -19,7 +19,8 @@
       <span @click="handlePhoto(1)" :style="{background: $store.state.global.theme.mainColor}">更换头像</span>
     </div>
     <group>
-      <x-input title="昵称：" placeholder="请输入昵称" v-model="data.nickname"></x-input>
+      <!--  -->
+      <x-input title="昵称：" placeholder="请输入昵称" v-model="data.nickname"  :show-clear='false' ></x-input>
       <cell title="清除缓存" :value="size" is-link @click.native="show1 = size !== ''"></cell>
       <cell title="修改密码" value is-link link="/revise"></cell>
       <cell title="当前版本" :value="wgtVer"></cell>
@@ -147,6 +148,10 @@ export default {
           }
         }
       );
+    },
+    changeNick(){
+      alert(123)
+      this.data.nickname = ''
     },
     // 拍照
     captureImage() {

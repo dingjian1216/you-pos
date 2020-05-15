@@ -1,5 +1,5 @@
 <template>
-  <div id="my"  v-if="data">
+  <div id="my" v-if="data">
     <mescroll-vue ref="mescroll" :down="mescrollDown" @init="mescrollInit">
       <div class="head">
         <!-- <img src="../../assets/img/my/my_head.png" alt class="bg" /> -->
@@ -50,16 +50,15 @@
               <span v-if="data && data.today_sum_jf_money">￥{{data.today_sum_jf_money}}</span>
               <span v-else>0.00</span>
             </div>
-            
           </div>
           <div class="bos">
             <div class="profitBox">
-              <div class="profit" >
+              <div class="profit">
                 <p v-if="data && data.sum_integral">{{data.sum_integral}}万</p>
                 <p v-else>0.00</p>
                 <p>累积兑换积分</p>
               </div>
-              <div class="profit" >
+              <div class="profit">
                 <p v-if="data && data.sum_jf_money">￥{{data.sum_jf_money}}</p>
                 <p v-else>0.00</p>
                 <p>累积积分分润</p>
@@ -76,24 +75,23 @@
           <div class="tos">
             <div>
               <span>今日团队销售</span>
-              <span v-if="data && data.today_sum_stock_size">￥{{data.today_sum_stock_size}}</span>
-              <span v-else>0.00</span>
+              <span v-if="data && data.today_sum_stock_size">{{data.today_sum_stock_size}}(台)</span>
+              <span v-else>0</span>
             </div>
-            
           </div>
           <div class="bos">
             <div class="profitBox">
-              <div class="profit" >
-                <p v-if="data && data.sum_td_stock_size">￥{{data.sum_td_stock_size}}</p>
-                <p v-else>0.00</p>
+              <div class="profit">
+                <p v-if="data && data.sum_td_stock_size">{{data.sum_td_stock_size}}(台)</p>
+                <p v-else>0</p>
                 <p>累积设备销售</p>
               </div>
-              <div class="profit" >
+              <div class="profit">
                 <p v-if="data && data.sum_stock_jl">￥{{data.sum_stock_jl}}</p>
                 <p v-else>0.00</p>
                 <p>累积设备奖励</p>
               </div>
-              <div class="profit" >
+              <div class="profit">
                 <p v-if="data && data.today_sum_stock_jl">￥{{data.today_sum_stock_jl}}</p>
                 <p v-else>0.00</p>
                 <p>今日设备奖励</p>
@@ -104,7 +102,7 @@
         <div class="buttom">
           <div class="bos">
             <div class="profitBox">
-              <div class="profit"  @click="jumpTo('/withdrawlist')">
+              <div class="profit" @click="jumpTo('/withdrawlist')">
                 <p v-if="data.sum_money">￥{{data.sum_money}}</p>
                 <p v-else>0.00</p>
                 <p>累计佣金</p>
@@ -135,7 +133,7 @@
             </div>
             <div>提现</div>
           </div>
-          <div @click="jumpTo('/invite')">
+          <div @click="getInvite">
             <div class="imgBox">
               <img src="../../assets/img/my/ms.png" alt />
             </div>
@@ -174,12 +172,21 @@
           </div>
         </div>
       </div>
+      <div v-transfer-dom>
+        <confirm
+          v-model="showTip"
+          title="提示"
+          ref="confirm"
+          content="你还未成为机主，请先购买设备成为机主"
+          @on-confirm="onConfirm"
+        ></confirm>
+      </div>
     </mescroll-vue>
   </div>
 </template>
 
 <script>
-import { Group, Cell } from "vux";
+import { Group, Cell,Confirm ,TransferDomDirective as TransferDom,} from "vux";
 import * as apiHttp from "../../api/index";
 import MescrollVue from "mescroll.js/mescroll.vue";
 import * as utils from "../../utils";
@@ -188,12 +195,17 @@ export default {
   components: {
     Group,
     Cell,
+    Confirm,
     MescrollVue
+  },
+  directives: {
+    TransferDom
   },
   data() {
     return {
       settingH: "",
-      settingH1: '',
+      settingH1: "",
+      showTip: false,
       data: "",
       profit: "",
       mescroll: null,
@@ -268,6 +280,16 @@ export default {
           this.parentAgent = res.data.parentAgent;
         }
       });
+    },
+    onConfirm(){
+      this.$router.push('home')
+    },
+    getInvite(){
+      if(this.data.is_buy_stock == 0){
+        this.showTip = true
+      }else{
+        this.$router.push('invite')
+      }
     }
   },
   activated() {
@@ -278,7 +300,7 @@ export default {
   mounted() {
     let size = document.documentElement.clientWidth / 7.5;
     this.settingH = api.safeArea.top / size + 0.3;
-    this.settingH1  =  api.safeArea.top / size + 0.5;
+    this.settingH1 = api.safeArea.top / size + 0.5;
   }
 };
 </script>

@@ -32,11 +32,18 @@ export default {
   },
   methods: {
     handOrder() {
-      utils.storage.set('orderId', 2)
+      utils.storage.set("orderId", 2);
       this.$router.push({
         name: "order"
       });
     }
+  },
+  mounted() {
+    apiHttp.getAgentDetall().then(res => {
+      if (res.code === 1) {
+        this.$store.commit("setUserInfo", res.data);
+      }
+    });
   }
 };
 </script>

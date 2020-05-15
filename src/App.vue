@@ -7,6 +7,15 @@
         <router-view v-if="isRouterAlive" />
       </transition>
     </div>
+    <div v-transfer-dom>
+      <confirm
+        v-model="showTip"
+        title="提示"
+        ref="confirm"
+        content = '你还未成为机主，请先购买设备成为机主'
+        @on-confirm="onConfirm"
+      ></confirm>
+    </div>
   </div>
 </template>
 
@@ -14,7 +23,7 @@
 import * as utils from "./utils";
 import {
   XDialog,
-  XCircle,
+  Confirm,
   TransferDomDirective as TransferDom,
   XProgress
 } from "vux";
@@ -27,7 +36,7 @@ export default {
   },
   components: {
     XDialog,
-    XCircle,
+    Confirm,
     XProgress
   },
   directives: {
@@ -37,8 +46,7 @@ export default {
     return {
       packet: "",
       isRouterAlive: true,
-      showActivityClose: true,
-      showRedPacketClose: false,
+      showTip: false,
       percent: 0,
       perCon: "0%",
       progressState: "准备中",
@@ -79,12 +87,17 @@ export default {
         }
       }
       let login = ["login", "wechatLogin", "mobileLogin", "wxbind", "guide"];
-
       let systemVersion = (window.api && api.systemVersion) || "6.0";
       if (parseFloat(systemVersion) < 6.0) {
         this.colors = "#353034";
       } else {
         this.colors = "#fff";
+      }
+      if(to.name == 'team'){
+       if(this.$store.state.user.userInfo.is_buy_stock == 0){
+         this.showTip = true
+         this.$router.go(-1);
+       }
       }
     }
   },
@@ -122,6 +135,9 @@ export default {
       this.$nextTick(() => {
         this.isRouterAlive = true;
       });
+    },
+    onConfirm(){
+      this.$router.push('home')
     }
   },
   mounted() {

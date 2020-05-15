@@ -172,6 +172,12 @@ let router = new Router({
           component: resolve => require(['@/pages/my/withdraw'], resolve),
           meta: {title: '提现', keepAlive: false, isShowHead: false, isShowTab: false, routerZindex: 2}
         },
+        {
+          path: '/record',
+          name: 'record',
+          component: resolve => require(['@/pages/my/record'], resolve),
+          meta: {title: '提现记录', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
+        },
  
         {
           path: '/withdrawlist',

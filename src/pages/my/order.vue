@@ -39,7 +39,7 @@
             <div class="header_main" @click="handDetail(items.id)">
               <div class="left">
                 <img src="../../assets/img/logo.png" alt />
-                <span>优享兑</span>
+                <span>可兑</span>
               </div>
               <div class="right">
                 <span>{{items.statusName}}</span>

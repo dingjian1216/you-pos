@@ -5,7 +5,7 @@
         <i class="iconfont icon-back"></i>
       </a>
       提现
-      <span class="save" slot="right" @click="jumpTo('/withdrawlist')">明细</span>
+      <span class="save" slot="right" @click="jumpTo('/record')">明细</span>
     </x-header>
     <div class="box">
       <div class="head">
@@ -43,7 +43,7 @@
       </div>
       <div class="inputBox">
         <input type="number" placeholder="请输入提取金额" v-model="money" />
-        <span :style="{color: $store.state.global.theme.mainColor}">全部</span>
+        <span :style="{color: $store.state.global.theme.mainColor}" @click="money = profit.ktx" >全部</span>
       </div>
       <div
         class="primary_btn"

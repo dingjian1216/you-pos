@@ -10,7 +10,7 @@
     </div>
     <div class="machineBox"  :style="{marginTop:statusH + 'rem'}">
       <mescroll-vue ref="mescroll" :down="mescrollDown" :up="mescrollUp" @init="mescrollInit">
-        <div id="empty"></div>
+        <div id="d1"></div>
         <div class="machineList" v-for="(item,index) in machineList" :key="index" @click ="jumpTo({name:'machineOrder',query:{id:item.id}})">
           <div class="left">
             <img src="../../assets/img/my/avater.png" alt />
@@ -54,7 +54,7 @@ export default {
         htmlNodata: '<p class="upwarp-nodata">-- END --</p>',
         noMoreSize: 2,
         empty: {
-          warpId: "empty",
+          warpId: "d1",
           icon: "./static/img/kong.png",
           tip: "暂无相关数据~"
         }
