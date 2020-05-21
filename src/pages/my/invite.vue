@@ -11,19 +11,19 @@
      
       </div>
       <div class="footer" :style="{bottom: h}">
-        <p @click="keepImgs()">保存当前海报</p>
-        <p @click="copy()">复制邀请链接</p>
-        <!-- <p @click="showShare(1)">分享邀请链接</p>
-        <p @click="showShare(2)">分享邀请海报</p> -->
+        <!-- <p @click="keepImgs()">保存当前海报</p>
+        <p @click="copy()">复制邀请链接</p> -->
+        <p @click="showShare(1)">分享邀请链接</p>
+        <p @click="showShare(2)">分享邀请海报</p>
       </div>
-      <!-- <div class="share_to" v-transfer-dom>
+      <div class="share_to" v-transfer-dom>
         <div class="weui-mask" @click="showToast = false" v-if="showToast"  ></div>
         <div class="classBox"  v-if="showToast"  >
-          <div><img src="../../assets/img/home/goods/wechat.png" alt="" @click="shareFri(1)"><p>微信好友</p></div>
-          <div><img src="../../assets/img/home/goods/friend_circle.png" alt="" @click="shareFri(2)"><p>朋友圈</p></div>
-          <div><img src="../../assets/img/home/goods/qq.png" alt="" @click="shareQq()"><p>QQ</p></div>
+          <div><img src="../../assets/img/home/wechat.png" alt="" @click="shareFri(1)"><p>微信好友</p></div>
+          <div><img src="../../assets/img/home/friend_circle.png" alt="" @click="shareFri(2)"><p>朋友圈</p></div>
+          <!-- <div><img src="../../assets/img/home/qq.png" alt="" @click="shareQq()"><p>QQ</p></div> -->
         </div>
-      </div> -->
+      </div>
 
     </div>
 </template>
@@ -97,10 +97,13 @@ export default {
       let that = this
       this.showToast = false
       let way = type === 1 ? 'session' : 'timeline'
+      let userInfo = store.state.user.userInfo
+      let text = this.link + "/home/index/register/user_code/"+ userInfo.username
       if (that.type === 1) {
         let format = 'share' + new Date().getTime() + '.png'
+        let appDownLogo = 'http://uat.xingciji.com/public/kedui.png'
         api.download({
-          url: that.data.appDownLogo,
+          url: appDownLogo,
           savePath: 'fs://' + format,
           encode: false,
           report: false,
@@ -110,13 +113,13 @@ export default {
           var wx = api.require('wx')
           wx.shareWebpage({
             scene: way,
-            title: that.data.appDownTitle,
-            description: that.data.appDownDesc,
+            title: '可兑',
+            description: '可兑,一切可兑',
             thumb: 'fs://' + format,
-            contentUrl: that.data.downloadUrl
+            contentUrl: text
           }, function (ret, err) {
             if (ret.status) {
-              alert('分享成功')
+              that.$vux.toast.text('分享成功');
             } else {
               alert(err.code)
             }
@@ -128,7 +131,7 @@ export default {
         })
         let format = 'share' + new Date().getTime() + '.jpg'
         api.download({
-          url: that.imgs[imgIndex],
+          url: that.link + that.imgs[imgIndex],
           savePath: 'fs://' + format,
           encode: false,
           report: false,
@@ -145,36 +148,7 @@ export default {
         })
       }
     },
-    shareQq () {
-      let that = this
-      this.showToast = false
-      if (that.type === 1) {
-        let sharedModule = api.require('shareAction')
-        sharedModule.share({
-          text: that.data.downloadUrl,
-          type: 'text'
-        })
-      } else {
-        let format = 'share' + new Date().getTime() + '.jpg'
-        api.download({
-          url: that.imgs[imgIndex],
-          savePath: 'fs://' + format,
-          encode: false,
-          report: false,
-          cache: false,
-          allowResume: true
-        }, function (ret, err) {
-          that.$vux.loading.hide()
-          if (ret.state === 1) {
-            let sharedModule = api.require('shareAction')
-            sharedModule.share({
-              images: ['fs://' + format],
-              type: 'image'
-            })
-          }
-        })
-      }
-    },
+
     showShare (type) {
       this.type = type
       this.showToast = true
@@ -189,86 +163,6 @@ export default {
         }
       })
     },
-    keepImgs () {
-      const that = this
-      let format = 'share' + new Date().getTime() + '.jpg'
-      that.$vux.loading.show({
-        text: '保存中...'
-      })
-      api.download({
-        url: that.link +  that.imgs[imgIndex],
-        savePath: 'fs://' + format,
-        report: true,
-        cache: true,
-        allowResume: true
-      }, function (ret, err) {
-        if (ret.state === 1) {
-          api.saveMediaToAlbum({
-            path: 'fs://' + format
-          }, function (ret, err) {
-            if (ret && ret.status) {
-              that.$vux.loading.hide()
-              console.log('相册成功：' + JSON.stringify(ret))
-              that.$vux.toast.text('保存成功')
-            } else {
-              console.log('相册失败：' + JSON.stringify(err))
-            }
-          })
-          console.log('成功：' + JSON.stringify(ret))
-        } else {
-          that.$vux.loading.hide()
-          that.$vux.toast.text('保存失败')
-          console.log('失败：' + JSON.stringify(err))
-        }
-      })
-    },
-    copy(){
-     let that = this;
-     let userInfo = store.state.user.userInfo
-     let text = this.link + "/home/index/register/user_code/"+ userInfo.username
-      let clipBoard = api.require("clipBoard");
-      clipBoard.set(
-        {
-          value: text
-        },
-        function(ret, err) {
-          if (ret) {
-            that.$vux.toast.text("复制成功");
-          } else {
-            that.$vux.toast.text("请重试");
-          }
-        }
-      );
-    },
-    share () {
-      let that = this
-      that.$vux.loading.show({
-        text: '加载中'
-      })
-      let format = 'share' + new Date().getTime() + '.jpg'
-
-      api.download({
-        url: that.imgs[imgIndex],
-        savePath: 'fs://' + format,
-        encode: false,
-        report: false,
-        cache: false,
-        allowResume: true
-      }, function (ret, err) {
-        that.$vux.loading.hide()
-        if (ret.state === 1) {
-          let sharedModule = api.require('shareAction')
-          sharedModule.share({
-            images: ['fs://' + format],
-            type: 'image'
-          })
-        } else {
-          that.$vux.loading.hide()
-          that.$vux.toast.text('保存失败')
-          console.log('失败：' + JSON.stringify(err))
-        }
-      })
-    }
   },
   mounted () {
     this.getSwiper()

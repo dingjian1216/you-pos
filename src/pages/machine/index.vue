@@ -180,7 +180,7 @@ export default {
           font-size: 0.28rem;
           color: #03a9f4;
           .money {
-            color: #fe8548;
+            color: #ff7512;
           }
         }
       }
@@ -194,7 +194,7 @@ export default {
         position: absolute;
         top: 0.2rem;
         right: 0.3rem;
-        color: #757575
+        color: #ff7512
       }
     }
   }

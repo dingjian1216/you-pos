@@ -261,6 +261,24 @@ export const getApplyList = function (status,page,limit) {
   return http.post('/My/apply_list',{status:status,page:page,limit:limit},true)
 }
 
+// 微信登陆
+export const wxLogin = function (code) {
+  return http.post('/wx/login',{code: code},true)
+}
+
+
+// 微信注册
+export const wxReg = function (username,code,password,agent_code,access_token,openid) {
+  return http.post('/wx/wxReg',{username:username,code:code,password:password,agent_code:agent_code,access_token:access_token,openid:openid},true)
+}
+
+
+// 绑定微信
+export const wxbindUser = function (code) {
+  return http.post('/wx/wxbindUser',{code: code},true)
+}
+
+
 
 
 

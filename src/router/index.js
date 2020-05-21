@@ -27,7 +27,7 @@ let router = new Router({
           path: '/wxbind',
           name: 'wxbind',
           component: resolve => require(['@/pages/auth/wxbind'], resolve),
-          meta: {title: '绑定手机号'}
+          meta: {title: '微信注册'}
         },
         {
           path: '/register',
@@ -56,7 +56,7 @@ let router = new Router({
           path: '/home',
           name: 'home',
           component: resolve => require(['@/pages/home/'], resolve),
-          meta: {title: '首页', keepAlive: true, isShowSearch: true, isShowTab: true, isShowHead: false}
+          meta: {title: '首页', keepAlive: false, isShowSearch: true, isShowTab: true, isShowHead: false}
         },
         {
           path: '/search',
@@ -191,8 +191,6 @@ let router = new Router({
           component: resolve => require(['@/pages/my/price'], resolve),
           meta: {title: '机主价格表', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
         },
-       
-
         
         {
           path: '/team',
@@ -248,6 +246,12 @@ let router = new Router({
           component: resolve => require(['@/pages/my/addressUpdate'], resolve),
           meta: {title: '修改地址', isShowHead: false, routerZindex: 14}
         },
+        {
+          path: '/binding',
+          name: 'binding',
+          component: resolve => require(['@/pages/my/binding'], resolve),
+          meta: {title: '绑定微信', keepAlive: true, isShowHead: true, isShowTab: false, routerZindex: 2}
+        },
       ]
     }
   ],
@@ -256,7 +260,7 @@ let router = new Router({
   }
 })
 
-const whiteList = ['login', 'about', 'register',  'forget',  'guide',  'home']
+const whiteList = ['login', 'about', 'register',  'forget',  'guide',  'home','wechatLogin','wxbind']
 router.beforeEach(function (to, from, next) {
   var firstPage = ['/home', '/newIndex', '/sort', '/fastrobNew', '/materials', '/materials2', '/super', '/materials1', '/my', '/newIndex', '/mall/home', '/mall/business', '/mall/underShop', '/mall/underShop', '/mall/my', '/mall/cart', '/upgradeOperator']
   var currentRoute = to.path
@@ -269,7 +273,7 @@ router.beforeEach(function (to, from, next) {
   store.commit('hide')
   if (whiteList.indexOf(to.name) < 0 && !store.state.user.token) {
     next({
-      path: '/login'
+      path: '/wechatLogin'
     })
   } else {
     next()

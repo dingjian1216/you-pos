@@ -42,6 +42,18 @@
             />
           </div>
         </div>
+        <!-- <div class="list" @click="handChange('wechat')">
+          <div class="img_box">
+            <img src="../../assets/img/home/wechat.png" alt />
+            <span>微信</span>
+          </div>
+          <div class="checkbox">
+            <img
+              :src="active == 'alipay' ? './static/libs/img/active.png' : './static/libs/img/active_no.png'"
+              alt
+            />
+          </div>
+        </div> -->
       </div>
       <div class="btns">
         <div class="btn" @click="handBuy">立即购买</div>

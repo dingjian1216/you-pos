@@ -1,9 +1,6 @@
 <template>
   <div id="login">
-    <!-- <x-header :left-options="{showBack: false}">
-      
-      {{$route.meta.title}}
-    </x-header>-->
+
     <i class="iconfont icon-close" @click="goBack()"></i>
     <div class="login_img">
       <img src="../../assets/img/logo.png" alt />

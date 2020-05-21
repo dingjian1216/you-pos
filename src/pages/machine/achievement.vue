@@ -86,7 +86,7 @@ export default {
   background: #f2f2f2;
   .head {
     color: #fff;
-    background-image: url("../../assets/img/my/my_head.png");
+    background:#ff7512;
     background-size: 100% 100%;
     padding: 0.4rem 0.3rem;
     .title {

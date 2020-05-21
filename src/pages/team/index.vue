@@ -55,8 +55,10 @@
             <img src="../../assets/img/logo.png" class="avater" alt v-else />
             <div class="slefinfo">
               <p class="name">
-                {{item.nickname}}
-                <span v-if="item.level_name">{{item.level_name}}</span>
+                {{item.nickname}} 
+                <span class="jizhu" v-if="item.is_buy_stock == 1">机主</span>
+                <span class="nojizhu" v-else>非机主</span>
+                <span v-if="item.level_name" class="leval">{{item.level_name}}</span>
               </p>
               <div class="account">
                 <span>累计销量: {{item.leijixl_size}}</span>  
@@ -97,6 +99,7 @@ export default {
         use: false
       },
       mescrollUp: {
+        auto: false,
         callback: this.upCallback,
         page: {
           num: 0,
@@ -193,6 +196,7 @@ export default {
   },
   mounted() {
     // 删除
+    this.upCallback(this.mescrollUp.page, this.mescroll);
     this.getTeam();
   }
 };
@@ -455,8 +459,9 @@ export default {
           .name {
             font-size: 0.28rem;
             color: #333;
-            span {
+            .leval{
               height: 0.4rem;
+              margin-left: 0.2rem;
               line-height: 0.4rem;
               padding: 0 0.2rem;
               border-radius: 0.2rem;
@@ -469,6 +474,24 @@ export default {
               );
               color: #fff;
               font-size: 0.24rem;
+            }
+            .jizhu{
+              height: 0.4rem;
+              line-height: 0.4rem;
+               margin-left: 0.2rem;
+              background: #fe8548;
+              padding: 0 0.2rem;
+              border-radius: 0.2rem;
+              color: #fff;
+            }
+            .nojizhu{
+              height: 0.4rem;
+              line-height: 0.4rem;
+               margin-left: 0.2rem;
+              background: #03a9f4;
+              padding: 0 0.2rem;
+              border-radius: 0.2rem;
+              color: #fff;
             }
           }
           .account {

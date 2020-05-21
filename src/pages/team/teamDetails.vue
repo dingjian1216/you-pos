@@ -93,7 +93,6 @@ export default {
       apiHttp.getTeamDetall(id).then(res => {
         if (res.code === 1) {
           this.data = res.data;
-          this.$store.commit("setUserInfo", res.data);
         }
       });
     }

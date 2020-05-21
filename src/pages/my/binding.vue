@@ -7,6 +7,7 @@
     </div>
 </template>
 <script>
+import * as apiHttp from "../../api/index";
 export default {
   name: 'binding',
   components: {},
@@ -27,31 +28,13 @@ export default {
         apiKey: ''
       }, function (ret, err) {
         if (ret.status) {
-          that.$http.post('/amoy/user/bind-wx', {
-            code: ret.code,
-            type: 'bind'
-          }, true).then((res) => {
-            console.log(JSON.stringify(res))
-            that.$vux.toast.text(res.msg)
-            // that.$store.commit('setToken', res.data.token)
-            let info = that.$store.state.user.userInfo
-            info.nickname = res.data.nickname
-            info.wechat_openid = res.data.wechat_openid
-            info.avatar = res.data.avatar
-            that.$store.commit('setUserInfo', info)
-            that.$http.post("/amoy/user/bind-all").then(response => {
-              if (response.code == 0 && response.data.status == 0) {
-                // this.reload();
-                that.$router.push(that.$store.state.global.firstNav);
-              } else if (response.code == 0 && response.data.status == 3) {
-                that.$router.push("/binding");
-              } else if (response.code == 0 && response.data.status == 2) {
-                that.$router.push("/wxbind");
-              } else if (response.code == 0 && response.data.status == 4) {
-                that.$router.push("/selectAddress");
+          apiHttp.wxbindUser(ret.code).then(res => {
+              console.log(JSON.stringify(res));
+              if (res.code == 1) {
+                that.$vux.toast.text(res.msg);
+                that.$router.go(-2)
               }
             });
-          })
         } else {
           console.log(err.code)
         }
