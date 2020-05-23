@@ -24,7 +24,7 @@
       <cell title="绑定微信"  is-link  @click.native="bind" :value="data.openid ? '已绑定' : '未绑定'"></cell>
       <cell title="清除缓存" :value="size" is-link @click.native="show1 = size !== ''"></cell>
       <cell title="修改密码" value is-link link="/revise"></cell>
-      <cell title="当前版本" :value="wgtVer"></cell>
+      <cell title="检查更新" :value="wgtVer" is-link @click.native="getVersion"></cell>
     </group>
 
     <div
@@ -32,11 +32,89 @@
       :style="{background: $store.state.global.theme.mainColor}"
       @click="layout"
     >退出登录</div>
+    <div style="text-align:center;font-size:0.3rem;color:#757575">
+      <p>Copyright @2017-2020</p>
+      <p>三脉科技版权所有</p>
+    </div>
     <p class="power" v-for="(item, index) of company" :key="index">{{item}}</p>
     <actionsheet v-model="show" :menus="menus" show-cancel @on-click-menu="click"></actionsheet>
     <confirm v-model="show1" @on-confirm="onConfirm" title="清除缓存">
       <p style="text-align:center;">清除媒体缓存？</p>
     </confirm>
+
+        <!-- 后台添加更新 -->
+    <div v-transfer-dom>
+      <x-dialog v-model="showToast1" class="updateBox">
+        <!--<div class="weui-mask"></div>-->
+        <div class="update">
+          <img src="../../assets/img/my/update.png" alt class="bg" />
+          <div class="contentBox">
+            <div class="add" v-if="version.remark">
+              <p class="t">新版本特性</p>
+              <p class="info">{{version.remark}}</p>
+            </div>
+            <div class="update_btn">
+              <span @click="downWgt">立即升级</span>
+            </div>
+          </div>
+        </div>
+      </x-dialog>
+    </div>
+
+
+    <!-- 云修复 -->
+    <div v-transfer-dom>
+      <x-dialog v-model="showToast2" class="updateBox">
+        <!--<div class="weui-mask"></div>-->
+        <div class="update">
+          <img src="../../assets/img/my/update.png" alt class="bg" />
+          <div class="contentBox">
+            <div class="add">
+              <p class="t" v-if="smart && smart.extra">新版本特性</p>
+              <p class="info" v-if="smart && smart.extra">{{smart.extra}}</p>
+            </div>
+            <div class="update_btn">
+              <span @click="showToast2 = false">稍后提醒</span>
+              <span @click="startSmart">立即升级</span>
+            </div>
+          </div>
+        </div>
+      </x-dialog>
+    </div>
+    <!-- 云修复成功 重启 -->
+    <div v-transfer-dom>
+      <x-dialog v-model="showToast3" class="updateBox">
+        <!--<div class="weui-mask"></div>-->
+        <div class="update">
+          <img src="../../assets/img/my/update.png" alt class="bg" />
+          <div class="contentBox">
+            <div class="add">
+              <p class="t" v-if="smart && smart.extra">新版本特性</p>
+              <p class="info" v-if="smart && smart.extra">{{smart.extra}}</p>
+            </div>
+            <div class="update_btn">
+              <span @click="reboot">立即重启</span>
+            </div>
+          </div>
+        </div>
+      </x-dialog>
+    </div>
+
+    <!-- 下载进度 -->
+    <div v-transfer-dom>
+      <x-dialog
+        v-model="showToast4"
+        :dialog-style="{'max-width': '100%', 'background-color': 'transparent'}"
+        class="progressBox"
+      >
+        <div class="progressBg">
+          <img src="../../assets/img/updateBox.png" alt />
+          <span  class="prState">{{progressState}}</span>
+          <x-progress :percent="percent" :show-cancel="false"></x-progress>
+          <span class="title">新版本正在努力的更新中，请稍等</span>
+        </div>
+      </x-dialog>
+    </div>
   </div>
 </template>
 
@@ -94,13 +172,13 @@ export default {
         this.$store.state.user.userInfo.web_icp
           ? this.$store.state.user.userInfo.web_icp.split(",")
           : [],
-      version: "",
-      showToast3: false,
-      showToast2: false,
-      showToast4: false,
-      smart: "",
+      showToast1: false, //后台提示更新
+      showToast2: false,  //云修复
+      showToast3: false,  // 修复成功描述 重启
+      showToast4: false,  //下载进度
       percent: 0,
-      perCon: "0%",
+      version: '',
+      smart: '',
       progressState: "准备中"
     };
   },
@@ -141,18 +219,13 @@ export default {
           preview: true
         },
         function(ret, err) {
-          if (ret) {
-            console.log(JSON.stringify(ret));
+          if (ret && ret.data) {
             This.changePic(ret);
           } else {
             console.log(JSON.stringify(err));
           }
         }
       );
-    },
-    changeNick(){
-      alert(123)
-      this.data.nickname = ''
     },
     // 拍照
     captureImage() {
@@ -167,7 +240,7 @@ export default {
         },
         function(ret, err) {
           console.log("拍照" + JSON.stringify(ret));
-          if (ret) {
+          if (ret && ret.data) {
             This.changePic(ret);
           } else {
             console.log(JSON.stringify(err));
@@ -235,6 +308,106 @@ export default {
       }
     },
 
+    getVersion () {
+      let that = this
+      this.$http.post('/login/checkVersion', {
+        type: (api.systemType === 'android') ? 0 : 1,
+        version: api.appVersion,
+      }, false, true).then(res => {
+        console.log(JSON.stringify(res))
+        if (res.code === 1) {
+          if(res.data == 0){
+            let mam = api.require('mam')
+            mam.checkSmartUpdate(function (ret, err) {
+              if (ret && ret.packages.length > 0) {
+                // 返回的结果有可能会空数组
+                if (ret.packages[0].silent) {
+                  that.smart = ret.packages[0]
+                  mam.startSmartUpdate(function (ret, err) {
+                    if (ret.state === 3) {
+                      if (that.smart && that.smart.extra) {
+                        api.addEventListener({
+                          name: 'smartupdatefinish'
+                        }, function (ret, err) {
+                          that.showToast3 = true
+                        })
+                      }
+                    } else {
+                      console.log(JSON.stringify(err))
+                    }
+                  })
+                } else {
+                  that.showToast2 = true
+                  that.smart = ret.packages[0]
+                }
+              }else{
+                that.$vux.toast.text('当前已是最新版本')
+              }
+            })
+          }else{
+            this.version = res.data
+            this.showToast1 = true
+          }
+        }
+      })
+    },
+    downWgt() {
+      let that = this;
+      if (api.systemType === "android") {
+        this.showToast1 = false;
+        that.showToast4 = true;
+        api.download(
+          {
+            url: that.version.src,
+            report: true
+          },
+          function(ret, err) {
+            if (ret && ret.state === 0) {
+              that.percent = parseInt(ret.percent);
+              // that.perCon = parseInt(ret.percent) + '%'
+              that.progressState = "下载中" + that.percent + "%";
+            }
+            if (ret && ret.state === 1) {
+              that.progressState = "安装中";
+              let savePath = ret.savePath;
+              api.installApp({
+                appUri: savePath
+              });
+            }
+          }
+        );
+      }
+      if (api.systemType === "ios") {
+        api.installApp({
+          appUri: that.version.src
+        });
+      }
+    },
+    startSmart() {
+      let that = this;
+      let mam = api.require("mam");
+      mam.startSmartUpdate(function(ret, err) {
+        if (ret) {
+          that.showToast2 = false;
+          that.showToast4 = true;
+          that.percent = parseInt(ret.progress);
+          console.log(that.percent);
+          if (ret.state === 0) {
+            that.progressState = "准备中" + that.percent + "%";
+          } else if (ret.state === 1) {
+            that.progressState = "下载中" + that.percent + "%";
+          } else if (ret.state === 2) {
+            that.progressState = "解压中" + that.percent + "%";
+          } else if (ret.state === 3) {
+            api.rebootApp();
+          } else if (ret.state === 4) {
+            that.showToast4 = false;
+          }
+        } else {
+          console.log(JSON.stringify(err));
+        }
+      });
+    },
     reboot() {
       api.rebootApp();
     },
@@ -273,7 +446,6 @@ export default {
   }
   .title {
     display: block;
-    margin-bottom: 10px;
   }
 }
 .setting {

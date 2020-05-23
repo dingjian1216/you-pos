@@ -7,12 +7,87 @@
         <router-view v-if="isRouterAlive" />
       </transition>
     </div>
+
+    <!-- 后台添加更新 -->
+    <div v-transfer-dom>
+      <x-dialog v-model="showToast1" class="updateBox">
+        <!--<div class="weui-mask"></div>-->
+        <div class="update">
+          <img src="./assets/img/my/update.png" alt class="bg" />
+          <div class="contentBox">
+            <div class="add" v-if="version.remark">
+              <p class="t">新版本特性</p>
+              <p class="info">{{version.remark}}</p>
+            </div>
+            <div class="update_btn">
+              <span @click="downWgt">立即升级</span>
+            </div>
+          </div>
+        </div>
+      </x-dialog>
+    </div>
+
+
+    <!-- 云修复 -->
+    <div v-transfer-dom>
+      <x-dialog v-model="showToast2" class="updateBox">
+        <!--<div class="weui-mask"></div>-->
+        <div class="update">
+          <img src="./assets/img/my/update.png" alt class="bg" />
+          <div class="contentBox">
+            <div class="add">
+              <p class="t" v-if="smart && smart.extra">新版本特性</p>
+              <p class="info" v-if="smart && smart.extra">{{smart.extra}}</p>
+            </div>
+            <div class="update_btn">
+              <span @click="showToast2 = false">稍后提醒</span>
+              <span @click="startSmart">立即升级</span>
+            </div>
+          </div>
+        </div>
+      </x-dialog>
+    </div>
+    <!-- 云修复成功 重启 -->
+    <div v-transfer-dom>
+      <x-dialog v-model="showToast3" class="updateBox">
+        <!--<div class="weui-mask"></div>-->
+        <div class="update">
+          <img src="./assets/img/my/update.png" alt class="bg" />
+          <div class="contentBox">
+            <div class="add">
+              <p class="t" v-if="smart && smart.extra">新版本特性</p>
+              <p class="info" v-if="smart && smart.extra">{{smart.extra}}</p>
+            </div>
+            <div class="update_btn">
+              <span @click="reboot">立即重启</span>
+            </div>
+          </div>
+        </div>
+      </x-dialog>
+    </div>
+
+    <!-- 下载进度 -->
+    <div v-transfer-dom>
+      <x-dialog
+        v-model="showToast4"
+        :dialog-style="{'max-width': '100%', 'background-color': 'transparent'}"
+        class="progressBox"
+      >
+        <div class="progressBg">
+          <img src="./assets/img/updateBox.png" alt />
+          <span  class="prState">{{progressState}}</span>
+          <x-progress :percent="percent" :show-cancel="false"></x-progress>
+          <span class="title">新版本正在努力的更新中，请稍等</span>
+        </div>
+      </x-dialog>
+    </div>
+
     <div v-transfer-dom>
       <confirm
         v-model="showTip"
         title="提示"
         ref="confirm"
-        content = '你还未成为机主，请先购买设备成为机主'
+        content="你还未成为机主，请先购买设备成为机主"
         @on-confirm="onConfirm"
       ></confirm>
     </div>
@@ -47,7 +122,6 @@ export default {
       packet: "",
       isRouterAlive: true,
       showTip: false,
-      percent: 0,
       perCon: "0%",
       progressState: "准备中",
       word: "",
@@ -67,11 +141,16 @@ export default {
         "machine",
         "teamDetails"
       ],
-      version: "",
-      smart: "",
       transitionName: "",
       img: "",
-      link: ""
+      link: "",
+      showToast1: false, //后台提示更新
+      showToast2: false,  //云修复
+      showToast3: false,  // 修复成功描述 重启
+      showToast4: false,  //下载进度
+      percent: 0,
+      version: '',
+      smart: ''
     };
   },
 
@@ -93,18 +172,25 @@ export default {
       } else {
         this.colors = "#fff";
       }
-      if(to.name == 'team'){
-       if(this.$store.state.user.userInfo.is_buy_stock == 0){
-         this.showTip = true
-         this.$router.go(-1);
-       }
+      if (to.name == "team") {
+        if (this.$store.state.user.userInfo.is_buy_stock == 0) {
+          this.showTip = true;
+          this.$router.go(-1);
+        }
       }
     }
   },
   created() {
     let that = this;
+    // 获取是否有更新 云修复
+    that.getVersion()
     // 进入前台
     let size = document.documentElement.clientWidth / 7.5;
+    // 为获取到状态高度  和 屏幕宽度  重启
+    if(api.safeArea.top == 0 && size == 0){
+      api.rebootApp();
+    }
+    // 设置状态高度
     if (window.api) {
       if (api.systemType === "android") {
         this.h = api.safeArea.top / size + "rem";
@@ -114,9 +200,11 @@ export default {
         this.iosh = this.h;
       }
     }
+    // 当设置为全屏时  高度0
     if (this.hideTitle.indexOf(that.$route.name) > -1) {
       this.h = 0;
     }
+    // 设置状态栏颜色
     window.api &&
       api.setStatusBarStyle({
         style: "dark",
@@ -136,8 +224,109 @@ export default {
         this.isRouterAlive = true;
       });
     },
-    onConfirm(){
-      this.$router.push('home')
+    onConfirm() {
+      this.$router.push("home");
+    },
+    getVersion () {
+      let that = this
+      this.$http.post('/login/checkVersion', {
+        type: (api.systemType === 'android') ? 0 : 1,
+        version: api.appVersion,
+      }, false, true).then(res => {
+        console.log(JSON.stringify(res))
+        if (res.code === 1) {
+          if(res.data == 0){
+            let mam = api.require('mam')
+            mam.checkSmartUpdate(function (ret, err) {
+              if (ret && ret.packages.length > 0) {
+                // 返回的结果有可能会空数组
+                if (ret.packages[0].silent) {
+                  that.smart = ret.packages[0]
+                  mam.startSmartUpdate(function (ret, err) {
+                    if (ret.state === 3) {
+                      if (that.smart && that.smart.extra) {
+                        api.addEventListener({
+                          name: 'smartupdatefinish'
+                        }, function (ret, err) {
+                          that.showToast3 = true
+                        })
+                      }
+                    } else {
+                      console.log(JSON.stringify(err))
+                    }
+                  })
+                } else {
+                  that.showToast2 = true
+                  that.smart = ret.packages[0]
+                }
+              }
+            })
+          }else{
+            this.version = res.data
+            this.showToast1 = true
+          }
+        }
+      })
+    },
+    downWgt() {
+      let that = this;
+      if (api.systemType === "android") {
+        this.showToast1 = false;
+        that.showToast4 = true;
+        api.download(
+          {
+            url: that.version.src,
+            report: true
+          },
+          function(ret, err) {
+            if (ret && ret.state === 0) {
+              that.percent = parseInt(ret.percent);
+              // that.perCon = parseInt(ret.percent) + '%'
+              that.progressState = "下载中" + that.percent + "%";
+            }
+            if (ret && ret.state === 1) {
+              that.progressState = "安装中";
+              let savePath = ret.savePath;
+              api.installApp({
+                appUri: savePath
+              });
+            }
+          }
+        );
+      }
+      if (api.systemType === "ios") {
+        api.installApp({
+          appUri: that.version.src
+        });
+      }
+    },
+    startSmart() {
+      let that = this;
+      let mam = api.require("mam");
+      mam.startSmartUpdate(function(ret, err) {
+        if (ret) {
+          that.showToast2 = false;
+          that.showToast4 = true;
+          that.percent = parseInt(ret.progress);
+          console.log(that.percent);
+          if (ret.state === 0) {
+            that.progressState = "准备中" + that.percent + "%";
+          } else if (ret.state === 1) {
+            that.progressState = "下载中" + that.percent + "%";
+          } else if (ret.state === 2) {
+            that.progressState = "解压中" + that.percent + "%";
+          } else if (ret.state === 3) {
+            api.rebootApp();
+          } else if (ret.state === 4) {
+            that.showToast4 = false;
+          }
+        } else {
+          console.log(JSON.stringify(err));
+        }
+      });
+    },
+    reboot() {
+      api.rebootApp();
     }
   },
   mounted() {
@@ -380,18 +569,174 @@ img {
   .weui-dialog {
     background: none;
   }
+  .update {
+    position: relative;
+    /*left: 50%;*/
+    /*top: 50%;*/
+    /*transform: translate(-50%, -50%);*/
+    background: rgba(255, 255, 255, 1);
+    width: 5.4rem;
+    overflow: hidden;
+    border-radius: 0.2rem;
+    .bg {
+      width: 100%;
+      float: left;
+    }
+    .contentBox {
+      width: 100%;
+      float: left;
+      background: #fff;
+      padding: 0.2rem 0.4rem 0.4rem;
+      box-sizing: border-box;
+      /*border-radius:  0 0 0.2rem 0.2rem;*/
+    }
+    .add {
+      width: 100%;
+      text-align: center;
+      p {
+        text-align: center;
+        color: #666;
+      }
+      .t {
+        font-size: 0.36rem;
+        color: #3c3c3c;
+      }
+      .info {
+        margin-top: 0.2rem;
+        font-size: 0.28rem;
+        color: #666;
+        padding: 0 0.3rem;
+        display: flex;
+        align-items: flex-start;
+        p {
+          display: -webkit-box;
+          /*! autoprefixer: off */
+          -webkit-box-orient: vertical;
+          /* autoprefixer: on */
+          -webkit-line-clamp: 2;
+          overflow: hidden;
+          text-align: left;
+        }
+        span {
+          display: inline-block;
+          width: 0.14rem;
+          height: 0.14rem;
+          background: linear-gradient(to right, #d479ef, #a282ed);
+          transform: rotate(45deg);
+          margin-right: 0.1rem;
+          margin-top: 0.16rem;
+        }
+      }
+      img {
+        margin-top: 0.6rem;
+        width: 0.76rem;
+        height: 0.76rem;
+      }
+    }
+    .update_btn {
+      margin-top: 0.6rem;
+      display: flex;
+      justify-content: space-around;
+      span {
+        display: inline-block;
+        width: 2rem;
+        height: 0.6rem;
+        border-radius: 0.3rem;
+        text-align: center;
+        background: #e5e5e5;
+        line-height: 0.6rem;
+        font-size: 0.3rem;
+        color: #999;
+      }
+      span:last-of-type {
+        color: #fff;
+        background: linear-gradient(to right, #d456ff, #7468ff);
+      }
+    }
+    .close {
+      width: 0.76rem;
+      height: 0.76rem;
+      position: absolute;
+      bottom: -0.76rem;
+      left: 50%;
+      margin-left: -0.38rem;
+    }
+  }
 }
-.copyBox {
+
+.progressBox {
   .weui-dialog {
-    max-width: 5rem !important;
-    width: 5rem !important;
+    border-radius: 0;
+    max-width: 5.35rem !important;
+    width: 5.35rem !important;
   }
-  .weui-mask {
-    background: rgba(0, 0, 0, 0.7);
-  }
-  .weui-dialog {
-    background: none;
-    overflow-y: auto;
+  /*.title{*/
+  /*display: block;*/
+  /*margin-bottom: 10px;*/
+  /*}*/
+  .progressBg {
+    position: relative;
+    width: 5.35rem;
+    height: 4.35rem;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+    .weui-progress {
+      position: absolute;
+      left: 6%;
+      width: 88%;
+      bottom: 0.7rem;
+      .weui-progress__bar {
+        height: 0.2rem;
+        border-radius: 0.1rem;
+      }
+      .weui-progress__inner-bar {
+        background: #ff9b84;
+        border-radius: 0.1rem;
+      }
+    }
+    .prState{
+      position: absolute;
+      width: 100%;
+      left: 0;
+      bottom: 1rem;
+      text-align: center;
+      color: #999;
+      font-size: 0.28rem;
+    }
+    .title {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      bottom: 0.14rem;
+      text-align: center;
+      color: #999;
+      font-size: 0.24rem;
+    }
+    .update_btn {
+      position: absolute;
+      bottom: 0.3rem;
+      width: 100%;
+      left: 0;
+      display: flex;
+      justify-content: space-around;
+      span {
+        display: inline-block;
+        width: 2rem;
+        height: 0.6rem;
+        border-radius: 0.3rem;
+        text-align: center;
+        background: #e5e5e5;
+        line-height: 0.6rem;
+        font-size: 0.3rem;
+        color: #999;
+      }
+      span:last-of-type {
+        color: #fff;
+        background: linear-gradient(to right, #d456ff, #7468ff);
+      }
+    }
   }
 }
 

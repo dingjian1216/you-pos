@@ -278,6 +278,18 @@ export const wxbindUser = function (code) {
   return http.post('/wx/wxbindUser',{code: code},true)
 }
 
+// 获取验证码  判断是否注册
+export const wsendCode = function (mobile) {
+  return http.post('/login/wsendCode',{mobile: mobile},true)
+}
+
+// 微信绑定用户
+export const wxBindUserByMP = function (username,code,password,access_token,openid) {
+  return http.post('/wx/wxBindUserByMP',{username:username,code:code,password:password,access_token:access_token,openid:openid},true)
+}
+
+
+
 
 
 

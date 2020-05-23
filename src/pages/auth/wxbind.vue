@@ -15,7 +15,7 @@
           <input type="text" placeholder="请输入验证码" v-model="smsCode" />
           <span @click="handSmsCode">{{getCode}}</span>
         </div>
-        <div class="label5">
+        <div class="label5" v-if="showInvite == 0">
           <input type="text" placeholder="请输入邀请码" v-model="invite_code" />
           <!-- <span @click="clip" :style="{background: $store.state.global.theme.mainColor}" class="clip">一键粘贴</span> -->
         </div>
@@ -59,7 +59,7 @@ export default {
       re_password: "",
       show: true,
       code: "",
-      invite: false,
+      showInvite: 1,
       access_token: this.$route.query.token,
       openid: this.$route.query.openid
     };
@@ -95,25 +95,46 @@ export default {
         return;
       }
       let that = this;
-      apiHttp
-        .wxReg(
-          this.mobile,
-          this.smsCode,
-          this.password,
-          this.invite_code,
-          this.access_token,
-          this.openid
-        )
-        .then(res => {
-          if (res.code == 1) {
-            that.$store.commit("setToken", res.data.token);
-            that.$store.commit("setUserInfo", res.data);
-            that.reload();
-            that.$router.push("/home");
-          } else {
-            this.$vux.toast.text(res.msg);
-          }
-        });
+      if (this.showInvite == 1) {
+        apiHttp
+          .wxBindUserByMP(
+            this.mobile,
+            this.smsCode,
+            this.password,
+            this.access_token,
+            this.openid
+          )
+          .then(res => {
+            if (res.code == 1) {
+              that.$store.commit("setToken", res.data.token);
+              that.$store.commit("setUserInfo", res.data);
+              that.reload();
+              that.$router.push("/home");
+            } else {
+              this.$vux.toast.text(res.msg);
+            }
+          });
+      } else {
+        apiHttp
+          .wxReg(
+            this.mobile,
+            this.smsCode,
+            this.password,
+            this.invite_code,
+            this.access_token,
+            this.openid
+          )
+          .then(res => {
+            if (res.code == 1) {
+              that.$store.commit("setToken", res.data.token);
+              that.$store.commit("setUserInfo", res.data);
+              that.reload();
+              that.$router.push("/home");
+            } else {
+              this.$vux.toast.text(res.msg);
+            }
+          });
+      }
     },
     // 是否选中服务条款
     onPitch() {
@@ -130,13 +151,10 @@ export default {
         this.$vux.toast.text("请输入正确的手机号");
         return;
       }
-      if (!/[0-9]{11}/.test(this.invite_code)) {
-        this.$vux.toast.text("请输入正确的邀请号码");
-        return;
-      }
       if (this.timerFlag === false) {
-        apiHttp.sendCode(this.mobile, this.invite_code).then(res => {
+        apiHttp.wsendCode(this.mobile).then(res => {
           if (res.code === 1) {
+            this.showInvite = res.data;
             this.timerFlag = !this.timerFlag;
             this.$vux.toast.text(res.msg);
             this.countDown(60);
