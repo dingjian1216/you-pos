@@ -136,8 +136,8 @@ export const getMyReward = function () {
 }
 
 // 实名
-export const getAuth = function (name,ids,alipay) {
-  return http.post('/My/auth', {name:name,ids:ids,alipay:alipay}, true)
+export const getAuth = function (name,ids,alipay,password) {
+  return http.post('/My/auth', {name:name,ids:ids,alipay:alipay,password:password}, true)
 }
 
 // 获取当前是否实名认证
@@ -287,6 +287,14 @@ export const wsendCode = function (mobile) {
 export const wxBindUserByMP = function (username,code,password,access_token,openid) {
   return http.post('/wx/wxBindUserByMP',{username:username,code:code,password:password,access_token:access_token,openid:openid},true)
 }
+
+
+// 余额转增
+export const yueTransfer = function (money,password,username) {
+  return http.post('/My/yueTransfer',{money:money,password:password,username:username},true)
+}
+
+
 
 
 

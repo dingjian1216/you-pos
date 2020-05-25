@@ -178,7 +178,12 @@ let router = new Router({
           component: resolve => require(['@/pages/my/record'], resolve),
           meta: {title: '提现记录', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
         },
- 
+        {
+          path: '/donation',
+          name: 'donation',
+          component: resolve => require(['@/pages/my/donation.vue'], resolve),
+          meta: {title: '转赠', keepAlive: false, isShowSearch: false, isShowTab: false}
+        },
         {
           path: '/withdrawlist',
           name: 'withdrawlist',

@@ -3,6 +3,7 @@
     <div class="infoBox">
       <group>
         <x-input title="真实姓名：" placeholder="请输入真实姓名" v-model="realname" :show-clear='false'></x-input>
+        <x-input title="账号密码:" placeholder="请输入账号密码" v-model="password" :show-clear='false'></x-input>
         <x-input title="身份证号:" placeholder="请输入身份证号" v-model="card" :show-clear='false'></x-input>
         <x-input title="支付宝账号:" placeholder="请输入支付宝账号" v-model="alipay" :show-clear='false'></x-input>
       </group>
@@ -24,7 +25,8 @@ export default {
     return {
       realname: "",
       card: "",
-      alipay: ""
+      alipay: "",
+      password: ''
     };
   },
   methods: {
@@ -35,12 +37,16 @@ export default {
         this.$vux.toast.text("身份证号码不正确");
         return;
       }
+      if(!this.password){
+        this.$vux.toast.text("请输入账号密码");
+        return;
+      }
       apiHttp
         .getAuth(
           this.realname,
           this.card,
           this.alipay,
-          store.state.global.token
+          this.password
         )
         .then(res => {
           if (res.code === 1) {

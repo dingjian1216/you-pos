@@ -30,6 +30,21 @@
         </div>
       </div>
       <div class="high"></div>
+      <div class="count">
+        <div
+          class="countBox"
+          @click="jumpTo({name: 'donation',query: {ktx: profit.ktx}})"
+        >
+          <div class="div1">
+            <img src="../../assets/img/my/changeMoney.png" alt />
+            <span>转赠</span>
+          </div>
+          <div class="div2">
+            <i class="iconfont icon-right"></i>
+          </div>
+        </div>
+      </div>
+      <div class="high"></div>
       <div class="account">
         <p class="t">提现到</p>
         <div class="number" @click="jumpTo('/realName')">
@@ -43,7 +58,7 @@
       </div>
       <div class="inputBox">
         <input type="number" placeholder="请输入提取金额" v-model="money" />
-        <span :style="{color: $store.state.global.theme.mainColor}" @click="money = profit.ktx" >全部</span>
+        <span :style="{color: $store.state.global.theme.mainColor}" @click="money = profit.ktx">全部</span>
       </div>
       <div
         class="primary_btn"
@@ -51,7 +66,6 @@
         @click="widthdraw"
       >提现</div>
     </div>
-
   </div>
 </template>
 
@@ -76,26 +90,27 @@ export default {
     };
   },
   methods: {
- 
     // 提现
     widthdraw() {
       let that = this;
-      if(!that.alipay){
-        this.$vux.toast.text('请先绑定账户')
-        return
+      if (!that.alipay) {
+        this.$vux.toast.text("请先绑定账户");
+        return;
       }
-     if (Number(that.money) > Number(that.profit.ktx)) {
-        this.$vux.toast.text('账户金额不足')
-        return
+      if (Number(that.money) > Number(that.profit.ktx)) {
+        this.$vux.toast.text("账户金额不足");
+        return;
       }
-      apiHttp.getApply(that.alipay.name,that.alipay.alipay,that.money).then(res=>{
-        if(res.code = 1){
-          that.$vux.toast.text(res.msg)
-          that.getProfit()
-        }else{
-          that.$vux.toast.text(res.msg)
-        }
-      })
+      apiHttp
+        .getApply(that.alipay.name, that.alipay.alipay, that.money)
+        .then(res => {
+          if ((res.code = 1)) {
+            that.$vux.toast.text(res.msg);
+            that.getProfit();
+          } else {
+            that.$vux.toast.text(res.msg);
+          }
+        });
     },
     getProfit() {
       apiHttp.getMyReward().then(res => {
@@ -311,8 +326,35 @@ export default {
       height: 0.1rem;
       background: #f4f4f4;
     }
+    .countBox {
+      height: 0.88rem;
+      padding: 0 0.3rem;
+      background: #fff;
+      margin-bottom: 0.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .div1 {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        font-size: @font-more-big;
+        img {
+          width: 0.4rem;
+          margin-right: 0.2rem;
+        }
+        span {
+          font-size: @font-big;
+        }
+      }
+      .div2 {
+        i {
+          color: @font-light-color;
+        }
+      }
+    }
     .account {
-      padding: 0.3rem;
+      padding: 0.3rem 0.3rem 0;
       .t {
         color: #333;
         font-size: 0.3rem;

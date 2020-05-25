@@ -32,10 +32,10 @@
       :style="{background: $store.state.global.theme.mainColor}"
       @click="layout"
     >退出登录</div>
-    <div style="text-align:center;font-size:0.3rem;color:#757575">
+    <!-- <div style="text-align:center;font-size:0.3rem;color:#757575">
       <p>Copyright @2017-2020</p>
       <p>三脉科技版权所有</p>
-    </div>
+    </div> -->
     <p class="power" v-for="(item, index) of company" :key="index">{{item}}</p>
     <actionsheet v-model="show" :menus="menus" show-cancel @on-click-menu="click"></actionsheet>
     <confirm v-model="show1" @on-confirm="onConfirm" title="清除缓存">
