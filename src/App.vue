@@ -139,7 +139,8 @@ export default {
         "guide",
         "material",
         "machine",
-        "teamDetails"
+        "teamDetails",
+        "price"
       ],
       transitionName: "",
       img: "",

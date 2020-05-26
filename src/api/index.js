@@ -60,6 +60,12 @@ export const goZFBPay = function (orderId,total_money) {
   return http.post('/Order/goZFBPay',{orderId:orderId,total_money:total_money},true)
 }
 
+// 微信支付
+export const goWXPay = function (orderId,total_money) {
+  return http.post('/Order/goWXPay',{orderId:orderId,total_money:total_money},true)
+}
+
+
 
 
 // 订单列表

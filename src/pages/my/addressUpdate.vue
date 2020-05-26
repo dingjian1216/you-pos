@@ -60,7 +60,7 @@ export default {
       value: this.$route.query ? [this.$route.query.province, this.$route.query.city, this.$route.query.county] : [],
       addressAll: [],
       address: this.$route.query ? this.$route.query.detail_address : '',
-      addressData: address,
+      addressData: ChinaAddressV4Data,
       showAddress: false,
       userName: this.$route.query ? this.$route.query.name : '',
       mobile: this.$route.query ? this.$route.query.mobile : ''

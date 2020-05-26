@@ -49,7 +49,7 @@
           </div>
           <div class="checkbox">
             <img
-              :src="active == 'alipay' ? './static/libs/img/active.png' : './static/libs/img/active_no.png'"
+              :src="active == 'wechat' ? './static/libs/img/active.png' : './static/libs/img/active_no.png'"
               alt
             />
           </div>
@@ -123,6 +123,37 @@ export default {
                 }
               }
             );
+          } else {
+            this.$vux.toast.text(res.msg);
+          }
+        });
+      } else if (this.active === "wechat") {
+        apiHttp.goWXPay(this.orderId, this.total_money).then(res => {
+          if (res.code === 1) {
+            let wxPay = api.require("wxPay");
+            let info = {
+              apiKey: data.appid,
+              orderId: data.prepayid,
+              mchId: data.partnerid,
+              nonceStr: data.noncestr,
+              timeStamp: data.timestamp,
+              sign: data.sign
+            };
+            wxPay.payOrder(info, function(ret, err) {
+              if (ret.status) {
+                that.$vux.toast.text("支付成功");
+                that.$router.push({
+                  name: "mallPaySuccess"
+                });
+              } else {
+                console.log(JSON.stringify(err));
+                if (err.code === -2) {
+                  that.$vux.toast.text("取消支付");
+                } else {
+                  that.$vux.toast.text("支付失败");
+                }
+              }
+            });
           } else {
             this.$vux.toast.text(res.msg);
           }

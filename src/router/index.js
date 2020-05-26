@@ -194,7 +194,7 @@ let router = new Router({
           path: '/price',
           name: 'price',
           component: resolve => require(['@/pages/my/price'], resolve),
-          meta: {title: '机主价格表', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
+          meta: {title: '机主价格表', keepAlive: false, isShowHead: false, isShowTab: false, routerZindex: 3}
         },
         
         {

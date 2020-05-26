@@ -114,7 +114,10 @@ export default {
     handModel() {
       this.show_select = true;
     }
-  }
+  },
+  updated() {
+    $('.descBox').find('p').css('display', 'flex');
+ },
 };
 </script>
 <style lang="less" scoped>
@@ -167,6 +170,10 @@ export default {
         }
         .describe {
           padding-top: 0.3rem !important;
+          /deep/ img{
+              width: 100%;
+              vertical-align: middle;
+            }
         }
       }
     }
