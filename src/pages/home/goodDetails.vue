@@ -115,9 +115,6 @@ export default {
       this.show_select = true;
     }
   },
-  updated() {
-    $('.descBox').find('p').css('display', 'flex');
- },
 };
 </script>
 <style lang="less" scoped>

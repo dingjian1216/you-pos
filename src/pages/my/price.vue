@@ -49,7 +49,7 @@ export default {
   },
   data() {
     return {
-      settingH: '',
+      statusH: '',
       list: "",
       bankBox: "",
       name: "",

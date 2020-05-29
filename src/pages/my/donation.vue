@@ -17,7 +17,7 @@
         <input type="text" placeholder="请输入转赠金额" v-model="money" />
       </div>
       <div class="ktxMoney">
-        <span>当前可用余额：</span>
+        <span>当前可用{{name}}：</span>
         <span style="color: #fc3357">￥{{ktx}}</span>
       </div>
 
@@ -44,24 +44,61 @@ export default {
       money: "",
       mobile: "",
       password: "",
-      ktx: this.$route.query.ktx
+      ktx: this.$route.query.ktx,
+      name: "",
+      type: this.$route.query.type
     };
   },
-  mounted() {},
+  mounted() {
+    if (this.$route.query.type == 1) {
+      this.name = "购物款";
+    } else {
+      this.name = "余额";
+    }
+  },
   methods: {
     confirmDt() {
-      apiHttp.yueTransfer(this.money, this.password, this.mobile).then(res => {
-        if (res.code === 1) {
-          this.$vux.toast.text(res.data);
-          setTimeout(() => {
-            // this.$router.push({
-            //   name: "mallDonationList",
-            //   query: { credittype: this.credittype }
-            // });
-            this.$router.go(-1);
-          }, 1000);
-        }
-      });
+      if (!/[0-9]{11}/.test(this.mobile)) {
+        this.$vux.toast.text("请输入正确的手机号");
+        return;
+      }
+      if (!this.money) {
+        this.$vux.toast.text("请输入转增金额");
+        return;
+      }
+      if (!this.password) {
+        this.$vux.toast.text("请输入当前账号的密码");
+        return;
+      }
+      console.log(this.money > this.ktx)
+      if (Number(this.money) >  Number(this.ktx)) {
+        let name = this.name
+        this.$vux.toast.text('请输入可用'+name+'');
+        return;
+      }
+      if (this.type == 1) {
+        apiHttp
+          .ghkTransfer(this.money, this.password, this.mobile)
+          .then(res => {
+            if (res.code === 1) {
+              this.$vux.toast.text(res.data);
+              setTimeout(() => {
+                this.$router.go(-1);
+              }, 1000);
+            }
+          });
+      } else {
+        apiHttp
+          .yueTransfer(this.money, this.password, this.mobile)
+          .then(res => {
+            if (res.code === 1) {
+              this.$vux.toast.text(res.data);
+              setTimeout(() => {
+                this.$router.go(-1);
+              }, 1000);
+            }
+          });
+      }
     }
   }
 };

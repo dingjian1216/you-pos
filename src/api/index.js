@@ -60,6 +60,11 @@ export const goZFBPay = function (orderId,total_money) {
   return http.post('/Order/goZFBPay',{orderId:orderId,total_money:total_money},true)
 }
 
+// 购货款支付
+export const goGHKpay = function (orderId,total_money) {
+  return http.post('/Order/goGHKpay',{orderId:orderId,total_money:total_money},true)
+}
+
 // 微信支付
 export const goWXPay = function (orderId,total_money) {
   return http.post('/Order/goWXPay',{orderId:orderId,total_money:total_money},true)
@@ -299,6 +304,19 @@ export const wxBindUserByMP = function (username,code,password,access_token,open
 export const yueTransfer = function (money,password,username) {
   return http.post('/My/yueTransfer',{money:money,password:password,username:username},true)
 }
+
+// 购物款 转赠
+export const ghkTransfer = function (money,password,username) {
+  return http.post('/My/ghkTransfer',{money:money,password:password,username:username},true)
+}
+
+// 购物款明细
+export const getGWKlist = function (page,limit) {
+  return http.post('/My/getGWKlist',{page:page,limit:limit},true)
+}
+
+
+
 
 
 

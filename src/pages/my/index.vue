@@ -169,6 +169,12 @@
               </div>
               <div>机主价格表</div>
             </div>
+            <div @click="jumpTo('/shopMoney')">
+              <div class="imgBox">
+                <img src="../../assets/img/home/kuan.png" alt />
+              </div>
+              <div>购物款</div>
+            </div>
           </div>
         </div>
       </div>

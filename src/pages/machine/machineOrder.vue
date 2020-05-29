@@ -25,6 +25,7 @@
               <span class="warning" v-if="vo['status'] == 1">待审核</span>
               <span class="danger" v-if="vo['status'] == 2">已驳回</span>
               <span class="success" v-if="vo['status'] == 3">已通过</span>
+              <span class="success" v-if="vo['status'] == 4">初审已通过</span>
             </div>
           </div>
           <div class="goodMsg">
@@ -70,7 +71,7 @@ export default {
         },
         htmlNodata: '<p class="upwarp-nodata">-- END --</p>',
         htmlLoading: "",
-        noMoreSize: 5,
+        noMoreSize: 1,
         empty: {
           warpId: "p1",
           icon: "./static/img/auth/kong.png",
@@ -125,7 +126,7 @@ export default {
             if (page.num === 1) this.list = [];
             this.list = this.list.concat(arr);
             this.$nextTick(() => {
-              mescroll.endSuccess(arr.length,true);
+             mescroll.endSuccess(arr.length)
             });
           } else {
             mescroll.endErr();

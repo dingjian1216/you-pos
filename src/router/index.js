@@ -257,6 +257,18 @@ let router = new Router({
           component: resolve => require(['@/pages/my/binding'], resolve),
           meta: {title: '绑定微信', keepAlive: true, isShowHead: true, isShowTab: false, routerZindex: 2}
         },
+        {
+          path: '/shopMoney',
+          name: 'shopMoney',
+          component: resolve => require(['@/pages/my/shopMoney'], resolve),
+          meta: {title: '购物款', keepAlive: false, isShowHead: false, isShowTab: false, routerZindex: 3}
+        },
+        {
+          path: '/shopMoneyList',
+          name: 'shopMoneyList',
+          component: resolve => require(['@/pages/my/shopMoneyList'], resolve),
+          meta: {title: '购物款明细', keepAlive: false, isShowHead: true, isShowTab: false, routerZindex: 3}
+        },
       ]
     }
   ],

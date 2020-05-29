@@ -30,6 +30,18 @@
             />
           </div>
         </div>
+         <div class="list" @click="handChange('kuan')">
+          <div class="img_box">
+            <img src="../../assets/img/home/kuan.png" alt />
+            <span>购物款</span>
+          </div>
+          <div class="checkbox">
+            <img
+              :src="active == 'kuan' ? './static/libs/img/active.png' : './static/libs/img/active_no.png'"
+              alt
+            />
+          </div>
+        </div>
         <div class="list" @click="handChange('alipay')">
           <div class="img_box">
             <img src="../../assets/img/home/apliy.png" alt />
@@ -158,7 +170,17 @@ export default {
             this.$vux.toast.text(res.msg);
           }
         });
-      }
+      }else if (this.active === "kuan") {
+        apiHttp.goGHKpay(this.orderId, this.total_money).then(res => {
+          if (res.code === 1) {
+            this.$router.push({
+              name: "paySuccess"
+            });
+          } else {
+            this.$vux.toast.text(res.msg);
+          }
+        });
+      } 
     }
   }
 };

@@ -33,7 +33,7 @@
       <div class="count">
         <div
           class="countBox"
-          @click="jumpTo({name: 'donation',query: {ktx: profit.ktx}})"
+          @click="jumpTo({name: 'donation',query: {ktx: profit.ktx,type: 2}})"
         >
           <div class="div1">
             <img src="../../assets/img/my/changeMoney.png" alt />
@@ -197,65 +197,6 @@ export default {
   background: #fff;
   overflow-y: auto;
   position: relative;
-  .single_get {
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 999;
-    .get_info {
-      width: 6.38rem;
-      position: absolute;
-      top: 4.66rem;
-      left: 50%;
-      margin-left: -3.19rem;
-      background: #ffffff;
-      border-radius: 0.16rem;
-      padding-bottom: 0.5rem;
-      p:first-child {
-        font-size: 0.28rem;
-        color: #666666;
-        text-align: center;
-        margin-top: 0.68rem;
-        font-weight: 500;
-      }
-      p:nth-child(2) {
-        color: #333333;
-        font-size: 0.32rem;
-        text-align: center;
-        margin-top: 0.26rem;
-        font-weight: 500;
-      }
-      .get_confirm {
-        padding: 0 0.74rem;
-        box-sizing: border-box;
-        height: 0.7rem;
-        margin-top: 0.4rem;
-        display: flex;
-        justify-content: space-between;
-        span {
-          display: inline-block;
-          width: 1.9rem;
-          height: 0.7rem;
-          border-radius: 0.35rem;
-          font-size: 0.28rem;
-          font-weight: 500;
-          text-align: center;
-          line-height: 0.7rem;
-        }
-        span:first-child {
-          background: #f0f0f0;
-          color: #898787;
-        }
-        span:last-child {
-          background: #ff2556;
-          color: #ffffff;
-        }
-      }
-    }
-  }
   .save {
     color: #666;
   }
