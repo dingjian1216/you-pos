@@ -82,8 +82,8 @@ export default {
   methods: {
     wechatLogin() {
       let that = this;
-      let wx = api.require("wx");
-      wx.auth(
+      var wxPlus = api.require('wxPlus');
+      wxPlus.auth(
         {
           apiKey: ""
         },

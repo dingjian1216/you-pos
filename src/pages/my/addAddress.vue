@@ -72,7 +72,7 @@ export default {
       value: [],
       addressAll: [],
       address: "",
-      addressData: ChinaAddressV4Data,
+      addressData: address,
       showAddress: false,
       userName: "",
       mobile: ""

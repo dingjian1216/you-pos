@@ -110,8 +110,8 @@ export default {
           cache: false,
           allowResume: true
         }, function (ret, err) {
-          var wx = api.require('wx')
-          wx.shareWebpage({
+          var wxPlus = api.require('wxPlus');
+          wxPlus.shareWebpage({
             scene: way,
             title: '可兑',
             description: '可兑,一切可兑',
@@ -139,8 +139,8 @@ export default {
           allowResume: true
         }, function (ret, err) {
           that.$vux.loading.hide()
-          let wx = api.require('wx')
-          wx.shareImage({
+          var wxPlus = api.require('wxPlus');
+          wxPlus.shareImage({
             scene: way,
             contentUrl: 'fs://' + format
           }, function (ret, err) {
