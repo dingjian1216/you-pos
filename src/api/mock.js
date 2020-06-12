@@ -38,13 +38,13 @@ const getSortLinst = function () {
         content: '休闲零食'
       }]
     },
-      {
-        title: '饰品',
-        list: [{
-          url: Random.dataImage('300x250', 'mock的图片'),
-          content: '休闲零食'
-        }]
+    {
+      title: '饰品',
+      list: [{
+        url: Random.dataImage('300x250', 'mock的图片'),
+        content: '休闲零食'
       }]
+    }]
   }
   msg = '信息返回成功'
   return {

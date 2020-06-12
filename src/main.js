@@ -28,25 +28,24 @@ Vue.use(VueLazyload, {
 })
 Vue.prototype.$logo = utils.storage.get('appLoginLogo') ? utils.storage.get('appLoginLogo') : ''
 
-
 Vue.component('x-header', XHeader)
 
 Vue.use(plugin, { router: router })
 
 Vue.config.productionTip = false
-Vue.prototype.link = 'https://uat.xingciji.com/'
+// Vue.prototype.link = 'https://uat.xingciji.com/'
+Vue.prototype.link = 'http://test.zhiyong.com/'
 Vue.prototype.$logo = '../../assets/img/logo.png'
 
 // 测试环境代码 —————————————start—————————————————
 
-// vueObj 为了方便别的webview调用此vue对象
-// window.vueObj = new Vue({
-//   el: '#app',
-//   router,
-//   store,
-//   components: {App},
-//   template: '<App/>'
-// })
+window.vueObj = new Vue({
+  el: '#app',
+  router,
+  store,
+  components: {App},
+  template: '<App/>'
+})
 
 // 测试环境代码 —————————————end—————————————————
 
@@ -72,8 +71,8 @@ window.apiready = function () {
       clearInterval(timer)
     }
   }, 1000)
-  function getDesign() {
-    let home =  '/home'
+  function getDesign () {
+    let home = '/home'
     // 返回
     let now = false
     let time = null

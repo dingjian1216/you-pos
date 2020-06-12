@@ -7,12 +7,12 @@ import qs from 'qs'
 axios.defaults.timeout = 5000
 let baseApiUrl = window.location.host
 if (baseApiUrl.indexOf('192.168') !== -1 || baseApiUrl.indexOf('localhost') !== -1) {
-  baseApiUrl = '/api/agent/'
+  baseApiUrl = 'test.zhiyong.com/agent/'
 } else {
-  baseApiUrl = ' https://uat.xingciji.com/agent/'
+//  baseApiUrl = ' https://uat.xingciji.com/agent/'
+  baseApiUrl = ' test.zhiyong.com/agent/'
 }
 axios.defaults.baseURL = baseApiUrl
-
 
 console.log(baseApiUrl)
 // 设置默认请求头
@@ -89,7 +89,7 @@ export default {
   // get请求
   get (url, param, loading) {
     return new Promise((resolve, reject) => {
-      
+
       if (loading) {
         store.commit('show')
       }

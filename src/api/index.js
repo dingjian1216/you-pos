@@ -13,7 +13,7 @@ export const sendCode = function (mobile,agentCode) {
 
 
 
-// 注册 
+// 注册
 export const register = function (username,code,password,agent_code) {
   return http.post('login/register',{username:username,code:code,password:password,agent_code:agent_code},true)
 }
@@ -220,12 +220,12 @@ export const getAddressEdit = function (name,mobile,province,city,county,detail_
 
 // 文章列表
 export const getWYDataList = function (page,limit,title,type) {
-  return http.post('/wy/getWYDataList',{page:page,limit:limit,title:title,type:type},true)
+  return http.post('http://test.zhiyong.com/agent/wy/getWYDataList',{page:page,limit:limit,title:title,type:type},true)
 }
 
 // 文章详情
 export const getKyDetail = function (ky_id) {
-  return http.post('/wy/getKyDetail',{ky_id:ky_id},true)
+  return http.post('http://test.zhiyong.com/agent/wy/getKyDetail',{ky_id:ky_id},true)
 }
 
 
@@ -252,7 +252,7 @@ export const getuserXieyi = function () {
 
 // banner
 export const getBanner = function () {
-  return http.post('/Goods/getBanner',{},true)
+  return http.post('http://test.zhiyong.com/agent/Goods/getBanner',{},true)
 }
 
 
