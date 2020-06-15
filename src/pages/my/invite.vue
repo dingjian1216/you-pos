@@ -8,7 +8,7 @@
             </swiper-slide>
           </swiper>
         </div>
-     
+
       </div>
       <div class="footer" :style="{bottom: h}">
         <!-- <p @click="keepImgs()">保存当前海报</p>
@@ -101,7 +101,7 @@ export default {
       let text = this.link + "/home/index/register/user_code/"+ userInfo.username
       if (that.type === 1) {
         let format = 'share' + new Date().getTime() + '.png'
-        let appDownLogo = 'http://uat.xingciji.com/public/kedui.png'
+        let appDownLogo = ' http://kd.youxiangdui.net/public/kedui.png'
         api.download({
           url: appDownLogo,
           savePath: 'fs://' + format,

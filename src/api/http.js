@@ -9,7 +9,7 @@ let baseApiUrl = window.location.host
 if (baseApiUrl.indexOf('192.168') !== -1 || baseApiUrl.indexOf('localhost') !== -1) {
   baseApiUrl = '/api/agent/'
 } else {
-  baseApiUrl = ' https://uat.xingciji.com/agent/'
+  baseApiUrl = '  http://kd.youxiangdui.net/agent/'
 }
 axios.defaults.baseURL = baseApiUrl
 
@@ -89,7 +89,7 @@ export default {
   // get请求
   get (url, param, loading) {
     return new Promise((resolve, reject) => {
-      
+
       if (loading) {
         store.commit('show')
       }

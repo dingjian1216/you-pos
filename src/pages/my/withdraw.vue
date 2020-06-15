@@ -65,6 +65,14 @@
         :style="{background: $store.state.global.theme.mainColor}"
         @click="widthdraw"
       >提现</div>
+      <div class="tips" style="border-radius: .05rem;margin: .2rem;color: #999;">
+        提现说明:
+        机主每天免费提现1笔,之后每笔收取2元；
+        机主单笔提现10-10000元；
+        机主每天累计提现最高限额10000元；
+        每天提现时间9:00-17:00；
+        提现不收取任何手续费。
+      </div>
     </div>
   </div>
 </template>

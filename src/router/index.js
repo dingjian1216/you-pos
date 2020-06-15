@@ -95,6 +95,12 @@ let router = new Router({
           meta: {title: '商学院', keepAlive: true, isShowSearch: false, isShowTab: true,isShowHead: false }
         },
         {
+          path: '/plist',
+          name: 'plist',
+          component: resolve => require(['@/pages/material/plist'], resolve),
+          meta: {title: '商学院', keepAlive: false, isShowSearch: false, isShowHead: true, routerZindex: 2 }
+        },
+        {
           path: '/materialDetails',
           name: 'materialDetails',
           component: resolve => require(['@/pages/material/materialDetails'], resolve),
@@ -196,7 +202,7 @@ let router = new Router({
           component: resolve => require(['@/pages/my/price'], resolve),
           meta: {title: '机主价格表', keepAlive: false, isShowHead: false, isShowTab: false, routerZindex: 3}
         },
-        
+
         {
           path: '/team',
           name: 'team',
