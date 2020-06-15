@@ -1,6 +1,5 @@
 <template>
   <div class='material'>
-    <router-view v-if="isRouterAlive"></router-view>
     <div class="head" :style="{paddingTop: statusH + 'rem'}">
       <div class="title" style="">
         可兑商学院
@@ -138,7 +137,7 @@
         }
       }
     },
-//  inject: ['reload'],
+
     beforeRouteEnter (to, from, next) {
       next(vm => {
         if (vm.mescroll) {
@@ -185,9 +184,6 @@
         this.mescrollUp.page.num = 1
         this.upCallback(this.mescrollUp.page, this.mescroll)
       },
-      reflesh(){
-        this.reload()
-      },
       changeType (type, name) {
         this.typeName = name
         this.type = type
@@ -213,7 +209,6 @@
         })
       },
       upCallback (page, mescroll) {
-        let that = this;
         apiHttp
           .getWYDataList(page.num, 10, this.$route.query.pid)
           .then(res => {
@@ -230,6 +225,11 @@
             mescroll.endErr()
           })
       },
+      refresh: function () {
+        this.list = []
+        this.mescrollUp.page.num = 1
+        this.upCallback(this.mescrollUp.page, this.mescroll)
+      }
     }
   }
 </script>

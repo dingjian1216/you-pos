@@ -220,22 +220,22 @@ export const getAddressEdit = function (name,mobile,province,city,county,detail_
 
 // 文章列表
 export const getWYDataList = function (page,limit,pid) {
-  return http.post('/agent/wy/getkylist',{page:page,limit:limit,pid:pid},true)
+  return http.post('/wy/getkylist',{page:page,limit:limit,pid:pid},true)
 }
 
 // 文章详情
 export const getKyDetail = function (ky_id) {
-  return http.post('/agent/wy/detail',{ky_id:ky_id},true)
+  return http.post('/wy/detail',{ky_id:ky_id},true)
 }
 
 // 商学院banner
 export const getKyBanner = function () {
-  return http.post('/agent/wy/getBanner',{},true)
+  return http.post('/wy/getBanner',{},true)
 }
 
 // 文章分类
 export const getCate = function () {
-  return http.post('/agent/Wy/catelist',{},true)
+  return http.post('/Wy/catelist',{},true)
 }
 
 

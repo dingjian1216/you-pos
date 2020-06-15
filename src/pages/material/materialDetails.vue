@@ -2,8 +2,8 @@
   <div class="materialDetails">
     <div class="name">{{data.title}}</div>
     <p class="time">{{data.create_time | formatDate}}</p>
-    <div v-on:click="playVideo()">
-      <video :src="data.video_src" id="videoPlay" v-show="false" class="video">您的浏览器不支持 video 视屏播放。</video>
+    <div v-on:click="playVideo()" v-if="data.video_src !== 0">
+      <video :src="data.video_src" id="videoPlay" style="width: 100%;">您的浏览器不支持 video 视屏播放。</video>
     </div>
     <div class="content" v-html="data.content"></div>
   </div>
