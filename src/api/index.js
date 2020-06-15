@@ -13,7 +13,7 @@ export const sendCode = function (mobile,agentCode) {
 
 
 
-// 注册 
+// 注册
 export const register = function (username,code,password,agent_code) {
   return http.post('login/register',{username:username,code:code,password:password,agent_code:agent_code},true)
 }
@@ -70,13 +70,10 @@ export const goWXPay = function (orderId,total_money) {
   return http.post('/Order/goWXPay',{orderId:orderId,total_money:total_money},true)
 }
 
-
-
-
 // 订单列表
 
 export const getOrderList = function (page,limit,status) {
-  return http.post('/Order/getOrderList',{page:page,limit:limit,status},true)
+  return http.post('/Order/cateList',{page:page,limit:limit,status},true)
 }
 
 // 取消订单
@@ -219,15 +216,24 @@ export const getAddressEdit = function (name,mobile,province,city,county,detail_
 }
 
 // 文章列表
-export const getWYDataList = function (page,limit,title,type) {
-  return http.post('/wy/getWYDataList',{page:page,limit:limit,title:title,type:type},true)
+export const getWYDataList = function (page,limit,pid) {
+  return http.post('http://test.zhiyong.com/agent/wy/getkylist',{page:page,limit:limit,pid:pid},true)
 }
 
 // 文章详情
 export const getKyDetail = function (ky_id) {
-  return http.post('/wy/getKyDetail',{ky_id:ky_id},true)
+  return http.post('http://test.zhiyong.com/agent/wy/detail',{ky_id:ky_id},true)
 }
 
+// 商学院banner
+export const getKyBanner = function () {
+  return http.post('http://test.zhiyong.com/agent/wy/getBanner',{},true)
+}
+
+// 文章分类
+export const getCate = function () {
+  return http.post('http://test.zhiyong.com/agent/Wy/catelist',{},true)
+}
 
 // 未读消息数量
 export const getNewsNum = function () {

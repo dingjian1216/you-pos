@@ -258,7 +258,7 @@ export default {
       let that = this;
       api.ajax(
         {
-          url: " http://uat.xingciji.com/agent/My/editHeadPicture?token="+token+"",
+          url: " http://kd.youxiangdui.net/agent/My/editHeadPicture?token="+token+"",
           method: "post",
           timeout: 30,
           data: {

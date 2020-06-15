@@ -1,6 +1,5 @@
 <template>
   <div class='material'>
-    <router-view v-if="isRouterAlive"></router-view>
     <div class="head" :style="{paddingTop: statusH + 'rem'}">
       <div class="title" style="">
         可兑商学院
@@ -12,12 +11,7 @@
               <img :src="item.cover" alt class="bg" @click="jumpTo({name: 'materialDetails',query:{ky_id: item.ky_id}})" />
             </swiper-slide>
           </swiper>
-
-          <div class="items" >
-            <div class="item" :style="jiaocheng" v-for="(item,index) in cate" :key="index">
-              <div @click="jumpTo({name: 'plist',query:{pid: item.id}})">{{item.title}}</div>
-            </div>
-          </div>
+          <div id='d0'></div>
           <template v-for = "(item,index) in list">
             <div v-if="item.video_src == 0" class = 'materialList' :key='index' @click="jumpTo({name: 'materialDetails',query:{ky_id: item.id}})">
               <img v-lazy='item.cover' class='cover'>
@@ -59,7 +53,6 @@
           </template>
         </mescroll-vue>
       </div>
-      <div id='d0'></div>
     </div>
 </template>
 <script>
@@ -138,7 +131,7 @@
         }
       }
     },
-//  inject: ['reload'],
+
     beforeRouteEnter (to, from, next) {
       next(vm => {
         if (vm.mescroll) {
@@ -185,9 +178,6 @@
         this.mescrollUp.page.num = 1
         this.upCallback(this.mescrollUp.page, this.mescroll)
       },
-      reflesh(){
-        this.reload()
-      },
       changeType (type, name) {
         this.typeName = name
         this.type = type
@@ -205,15 +195,8 @@
           }
         })
       },
-      getCate () {
-        apiHttp.getCate().then(res => {
-          if (res.code == 1) {
-            this.cate = res.data
-          }
-        })
-      },
       upCallback (page, mescroll) {
-        let that = this;
+        this.refresh
         apiHttp
           .getWYDataList(page.num, 10, this.$route.query.pid)
           .then(res => {
@@ -224,13 +207,17 @@
               this.$nextTick(() => {
                 mescroll.endSuccess(res.data.data.length, true)
               })
-//            this.reload()
             }
           })
           .catch(e => {
             mescroll.endErr()
           })
       },
+      refresh: function () {
+        this.list = []
+        this.mescrollUp.page.num = 1
+        this.upCallback(this.mescrollUp.page, this.mescroll)
+      }
     }
   }
 </script>

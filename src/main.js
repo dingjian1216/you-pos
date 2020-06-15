@@ -34,7 +34,7 @@ Vue.component('x-header', XHeader)
 Vue.use(plugin, { router: router })
 
 Vue.config.productionTip = false
-Vue.prototype.link = 'https://uat.xingciji.com/'
+Vue.prototype.link = 'http://kd.youxiangdui.net/'
 Vue.prototype.$logo = '../../assets/img/logo.png'
 
 // 测试环境代码 —————————————start—————————————————
