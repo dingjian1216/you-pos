@@ -258,8 +258,8 @@ export default {
       let that = this;
       api.ajax(
         {
-          url: "  http://kd.youxiangdui.net/agent/My/editHeadPicture?token="+token+"",
-          method: "post",
+          url: 'http://kd.youxiangdui.net/agent/My/editHeadPicture?token=' + token,
+          method: 'post',
           timeout: 30,
           data: {
             files: {

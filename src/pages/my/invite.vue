@@ -101,7 +101,7 @@ export default {
       let text = this.link + "/home/index/register/user_code/"+ userInfo.username
       if (that.type === 1) {
         let format = 'share' + new Date().getTime() + '.png'
-        let appDownLogo = ' http://kd.youxiangdui.net/public/kedui.png'
+        let appDownLogo = 'http://kd.youxiangdui.net/public/kedui.png'
         api.download({
           url: appDownLogo,
           savePath: 'fs://' + format,
