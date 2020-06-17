@@ -1,18 +1,16 @@
 <template>
   <div class='material'>
+    <div class="head" :style="{paddingTop: statusH + 'rem'}">
+
+    </div>
     <div class='materialBox' :style="{marginTop:statusH + 'rem'}">
       <mescroll-vue ref="mescroll" :down="mescrollDown" :up="mescrollUp" @init="mescrollInit">
-        <swiper class="banner_list" :options="swiperOption" v-if="banner.length > 0">
-          <swiper-slide class="allBox" v-for="(item,index) in banner" :key="index">
-            <img :src="item.cover" alt class="bg" @click="jumpTo({name: 'materialDetails',query:{ky_id: item.ky_id}})" />
-          </swiper-slide>
-        </swiper>
-        <div id='d0'></div>
         <template v-for = "(item,index) in list">
           <div v-if="item.video_src == 0" class = 'materialList' :key='index' @click="jumpTo({name: 'materialDetails',query:{ky_id: item.id}})">
             <img v-lazy='item.cover' class='cover'>
             <div class='materialMsg' >
               <div class='name'>{{item.title}}</div>
+              <div>{{item.abstract}}</div>
               <div class='time_read'>
                 <div>
                   <svg t="1591964972928" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2802" width="10" height="10"><path d="M13.141333 511.973744a498.871795 498.871795 0 1 1 498.871795 498.871794 499.34441 499.34441 0 0 1-498.871795-498.871794z m52.512821 0a446.358974 446.358974 0 1 0 446.358974-446.358975 446.884103 446.884103 0 0 0-446.358974 446.358975z m408.260923 105.918359a28.882051 28.882051 0 0 1-28.882051-28.882052V197.920821c0.997744 0 46.73641-0.341333 57.764102 0v362.338461h270.441026v57.764103z" p-id="2803" fill="#dbdbdb"></path></svg>
@@ -20,7 +18,7 @@
                 </div>
                 <div>
                   <svg t="1591965144162" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5425" width="10" height="10"><path d="M515.2 224c-307.2 0-492.8 313.6-492.8 313.6s214.4 304 492.8 304 492.8-304 492.8-304S822.4 224 515.2 224zM832 652.8c-102.4 86.4-211.2 140.8-320 140.8s-217.6-51.2-320-140.8c-35.2-32-70.4-64-99.2-99.2-6.4-6.4-9.6-12.8-16-19.2 3.2-6.4 9.6-12.8 12.8-19.2 25.6-35.2 57.6-70.4 92.8-102.4 99.2-89.6 208-144 329.6-144s230.4 54.4 329.6 144c35.2 32 64 67.2 92.8 102.4 3.2 6.4 9.6 12.8 12.8 19.2-3.2 6.4-9.6 12.8-16 19.2C902.4 585.6 870.4 620.8 832 652.8z" p-id="5426" fill="#cdcdcd"></path><path d="M512 345.6c-96 0-169.6 76.8-169.6 169.6 0 96 76.8 169.6 169.6 169.6 96 0 169.6-76.8 169.6-169.6C681.6 422.4 604.8 345.6 512 345.6zM512 640c-67.2 0-121.6-54.4-121.6-121.6 0-67.2 54.4-121.6 121.6-121.6 67.2 0 121.6 54.4 121.6 121.6C633.6 582.4 579.2 640 512 640z" p-id="5427" fill="#cdcdcd"></path></svg>
-                  2625
+                  {{item.view}}
                 </div>
               </div>
             </div>
@@ -29,10 +27,7 @@
             <div class='materialVieoMsg' >
               <div class='videoName'>{{item.title}}</div>
               <div class='videoCover'>
-                <div><img v-lazy='item.cover' ></div>
-                <div style="">
-                  <svg t="1592198719309" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3015" width="10" height="10"><path d="M512 128c211.74 0 384 172.26 384 384S723.74 896 512 896 128 723.74 128 512s172.26-384 384-384m0-64C264.58 64 64 264.58 64 512s200.58 448 448 448 448-200.58 448-448S759.42 64 512 64z" p-id="3016" fill="#dbdbdb"></path><path d="M448 352l213.33 160L448 672V352m-31.87-96.06c-16.58 0-32.13 13.1-32.13 32.06v448c0 18.95 15.55 32.06 32.13 32.06 6.49 0 13.14-2.01 19.07-6.46l298.67-224c17.07-12.8 17.07-38.4 0-51.2l-298.67-224c-5.93-4.45-12.58-6.46-19.07-6.46z" p-id="3017" fill="#dbdbdb"></path></svg>
-                </div>
+                <img v-lazy='item.video_cover' >
               </div>
               <div class='time_read'>
                 <div>
@@ -41,7 +36,7 @@
                 </div>
                 <div>
                   <svg t="1591965144162" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5425" width="10" height="10"><path d="M515.2 224c-307.2 0-492.8 313.6-492.8 313.6s214.4 304 492.8 304 492.8-304 492.8-304S822.4 224 515.2 224zM832 652.8c-102.4 86.4-211.2 140.8-320 140.8s-217.6-51.2-320-140.8c-35.2-32-70.4-64-99.2-99.2-6.4-6.4-9.6-12.8-16-19.2 3.2-6.4 9.6-12.8 12.8-19.2 25.6-35.2 57.6-70.4 92.8-102.4 99.2-89.6 208-144 329.6-144s230.4 54.4 329.6 144c35.2 32 64 67.2 92.8 102.4 3.2 6.4 9.6 12.8 12.8 19.2-3.2 6.4-9.6 12.8-16 19.2C902.4 585.6 870.4 620.8 832 652.8z" p-id="5426" fill="#cdcdcd"></path><path d="M512 345.6c-96 0-169.6 76.8-169.6 169.6 0 96 76.8 169.6 169.6 169.6 96 0 169.6-76.8 169.6-169.6C681.6 422.4 604.8 345.6 512 345.6zM512 640c-67.2 0-121.6-54.4-121.6-121.6 0-67.2 54.4-121.6 121.6-121.6 67.2 0 121.6 54.4 121.6 121.6C633.6 582.4 579.2 640 512 640z" p-id="5427" fill="#cdcdcd"></path></svg>
-                  2625
+                  {{item.view}}
                 </div>
               </div>
             </div>
@@ -49,6 +44,7 @@
         </template>
       </mescroll-vue>
     </div>
+    <div id='d0'></div>
   </div>
 </template>
 <script>
@@ -127,7 +123,7 @@
         }
       }
     },
-
+//  inject: ['reload'],
     beforeRouteEnter (to, from, next) {
       next(vm => {
         if (vm.mescroll) {
@@ -174,6 +170,9 @@
         this.mescrollUp.page.num = 1
         this.upCallback(this.mescrollUp.page, this.mescroll)
       },
+      reflesh(){
+        this.reload()
+      },
       changeType (type, name) {
         this.typeName = name
         this.type = type
@@ -191,8 +190,15 @@
           }
         })
       },
+      getCate () {
+        apiHttp.getCate().then(res => {
+          if (res.code == 1) {
+            this.cate = res.data
+          }
+        })
+      },
       upCallback (page, mescroll) {
-        this.refresh
+        let that = this;
         apiHttp
           .getWYDataList(page.num, 10, this.$route.query.pid)
           .then(res => {
@@ -203,17 +209,13 @@
               this.$nextTick(() => {
                 mescroll.endSuccess(res.data.data.length, true)
               })
+//            this.reload()
             }
           })
           .catch(e => {
             mescroll.endErr()
           })
       },
-      refresh: function () {
-        this.list = []
-        this.mescrollUp.page.num = 1
-        this.upCallback(this.mescrollUp.page, this.mescroll)
-      }
     }
   }
 </script>
@@ -222,108 +224,103 @@
     height: 100%;
     position: relative;
     background: #f5f5f5;
-    .head {
-      width: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 0rem;
+    .title {
+      text-align: center;
+      font-size: 0.4rem;
+      color: #fff;
+    }
+    .items {
+      width: 92%;
       display: flex;
-      justify-content: space-around;
+      flex-wrap: wrap;
       align-items: center;
-      height: 0.88rem;
-      // background-image: url("../../assets/img/my/my_head.png");
-      .title {
-        text-align: center;
-        font-size: 0.4rem;
-        color: #fff;
-      }
-      .items {
-        width: 92%;
+      justify-content: space-between;
+      margin: 0 auto;
+      .item {
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
-        justify-content: space-between;
-        margin: 0 auto;
-        .item {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-size: 0.3rem;
-          width: 29%;
-          min-width: 29%;
-          max-width: 29%;
-          height: 0.8rem;
-          background-color: #525252;
-          border-radius: 0.1rem;
-          margin: auto;
-          margin-bottom: 0.1rem;
-        }
+        justify-content: center;
+        color: white;
+        font-size: 0.3rem;
+        width: 29%;
+        min-width: 29%;
+        max-width: 29%;
+        height: 0.8rem;
+        background-color: #525252;
+        border-radius: 0.1rem;
+        margin: auto;
+        margin-bottom: 0.1rem;
       }
-      .time_read {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        color: #8e8e93;
-        position: absolute;
-        bottom: 0;
-        width: 100%;
+    }
+    .time_read {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      color: #8e8e93;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
 
-      }
-      background: #ff7512;
-      .icon-back {
-        font-size: 0.4rem;
-        color: #000;
-        margin-top: 0.02rem;
-      }
-      .banner_list {
-        position: relative;
-        margin-top: 0.2rem;
-        .swiper-slide {
-          img {
-            width: 6.9rem;
-            margin: 0 0.3rem;
-            border-radius: 0.1rem;
-          }
+    }
+    .icon-back {
+      font-size: 0.4rem;
+      color: #000;
+      margin-top: 0.02rem;
+    }
+    .banner_list {
+      position: relative;
+      margin-top: 0;
+      .swiper-slide {
+        img {
+          width: 100%;
+          border-radius: 0.1rem;
         }
       }
-      .searchBox {
-        width: 6.1rem;
-        height: 0.6rem;
-        border-radius: 0.3rem;
-        background: #efefef;
+    }
+    .searchBox {
+      width: 6.1rem;
+      height: 0.6rem;
+      border-radius: 0.3rem;
+      background: #efefef;
+      display: flex;
+      align-items: center;
+      padding-left: 0.3rem;
+      .select {
+        width: 1.1rem;
         display: flex;
         align-items: center;
-        padding-left: 0.3rem;
-        .select {
-          width: 1.1rem;
-          display: flex;
-          align-items: center;
-          img {
-            margin: 0 0.1rem;
-            width: 0.3rem;
-          }
-        }
-        .icon-search {
-          font-size: 0.27rem;
-          color: #999;
-        }
-        input {
-          background: #efefef;
-          margin-left: 0.2rem;
-          width: 4.3rem;
-          font-size: 0.26rem;
-          color: #999;
-          outline: none;
-          border: none;
+        img {
+          margin: 0 0.1rem;
+          width: 0.3rem;
         }
       }
-      span {
-        font-size: 0.28rem;
-        /*margin-right: .2rem;*/
-        color: #ffffff;
+      .icon-search {
+        font-size: 0.27rem;
+        color: #999;
       }
+      input {
+        background: #efefef;
+        margin-left: 0.2rem;
+        width: 4.3rem;
+        font-size: 0.26rem;
+        color: #999;
+        outline: none;
+        border: none;
+      }
+    }
+    span {
+      font-size: 0.28rem;
+      /*margin-right: .2rem;*/
+      color: #ffffff;
     }
     .materialBox {
       position: absolute;
-      top: 0;
+      top: 0rem;
       left: 0;
       right: 0;
       bottom: 0px;
@@ -336,7 +333,7 @@
         background: #ffffff;
         overflow: hidden;
         .cover {
-          width: 2rem;
+          width: 2.5rem;
           height: 1.8rem;
           float: left;
           margin-right: 0.2rem;
@@ -347,7 +344,7 @@
         .materialMsg {
           float: left;
           display: flex;
-          width: 4.5rem;
+          width: 4rem;
           flex-direction: column;
           justify-content: space-around;
           position: relative;
@@ -378,16 +375,18 @@
         }
       }
       .materiaVideolList {
-        height: 4.6rem;
+        height: 4.2rem;
         margin-bottom: 0.2rem;
         padding: 0.2rem 0.3rem;
         background: #ffffff;
         overflow: hidden;
-        .cover {
-          width: 2rem;
-          height: 1.8rem;
-          float: left;
-          margin-right: 0.2rem;
+        .videoCover {
+          width: 100%;
+          height: 3rem;
+          img{
+            width: 100%;
+            height: 100%;
+          }
         }
         .oneList {
           margin-right: 0.2rem;

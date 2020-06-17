@@ -25,6 +25,7 @@
     "qrcanvas": "^3.0.3",
     "v-charts": "^1.19.0",
     "v-clipboard": "^2.0.1",
+    "video.js": "^7.8.2",
     "vue": "^2.5.17",
     "vue-awesome-swiper": "^3.1.3",
     "vue-directive-touch": "^1.0.26",

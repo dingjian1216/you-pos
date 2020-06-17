@@ -14,11 +14,13 @@ import '../static/libs/iconfont/iconfont.css'
 import VueScroller from 'vue-scroller'
 import 'swiper/dist/css/swiper.css'
 import * as utils from './utils'
-
+import Video from 'video.js'
+import 'video.js/dist/video-js.css'
 require('./api/mock.js')
 Vue.use(Clipboard).use(Vuex).use(ToastPlugin, { position: 'bottom' }).use(ConfirmPlugin).use(DatetimePlugin).use(LoadingPlugin).use(VueScroller)
 Vue.prototype.$http = http
 Vue.prototype.$utils = utils
+Vue.prototype.$video = Video
 Vue.prototype.$img = utils.storage.get('defaultImg') ? utils.storage.get('defaultImg') : require('@/assets/img/bg.png')
 Vue.use(VueLazyload, {
   loading: utils.storage.get('defaultImg') ? utils.storage.get('defaultImg') : require('@/assets/img/bg.png'),
