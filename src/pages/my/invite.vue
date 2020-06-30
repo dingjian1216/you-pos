@@ -95,28 +95,32 @@
         }, */
 
       savePicture (imgUrl) {
+        let that = this
         this.$vux.confirm.show({
           title: '提示',
           content: '确认保存图片到相册',
           onConfirm () {
             let timestamp = new Date().getTime()
+            let format = 'kedui' + timestamp + '.jpg'
             api.download({
               url: imgUrl,
-              savePath: 'fs://kedui' + timestamp + '.jpg',
-              report: true,
-              cache: true,
+              savePath: 'fs://' + format,
+              encode: false,
+              report: false,
+              cache: false,
               allowResume: true
-            }, function (ret, err) {
-              if (ret) {
-                api.toast({
-                  msg: '已保存到相册'
-                })
+            },function(ret, err){
+              if (ret.state == 1) {
+                api.saveMediaToAlbum({
+                  path: 'fs://' + format
+                }, function(ret, err) {
+                  if (ret && ret.status) {
+                    that.$vux.toast.text('图片已经保存到相册')
+                  } else {
+                    that.$vux.toast.text('保存失败')
+                  }
+                });
               }
-              api.saveMediaToAlbum({
-                path: 'fs://kedui' + timestamp + '.jpg'
-              }, function (ret, err) {
-
-              })
             })
           }
         })
