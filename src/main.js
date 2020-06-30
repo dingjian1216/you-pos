@@ -16,6 +16,7 @@ import 'swiper/dist/css/swiper.css'
 import * as utils from './utils'
 import Video from 'video.js'
 import 'video.js/dist/video-js.css'
+import Vue2TouchEvents from 'vue2-touch-events'
 require('./api/mock.js')
 Vue.use(Clipboard).use(Vuex).use(ToastPlugin, { position: 'bottom' }).use(ConfirmPlugin).use(DatetimePlugin).use(LoadingPlugin).use(VueScroller)
 Vue.prototype.$http = http
@@ -34,9 +35,9 @@ Vue.prototype.$logo = utils.storage.get('appLoginLogo') ? utils.storage.get('app
 Vue.component('x-header', XHeader)
 
 Vue.use(plugin, { router: router })
-
+Vue.use(Vue2TouchEvents)
 Vue.config.productionTip = false
-Vue.prototype.link = 'http://kd.youxiangdui.net/'
+Vue.prototype.link = 'https://kd.youxiangdui.net/'
 Vue.prototype.$logo = '../../assets/img/logo.png'
 
 // 测试环境代码 —————————————start—————————————————

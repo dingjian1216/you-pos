@@ -289,8 +289,7 @@ let router = new Router({
   }
 })
 
-// const whiteList = ['login', 'about', 'register',  'forget',  'guide',  'home','wechatLogin','wxbind']
-const whiteList = ['login', 'about', 'register', 'forget', 'guide', 'home', 'wechatLogin', 'wxbind', 'material', 'materialDetails', 'testIndex']
+const whiteList = ['login', 'about', 'register',  'forget',  'guide',  'home','wechatLogin','wxbind']
 router.beforeEach(function (to, from, next) {
   var firstPage = ['/home', '/newIndex', '/sort', '/fastrobNew', '/materials', '/materials2', '/super', '/materials1', '/my', '/newIndex', '/mall/home', '/mall/business', '/mall/underShop', '/mall/underShop', '/mall/my', '/mall/cart', '/upgradeOperator']
   var currentRoute = to.path
@@ -301,8 +300,7 @@ router.beforeEach(function (to, from, next) {
   }
   // 登录拦截
   store.commit('hide')
-  //  if (whiteList.indexOf(to.name) < 0 && !store.state.user.token) {
-  if (false) {
+    if (whiteList.indexOf(to.name) < 0 && !store.state.user.token) {
     next({
       path: '/wechatLogin'
     })
