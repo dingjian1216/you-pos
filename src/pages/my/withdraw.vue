@@ -58,7 +58,7 @@
       </div>
       <div class="inputBox">
         <input type="number" placeholder="请输入提取金额" v-model="money" />
-        <span :style="{color: $store.state.global.theme.mainColor}" @click="money = profit.ktx">全部</span>
+<!--        <span :style="{color: $store.state.global.theme.mainColor}" @click="money = profit.ktx">全部</span>-->
       </div>
       <div
         class="primary_btn"
@@ -78,69 +78,76 @@
 </template>
 
 <script>
-  import { Group, XInput, XHeader, Actionsheet } from "vux";
-  import * as apiHttp from "../../api/index";
-  export default {
-    name: "withdraw",
-    components: {
-      Group,
-      XInput,
-      XHeader,
-      Actionsheet
-    },
-    data() {
-      return {
-        profit: "",
-        show1: false,
-        show: false,
-        money: "",
-        alipay: ""
-      };
-    },
-    methods: {
-      // 提现
-      widthdraw() {
-        let that = this;
-        if (!that.alipay) {
-          this.$vux.toast.text("请先绑定账户");
-          return;
-        }
-        if (Number(that.money) > Number(that.profit.ktx)) {
-          this.$vux.toast.text("账户金额不足");
-          return;
-        }
-        apiHttp
-          .getApply(that.alipay.name, that.alipay.alipay, that.money)
-          .then(res => {
-            if ((res.code = 1)) {
-              that.$vux.toast.text(res.msg);
-              that.getProfit();
-            } else {
-              that.$vux.toast.text(res.msg);
-            }
-          });
-      },
-      getProfit() {
-        apiHttp.getMyReward().then(res => {
-          if (res.code == 1) {
-            this.profit = res.data;
-          }
-        });
-      },
-      getAlipay() {
-        apiHttp.getAgentPayData().then(res => {
-          if (res.code == 1) {
-            this.alipay = res.data;
-          }
-        });
-      }
-    },
-    mounted() {
-      // 删除
-      this.getProfit();
-      this.getAlipay();
+import { Group, XInput, XHeader, Actionsheet } from 'vux'
+import * as apiHttp from '../../api/index'
+export default {
+  name: 'withdraw',
+  components: {
+    Group,
+    XInput,
+    XHeader,
+    Actionsheet
+  },
+  data () {
+    return {
+      profit: '',
+      show1: false,
+      show: false,
+      money: '',
+      alipay: ''
     }
-  };
+  },
+  methods: {
+    // 提现
+    widthdraw () {
+      let that = this
+      if (!that.alipay) {
+        this.$vux.toast.text('请先绑定账户')
+        return
+      }
+      if (Number(that.money) > Number(that.profit.ktx)) {
+        this.$vux.toast.text('账户金额不足')
+        return
+      }
+
+      this.$vux.confirm.show({
+        title: '提示',
+        content: '您确认要提现吗',
+        onConfirm () {
+          apiHttp
+            .getApply(that.alipay.name, that.alipay.alipay, that.money)
+            .then(res => {
+              if ((res.code = 1)) {
+                that.$vux.toast.text(res.msg)
+                that.getProfit()
+              } else {
+                that.$vux.toast.text(res.msg)
+              }
+            })
+        }
+      })
+    },
+    getProfit () {
+      apiHttp.getMyReward().then(res => {
+        if (res.code == 1) {
+          this.profit = res.data
+        }
+      })
+    },
+    getAlipay () {
+      apiHttp.getAgentPayData().then(res => {
+        if (res.code == 1) {
+          this.alipay = res.data
+        }
+      })
+    }
+  },
+  mounted () {
+    // 删除
+    this.getProfit()
+    this.getAlipay()
+  }
+}
 </script>
 <style lang="less">
   .withdraw {
