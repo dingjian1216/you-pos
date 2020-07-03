@@ -30,180 +30,183 @@
 </template>
 
 <script>
-  import {swiper, swiperSlide} from 'vue-awesome-swiper'
-  import 'swiper/dist/css/swiper.css'
-  import {XDialog, TransferDomDirective as TransferDom} from 'vux'
-  import * as apiHttp from '../../api/index'
-  import store from '../../store'
-  let imgIndex = 0
-  export default {
-    name: 'invite',
-    components: {
-      swiper,
-      swiperSlide,
-      XDialog
-    },
-    directives: {
-      TransferDom
-    },
-    data () {
-      return {
-        imgs: [],
-        link: this.link,
-        index: 0,
-        showToast: false,
-        h: 0 + 'px',
-        swiperOption: {
-          effect: 'coverflow',
-          width: 220,
-          coverflowEffect: {
-            rotate: 2,
-            stretch: -15,
-            depth: 80,
-            modifier: 2,
-            slideShadows: false
-          },
-          on: {
-            transitionEnd: function () {
-              imgIndex = this.activeIndex
-            },
-            sliderMove: function (event) {
-              window.canRightSlipBack = false
-            },
-            touchEnd: function (event) {
-              setTimeout(() => {
-                window.canRightSlipBack = true
-              }, 600)
-            }
-          }
+import {swiper, swiperSlide} from 'vue-awesome-swiper'
+import 'swiper/dist/css/swiper.css'
+import {XDialog, TransferDomDirective as TransferDom} from 'vux'
+import * as apiHttp from '../../api/index'
+import store from '../../store'
+let imgIndex = 0
+export default {
+  name: 'invite',
+  components: {
+    swiper,
+    swiperSlide,
+    XDialog
+  },
+  directives: {
+    TransferDom
+  },
+  data () {
+    return {
+      imgs: [],
+      link: this.link,
+      index: 0,
+      showToast: false,
+      h: 0 + 'px',
+      swiperOption: {
+        effect: 'coverflow',
+        width: 220,
+        coverflowEffect: {
+          rotate: 2,
+          stretch: -15,
+          depth: 80,
+          modifier: 2,
+          slideShadows: false
         },
-        downImgIndex: 0,
-        type: '',
-        data: ''
-      }
-    },
-    beforeRouteLeave (to, from, next) {
-      this.showToast = false
-      next()
-    },
-    methods: {
-      hideBig () {
+        on: {
+          transitionEnd: function () {
+            imgIndex = this.activeIndex
+          },
+          sliderMove: function (event) {
+            window.canRightSlipBack = false
+          },
+          touchEnd: function (event) {
+            setTimeout(() => {
+              window.canRightSlipBack = true
+            }, 600)
+          }
+        }
       },
-      /*    showBig (index) {
+      downImgIndex: 0,
+      type: '',
+      data: ''
+    }
+  },
+  beforeRouteLeave (to, from, next) {
+    this.showToast = false
+    next()
+  },
+  methods: {
+    hideBig () {
+    },
+    /*    showBig (index) {
           this.swiperOption1.initialSlide = index
           this.downImgIndex = index
         }, */
 
-      savePicture (imgUrl) {
-        let that = this
-        this.$vux.confirm.show({
-          title: '提示',
-          content: '确认保存图片到相册',
-          onConfirm () {
-            let timestamp = new Date().getTime()
-            let format = 'kedui' + timestamp + '.jpg'
-            api.download({
-              url: imgUrl,
-              savePath: 'fs://' + format,
-              encode: false,
-              report: false,
-              cache: false,
-              allowResume: true
-            },function(ret, err){
-              if (ret.state == 1) {
-                api.saveMediaToAlbum({
-                  path: 'fs://' + format
-                }, function(ret, err) {
-                  if (ret && ret.status) {
-                    that.$vux.toast.text('图片已经保存到相册')
-                  } else {
-                    that.$vux.toast.text('保存失败')
-                  }
-                });
-              }
-            })
-          }
-        })
-      },
-
-      shareFri (type) {
-        let that = this
-        this.showToast = false
-        let way = type === 1 ? 'session' : 'timeline'
-        let userInfo = store.state.user.userInfo
-        let text = this.link + '/home/index/register/user_code/' + userInfo.username
-        if (that.type === 1) {
-          let format = 'share' + new Date().getTime() + '.png'
-          let appDownLogo = ' http://kd.youxiangdui.net/public/kedui.png'
+    savePicture (imgUrl) {
+      let that = this
+      this.$vux.confirm.show({
+        title: '提示',
+        content: '确认保存图片到相册',
+        onConfirm () {
+          let timestamp = new Date().getTime()
+          let format = 'kedui' + timestamp + '.jpg'
           api.download({
-            url: appDownLogo,
+            url: imgUrl,
             savePath: 'fs://' + format,
             encode: false,
             report: false,
             cache: false,
             allowResume: true
           }, function (ret, err) {
-            var wxPlus = api.require('wxPlus')
-            wxPlus.shareWebpage({
-              scene: way,
-              title: '可兑',
-              description: '可兑,一切可兑',
-              thumb: 'fs://' + format,
-              contentUrl: text
-            }, function (ret, err) {
-              if (ret.status) {
-                that.$vux.toast.text('分享成功')
-              } else {
-                alert(err.code)
-              }
-            })
-          })
-        } else {
-          that.$vux.loading.show({
-            text: '加载中'
-          })
-          let format = 'share' + new Date().getTime() + '.jpg'
-          api.download({
-            url: that.link + that.imgs[imgIndex],
-            savePath: 'fs://' + format,
-            encode: false,
-            report: false,
-            cache: false,
-            allowResume: true
-          }, function (ret, err) {
-            that.$vux.loading.hide()
-            var wxPlus = api.require('wxPlus')
-            wxPlus.shareImage({
-              scene: way,
-              contentUrl: 'fs://' + format
-            }, function (ret, err) {
-            })
+            if (ret.state == 1) {
+              api.saveMediaToAlbum({
+                path: 'fs://' + format
+              }, function (ret, err) {
+                if (ret && ret.status) {
+                  // that.$vux.toast.text('保存本地成功')
+                  api.toast({
+                    msg: '保存本地成功'
+                  })
+                } else {
+                  that.$vux.toast.text('保存失败')
+                }
+              })
+            }
           })
         }
-      },
+      })
+    },
 
-      showShare (type) {
-        this.type = type
-        this.showToast = true
-      },
-      getSwiper () {
-        let userInfo = store.state.user.userInfo
-        console.log(userInfo)
-        let link = this.link + '/home/index/register/user_code/' + userInfo.username
-        apiHttp.getMask(link).then(res => {
-          if (res.code === 1) {
-            this.imgs = res.data
-          }
+    shareFri (type) {
+      let that = this
+      this.showToast = false
+      let way = type === 1 ? 'session' : 'timeline'
+      let userInfo = store.state.user.userInfo
+      let text = this.link + '/home/index/register/user_code/' + userInfo.username
+      if (that.type === 1) {
+        let format = 'share' + new Date().getTime() + '.png'
+        let appDownLogo = ' http://kd.youxiangdui.net/public/kedui.png'
+        api.download({
+          url: appDownLogo,
+          savePath: 'fs://' + format,
+          encode: false,
+          report: false,
+          cache: false,
+          allowResume: true
+        }, function (ret, err) {
+          var wxPlus = api.require('wxPlus')
+          wxPlus.shareWebpage({
+            scene: way,
+            title: '可兑',
+            description: '可兑,一切可兑',
+            thumb: 'fs://' + format,
+            contentUrl: text
+          }, function (ret, err) {
+            if (ret.status) {
+              that.$vux.toast.text('分享成功')
+            } else {
+              alert(err.code)
+            }
+          })
+        })
+      } else {
+        that.$vux.loading.show({
+          text: '加载中'
+        })
+        let format = 'share' + new Date().getTime() + '.jpg'
+        api.download({
+          url: that.link + that.imgs[imgIndex],
+          savePath: 'fs://' + format,
+          encode: false,
+          report: false,
+          cache: false,
+          allowResume: true
+        }, function (ret, err) {
+          that.$vux.loading.hide()
+          var wxPlus = api.require('wxPlus')
+          wxPlus.shareImage({
+            scene: way,
+            contentUrl: 'fs://' + format
+          }, function (ret, err) {
+          })
         })
       }
     },
-    mounted () {
-      this.getSwiper()
+
+    showShare (type) {
+      this.type = type
+      this.showToast = true
     },
-    activated () {
-      this.getSwiper()
+    getSwiper () {
+      let userInfo = store.state.user.userInfo
+      console.log(userInfo)
+      let link = this.link + '/home/index/register/user_code/' + userInfo.username
+      apiHttp.getMask(link).then(res => {
+        if (res.code === 1) {
+          this.imgs = res.data
+        }
+      })
     }
+  },
+  mounted () {
+    this.getSwiper()
+  },
+  activated () {
+    this.getSwiper()
   }
+}
 </script>
 <style lang="less">
   .my-bullet{

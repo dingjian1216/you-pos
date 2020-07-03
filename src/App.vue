@@ -27,7 +27,6 @@
       </x-dialog>
     </div>
 
-
     <!-- 云修复 -->
     <div v-transfer-dom>
       <x-dialog v-model="showToast2" class="updateBox">
@@ -95,19 +94,20 @@
 </template>
 
 <script>
-import * as utils from "./utils";
+import * as utils from './utils'
 import {
   XDialog,
   Confirm,
   TransferDomDirective as TransferDom,
   XProgress
-} from "vux";
+} from 'vux'
+import store from './store'
 export default {
-  name: "App",
-  provide() {
+  name: 'App',
+  provide () {
     return {
       reload: this.reload
-    };
+    }
   },
   components: {
     XDialog,
@@ -117,126 +117,235 @@ export default {
   directives: {
     TransferDom
   },
-  data() {
+  data () {
     return {
-      packet: "",
+      packet: '',
       isRouterAlive: true,
       showTip: false,
-      perCon: "0%",
-      progressState: "准备中",
-      word: "",
-      copyWord: "",
-      result: "",
-      h: "",
+      perCon: '0%',
+      progressState: '准备中',
+      word: '',
+      copyWord: '',
+      result: '',
+      h: '',
       anh: 25,
       iosh: 20,
-      colors: "",
+      colors: '',
       r: true,
       hideTitle: [
-        "home",
-        "my",
-        "team",
-        "guide",
-        "material",
-        "machine",
-        "teamDetails",
-        "price"
+        'home',
+        'my',
+        'team',
+        'guide',
+        'material',
+        'machine',
+        'teamDetails',
+        'price'
       ],
-      transitionName: "",
-      img: "",
-      link: "",
-      showToast1: false, //后台提示更新
-      showToast2: false,  //云修复
-      showToast3: false,  // 修复成功描述 重启
-      showToast4: false,  //下载进度
+      transitionName: '',
+      img: '',
+      link: '',
+      showToast1: false, // 后台提示更新
+      showToast2: false, // 云修复
+      showToast3: false, // 修复成功描述 重启
+      showToast4: false, // 下载进度
       percent: 0,
       version: '',
       smart: ''
-    };
+    }
   },
 
   watch: {
-    $route(to, from) {
+    $route (to, from) {
       if (this.hideTitle.indexOf(to.name) > -1 || !window.api) {
-        this.h = 0;
+        this.h = 0
       } else {
-        if (api.systemType === "android") {
-          this.h = this.anh;
+        if (api.systemType === 'android') {
+          this.h = this.anh
         } else {
-          this.h = this.iosh;
+          this.h = this.iosh
         }
       }
-      let login = ["login", "wechatLogin", "mobileLogin", "wxbind", "guide"];
-      let systemVersion = (window.api && api.systemVersion) || "6.0";
+      let login = ['login', 'wechatLogin', 'mobileLogin', 'wxbind', 'guide']
+      let systemVersion = (window.api && api.systemVersion) || '6.0'
       if (parseFloat(systemVersion) < 6.0) {
-        this.colors = "#353034";
+        this.colors = '#353034'
       } else {
-        this.colors = "#fff";
+        this.colors = '#fff'
       }
-      if (to.name == "team") {
+      if (to.name == 'team') {
         if (this.$store.state.user.userInfo.is_buy_stock == 0) {
-          this.showTip = true;
-          this.$router.go(-1);
+          this.showTip = true
+          this.$router.go(-1)
         }
       }
     }
   },
-  created() {
-    let that = this;
+  created () {
+    let that = this
     // 获取是否有更新 云修复
     that.getVersion()
+    that.initJPush()
     // 进入前台
-    let size = document.documentElement.clientWidth / 7.5;
+    let size = document.documentElement.clientWidth / 7.5
     // 为获取到状态高度  和 屏幕宽度  重启
-    if(api.safeArea.top == 0 && size == 0){
-      api.rebootApp();
+    if (api.safeArea.top == 0 && size == 0) {
+      api.rebootApp()
     }
     // 设置状态高度
     if (window.api) {
-      if (api.systemType === "android") {
-        this.h = api.safeArea.top / size + "rem";
-        this.anh = this.h;
+      if (api.systemType === 'android') {
+        this.h = api.safeArea.top / size + 'rem'
+        this.anh = this.h
       } else {
-        this.h = api.safeArea.top / size + "rem";
-        this.iosh = this.h;
+        this.h = api.safeArea.top / size + 'rem'
+        this.iosh = this.h
       }
     }
     // 当设置为全屏时  高度0
     if (this.hideTitle.indexOf(that.$route.name) > -1) {
-      this.h = 0;
+      this.h = 0
     }
     // 设置状态栏颜色
     window.api &&
       api.setStatusBarStyle({
-        style: "dark",
-        color: "rgba(255, 255, 255, 0)"
-      });
-    let systemVersion = (window.api && api.systemVersion) || "6.0";
+        style: 'dark',
+        color: 'rgba(255, 255, 255, 0)'
+      })
+    let systemVersion = (window.api && api.systemVersion) || '6.0'
     if (parseFloat(systemVersion) < 6.0) {
-      that.colors = "#353034";
+      that.colors = '#353034'
     } else {
-      that.colors = "#fff";
+      that.colors = '#fff'
     }
   },
   methods: {
-    reload() {
-      this.isRouterAlive = false;
+    reload () {
+      this.isRouterAlive = false
       this.$nextTick(() => {
-        this.isRouterAlive = true;
-      });
+        this.isRouterAlive = true
+      })
     },
-    onConfirm() {
-      this.$router.push("home");
+    /*
+    initJPush: function () {
+      var that = this
+      var ajpush = api.require('ajpush')
+      if (api.systemType == 'android') {
+        // 初始化推送服务，只Android有效，iOS上会自动初始化
+        ajpush.init(function (ret) {
+          if (ret && ret.status) {
+            that.jPushSet()
+          }
+        })
+      } else {
+        that.jPushSet()
+      }
+    },
+*/
+
+    initJPush: function () {
+      let ajpush = api.require('ajpush')
+      let userId = store.state.user.userInfo.id || ''
+      this.$vux.toast.text(userId)
+      if (!userId) {
+        return
+      }
+      if (api.systemType === 'android') {
+        ajpush.init(function (ret) {
+          let param = {
+            alias: userId,
+            tags: ['android_user']
+          }
+          ajpush.bindAliasAndTags(param, function (ret) {})
+          ajpush.setListener(jpushListener)
+        })
+      } else if (api.systemType === 'ios') {
+        ajpush.setListener(jpushListener)
+        let param = {
+          alias: userId,
+          tags: ['ios_user']
+        }
+        jpush.bindAliasAndTags(param, function (ret) {
+          ajpush.onResume()
+        })
+      }
+      api.addEventListener({
+        name: 'noticeclicked'
+      }, function (ret, err) {})
+
+      // 当页面处于前台页面的时候苹果进行弹窗。只对ios有效，安卓应用不管前后台都会弹窗
+      function jpushListener (ret) {
+        if (ret) {
+          let content = ret.content
+          let itemId = ret.extras.itemId
+          let itemType = ret.extras.itemType
+          api.notification({
+            vibrate: [300, 500], // 自定义声音
+            notify: {
+              title: ret.title, // 标题，默认值为应用名称，只Android有效
+              content: content, // 内容，默认值为'有新消息'
+              extra: ret.extras, // 传递给通知的数据，在通知被点击后，该数据将通过监听函数回调给网页
+              updateCurrent: false // 是否覆盖更新已有的通知，取值范围true|false。只Android有效
+            }
+          }, function (ret, err) {
+            if (ret) {
+              //  alert(JSON.stringify(ret));
+            } else {
+              //  alert(JSON.stringify(err));
+            }
+          })
+        }
+      }
+
+      if (api.systemType == 'android') {
+        api.addEventListener({
+          name: 'appintent'
+        }, function (ret, err) {
+          if (ret && ret.appParam.ajpush) {
+            let ajpush = ret.appParam.ajpush
+            let id = ajpush.id
+            let title = ajpush.title
+            let content = ajpush.content
+            let itemId = ajpush.extra.itemId
+            let itemType = ajpush.extra.itemType
+            openDetail(itemId, itemType)
+          }
+        })
+      } else if (api.systemType == 'ios') {
+        api.addEventListener({
+          name: 'noticeclicked'
+        }, function (ret, err) {
+          //  alert(JSON.stringify(ret));
+          if (ret && ret.value)
+          // ret.type=0(0应用后台点进 1应用前台接收到用知道点击进入详情页)
+          {
+            if (ret.type == '0') {
+              let content = ret.value.content
+              let itemId = ret.value.extras.itemId
+              let itemType = ret.value.extras.itemType
+              openDetail(itemId, itemType)
+            } else if (ret.type == '1') {
+              let itemId = ret.value.itemId
+              let itemType = ret.value.itemType
+              openDetail(itemId, itemType)
+            }
+          }
+        })
+      }
+    },
+
+    onConfirm () {
+      this.$router.push('home')
     },
     getVersion () {
       let that = this
       this.$http.post('/login/checkVersion', {
         type: (api.systemType === 'android') ? 0 : 1,
-        version: api.appVersion,
+        version: api.appVersion
       }, false, true).then(res => {
         console.log(JSON.stringify(res))
         if (res.code === 1) {
-          if(res.data == 0){
+          if (res.data == 0) {
             let mam = api.require('mam')
             mam.checkSmartUpdate(function (ret, err) {
               if (ret && ret.packages.length > 0) {
@@ -262,89 +371,89 @@ export default {
                 }
               }
             })
-          }else{
+          } else {
             this.version = res.data
             this.showToast1 = true
           }
         }
       })
     },
-    downWgt() {
-      let that = this;
-      if (api.systemType === "android") {
-        this.showToast1 = false;
-        that.showToast4 = true;
+    downWgt () {
+      let that = this
+      if (api.systemType === 'android') {
+        this.showToast1 = false
+        that.showToast4 = true
         api.download(
           {
             url: that.version.src,
             report: true
           },
-          function(ret, err) {
+          function (ret, err) {
             if (ret && ret.state === 0) {
-              that.percent = parseInt(ret.percent);
+              that.percent = parseInt(ret.percent)
               // that.perCon = parseInt(ret.percent) + '%'
-              that.progressState = "下载中" + that.percent + "%";
+              that.progressState = '下载中' + that.percent + '%'
             }
             if (ret && ret.state === 1) {
-              that.progressState = "安装中";
-              let savePath = ret.savePath;
+              that.progressState = '安装中'
+              let savePath = ret.savePath
               api.installApp({
                 appUri: savePath
-              });
+              })
             }
           }
-        );
+        )
       }
-      if (api.systemType === "ios") {
+      if (api.systemType === 'ios') {
         api.installApp({
           appUri: that.version.src
-        });
+        })
       }
     },
-    startSmart() {
-      let that = this;
-      let mam = api.require("mam");
-      mam.startSmartUpdate(function(ret, err) {
+    startSmart () {
+      let that = this
+      let mam = api.require('mam')
+      mam.startSmartUpdate(function (ret, err) {
         if (ret) {
-          that.showToast2 = false;
-          that.showToast4 = true;
-          that.percent = parseInt(ret.progress);
-          console.log(that.percent);
+          that.showToast2 = false
+          that.showToast4 = true
+          that.percent = parseInt(ret.progress)
+          console.log(that.percent)
           if (ret.state === 0) {
-            that.progressState = "准备中" + that.percent + "%";
+            that.progressState = '准备中' + that.percent + '%'
           } else if (ret.state === 1) {
-            that.progressState = "下载中" + that.percent + "%";
+            that.progressState = '下载中' + that.percent + '%'
           } else if (ret.state === 2) {
-            that.progressState = "解压中" + that.percent + "%";
+            that.progressState = '解压中' + that.percent + '%'
           } else if (ret.state === 3) {
-            api.rebootApp();
+            api.rebootApp()
           } else if (ret.state === 4) {
-            that.showToast4 = false;
+            that.showToast4 = false
           }
         } else {
-          console.log(JSON.stringify(err));
+          console.log(JSON.stringify(err))
         }
-      });
+      })
     },
-    reboot() {
-      api.rebootApp();
+    reboot () {
+      api.rebootApp()
     }
   },
-  mounted() {
+  mounted () {
     if (window.api) {
-      api.removeLaunchView();
-      if (api.systemType === "android") {
+      api.removeLaunchView()
+      if (api.systemType === 'android') {
         api.requestPermission(
           {
-            list: ["camera", "photos", "location", "notification", "storage"],
+            list: ['camera', 'photos', 'location', 'notification', 'storage'],
             code: 1
           },
-          function(ret, err) {}
-        );
+          function (ret, err) {}
+        )
       }
     }
   }
-};
+}
 </script>
 
 <style lang="less">
