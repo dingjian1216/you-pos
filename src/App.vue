@@ -226,27 +226,12 @@ export default {
         this.isRouterAlive = true
       })
     },
-    /*
-    initJPush: function () {
-      var that = this
-      var ajpush = api.require('ajpush')
-      if (api.systemType == 'android') {
-        // 初始化推送服务，只Android有效，iOS上会自动初始化
-        ajpush.init(function (ret) {
-          if (ret && ret.status) {
-            that.jPushSet()
-          }
-        })
-      } else {
-        that.jPushSet()
-      }
-    },
-*/
 
-    initJPush: function () {
+    initJPush () {
+      let that = this
       let ajpush = api.require('ajpush')
       let userId = store.state.user.userInfo.id || ''
-      this.$vux.toast.text(userId)
+      // this.$vux.toast.text(userId)
       if (!userId) {
         return
       }
@@ -265,7 +250,7 @@ export default {
           alias: userId,
           tags: ['ios_user']
         }
-        jpush.bindAliasAndTags(param, function (ret) {
+        ajpush.bindAliasAndTags(param, function (ret) {
           ajpush.onResume()
         })
       }
@@ -297,7 +282,7 @@ export default {
         }
       }
 
-      if (api.systemType == 'android') {
+      if (api.systemType === 'android') {
         api.addEventListener({
           name: 'appintent'
         }, function (ret, err) {
@@ -306,12 +291,19 @@ export default {
             let id = ajpush.id
             let title = ajpush.title
             let content = ajpush.content
-            let itemId = ajpush.extra.itemId
-            let itemType = ajpush.extra.itemType
-            openDetail(itemId, itemType)
+            let address = ajpush.extra.address
+            let jid = ajpush.extra.id
+            if (address == 'machineOrder') {
+              that.$router.push({
+                name: address,
+                query: {
+                  id: jid
+                }
+              })
+            }
           }
         })
-      } else if (api.systemType == 'ios') {
+      } else if (api.systemType === 'ios') {
         api.addEventListener({
           name: 'noticeclicked'
         }, function (ret, err) {
@@ -320,14 +312,17 @@ export default {
           // ret.type=0(0应用后台点进 1应用前台接收到用知道点击进入详情页)
           {
             if (ret.type == '0') {
-              let content = ret.value.content
-              let itemId = ret.value.extras.itemId
-              let itemType = ret.value.extras.itemType
-              openDetail(itemId, itemType)
+              let ajpush = ret.appParam.ajpush
+              let address = ajpush.extra.address
+              that.$router.push({
+                name: address
+              })
             } else if (ret.type == '1') {
-              let itemId = ret.value.itemId
-              let itemType = ret.value.itemType
-              openDetail(itemId, itemType)
+              let ajpush = ret.appParam.ajpush
+              let address = ajpush.extra.address
+              that.$router.push({
+                name: address
+              })
             }
           }
         })
