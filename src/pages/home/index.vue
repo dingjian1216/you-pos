@@ -12,7 +12,7 @@
       <mescroll-vue ref="mescroll" :down="mescrollDown" :up="mescrollUp" @init="mescrollInit">
         <swiper class="banner_list" :options="swiperOption" v-if="banner.length > 0">
           <swiper-slide class="allBox" v-for="(item,index) in banner" :key="index">
-            <img :src="item" alt class="bg" />
+            <img :src="item.cover" alt class="bg" />
           </swiper-slide>
         </swiper>
         <div class="goodsBox">
@@ -40,19 +40,19 @@
   </div>
 </template>
 <script>
-import { swiper, swiperSlide } from "vue-awesome-swiper";
-import MescrollVue from "mescroll.js/mescroll.vue";
-import * as apiHttp from "../../api/index";
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import MescrollVue from 'mescroll.js/mescroll.vue'
+import * as apiHttp from '../../api/index'
 export default {
   components: {
     swiper,
     swiperSlide,
     MescrollVue
   },
-  data() {
+  data () {
     return {
-      statusH: "",
-      keyword: "",
+      statusH: '',
+      keyword: '',
       banner: [],
       shopList: [],
       swiperOption: {
@@ -61,7 +61,7 @@ export default {
         centeredSlides: true,
         initialSlide: 1,
         pagination: {
-          el: ".swiper-pagination"
+          el: '.swiper-pagination'
         }
       },
       mescroll: null,
@@ -77,71 +77,71 @@ export default {
         htmlNodata: '<p class="upwarp-nodata">-- END --</p>',
         noMoreSize: 2,
         empty: {
-          warpId: "",
-          icon: "",
-          tip: "暂无相关数据~"
+          warpId: '',
+          icon: '',
+          tip: '暂无相关数据~'
         }
       },
       dataList: [],
       lastScrollTop: 0, // 路由切换时滚动条的位置
       lastBounce: null // 路由切换时是否禁止ios回弹
-    };
+    }
   },
-  created() {
-    let size = document.documentElement.clientWidth / 7.5;
-    this.statusH = api.safeArea.top / size;
+  created () {
+    let size = document.documentElement.clientWidth / 7.5
+    this.statusH = api.safeArea.top / size
   },
-  mounted(){
+  mounted () {
     this.getBanner()
   },
   methods: {
-    search() {
-      this.list = [];
-      this.mescrollUp.page.num = 1;
-      this.upCallback(this.mescrollUp.page, this.mescroll);
+    search () {
+      this.list = []
+      this.mescrollUp.page.num = 1
+      this.upCallback(this.mescrollUp.page, this.mescroll)
     },
-    mescrollInit(mescroll) {
-      this.mescroll = mescroll;
+    mescrollInit (mescroll) {
+      this.mescroll = mescroll
     },
-    upCallback(page, mescroll) {
+    upCallback (page, mescroll) {
       apiHttp
         .getGoodsList(10, page.num, this.keyword)
         .then(res => {
           if (res.code === 1) {
-            let arr = res.data.data === "" ? [] : res.data.data;
-            if (page.num === 1) this.shopList = [];
-            this.shopList = this.shopList.concat(arr);
+            let arr = res.data.data === '' ? [] : res.data.data
+            if (page.num === 1) this.shopList = []
+            this.shopList = this.shopList.concat(arr)
             this.$nextTick(() => {
-              mescroll.endSuccess(res.data.data.length, true);
-            });
+              mescroll.endSuccess(res.data.data.length, true)
+            })
           }
         })
         .catch(e => {
-          mescroll.endErr();
-        });
+          mescroll.endErr()
+        })
     },
-    refresh: function() {
-      this.list = [];
-      this.mescrollUp.page.num = 1;
-      this.upCallback(this.mescrollUp.page, this.mescroll);
+    refresh: function () {
+      this.list = []
+      this.mescrollUp.page.num = 1
+      this.upCallback(this.mescrollUp.page, this.mescroll)
     },
-    getBanner() {
+    getBanner () {
       apiHttp.getBanner().then(res => {
         if (res.code == 1) {
-          this.banner = res.data;
+          this.banner = res.data
         }
-      });
+      })
     },
-    handDetail(id) {
+    handDetail (id) {
       this.$router.push({
-        name: "goodDetails",
+        name: 'goodDetails',
         query: {
           id: id
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="less" scoped>
