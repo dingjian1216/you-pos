@@ -314,14 +314,22 @@ export default {
             if (ret.type == '0') {
               let ajpush = ret.appParam.ajpush
               let address = ajpush.extra.address
+              let jid = ajpush.extra.id
               that.$router.push({
-                name: address
+                name: address,
+                query: {
+                  id: jid
+                }
               })
             } else if (ret.type == '1') {
               let ajpush = ret.appParam.ajpush
               let address = ajpush.extra.address
+              let jid = ajpush.extra.id
               that.$router.push({
-                name: address
+                name: address,
+                query: {
+                  id: jid
+                }
               })
             }
           }
