@@ -32,8 +32,8 @@
               <span class="copyObj">复制</span>
             </p>
             <div class="jian">
-              <span v-if="parentAgent.nickname">推荐人: {{parentAgent.nickname}}</span>
-              <span v-if="parentAgent.username">手机号: {{parentAgent.username}}</span>
+              <div v-if="parentAgent.nickname" class="parent">推荐人: {{parentAgent.nickname}}</div>
+              <div v-if="parentAgent.username">手机号: {{parentAgent.username}}</div>
             </div>
             <!-- <div v-else>{{parentAgent}}</div> -->
           </div>
@@ -192,12 +192,12 @@
 </template>
 
 <script>
-import { Group, Cell,Confirm ,TransferDomDirective as TransferDom,} from "vux";
-import * as apiHttp from "../../api/index";
-import MescrollVue from "mescroll.js/mescroll.vue";
-import * as utils from "../../utils";
+import { Group, Cell, Confirm, TransferDomDirective as TransferDom} from 'vux'
+import * as apiHttp from '../../api/index'
+import MescrollVue from 'mescroll.js/mescroll.vue'
+import * as utils from '../../utils'
 export default {
-  name: "my2",
+  name: 'my2',
   components: {
     Group,
     Cell,
@@ -207,13 +207,13 @@ export default {
   directives: {
     TransferDom
   },
-  data() {
+  data () {
     return {
-      settingH: "",
-      settingH1: "",
+      settingH: '',
+      settingH1: '',
       showTip: false,
-      data: "",
-      profit: "",
+      data: '',
+      profit: '',
       mescroll: null,
       mescrollDown: {
         use: !!this.$store.state.user.token,
@@ -225,90 +225,90 @@ export default {
       lastScrollTop: 0, // 路由切换时滚动条的位置
       lastBounce: null, // 路由切换时是否禁止ios回弹,
       model: null,
-      signInfo: "",
-      newsNum: "",
-      parentAgent: "" //上级推荐人
-    };
+      signInfo: '',
+      newsNum: '',
+      parentAgent: '' // 上级推荐人
+    }
   },
   methods: {
-    mescrollInit(mescroll) {
-      this.mescroll = mescroll;
+    mescrollInit (mescroll) {
+      this.mescroll = mescroll
     },
-    carryCash() {
-      this.$router.push("/withdraw");
+    carryCash () {
+      this.$router.push('/withdraw')
     },
-    onCopy(code) {
-      let that = this;
-      let clipBoard = api.require("clipBoard");
+    onCopy (code) {
+      let that = this
+      let clipBoard = api.require('clipBoard')
       clipBoard.set(
         {
           value: code
         },
-        function(ret, err) {
+        function (ret, err) {
           if (ret) {
-            utils.storage.set("copyWord", code);
-            that.$vux.toast.text("复制成功");
+            utils.storage.set('copyWord', code)
+            that.$vux.toast.text('复制成功')
           } else {
-            that.$vux.toast.text("请重试");
+            that.$vux.toast.text('请重试')
           }
         }
-      );
+      )
     },
-    getInfo() {
+    getInfo () {
       if (this.$store.state.user.token) {
         apiHttp
           .getAgentDetall()
           .then(res => {
             if (res.code === 1) {
-              this.data = res.data;
-              this.$store.commit("setUserInfo", res.data);
-              this.mescroll.endSuccess(res.data.length);
+              this.data = res.data
+              this.$store.commit('setUserInfo', res.data)
+              this.mescroll.endSuccess(res.data.length)
             }
           })
           .catch(e => {
-            this.mescroll.endErr();
-          });
+            this.mescroll.endErr()
+          })
       }
     },
-    getProfit() {
+    getProfit () {
       apiHttp.getMyReward().then(res => {
         if (res.code == 1) {
-          this.profit = res.data;
+          this.profit = res.data
         }
-      });
+      })
       apiHttp.getNewsNum().then(res => {
         if (res.code == 1) {
-          this.newsNum = res.data;
+          this.newsNum = res.data
         }
-      });
+      })
       apiHttp.getMyTeamData().then(res => {
         if (res.code == 1) {
-          this.parentAgent = res.data.parentAgent;
+          this.parentAgent = res.data.parentAgent
         }
-      });
+      })
     },
-    onConfirm(){
+    onConfirm () {
       this.$router.push('home')
     },
-    getInvite(){
-      if(this.data.is_buy_stock == 0){
+    getInvite () {
+      if (this.data.is_buy_stock == 0) {
         this.showTip = true
-      }else{
+      } else {
         this.$router.push('invite')
       }
     }
   },
-  activated() {
-    this.data = this.$store.state.user.userInfo;
-    this.getInfo();
-    this.getProfit();
+  activated () {
+    this.data = this.$store.state.user.userInfo
+    this.getInfo()
+    this.getProfit()
   },
-  mounted() {
-    let size = document.documentElement.clientWidth / 7.5;
-    this.settingH = api.safeArea.top / size + 0.3;
-    this.settingH1 = api.safeArea.top / size + 0.5;
+  mounted () {
+    let size = document.documentElement.clientWidth / 7.5
+    this.settingH = api.safeArea.top / size + 0.3
+    this.settingH1 = api.safeArea.top / size + 0.5
   }
-};
+}
 </script>
 <style lang="less">
 .tbkMy {
@@ -331,7 +331,7 @@ export default {
     overflow: hidden;
     position: relative;
     width: 100%;
-    height: 3rem;
+    height: 3.5rem;
     background: #ff7512;
     .bg {
       position: absolute;
@@ -353,15 +353,15 @@ export default {
       top: 0.8rem;
       left: 0;
       width: 100%;
-      height: 1.5rem;
+      height: 2rem;
       padding-left: 0.26rem;
       display: flex;
       box-sizing: border-box;
       overflow: hidden;
       .avater {
         flex-shrink: 0;
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 2rem;
+        height: 2rem;
         border-radius: 50%;
         background-size: cover;
         background-repeat: no-repeat;
@@ -394,7 +394,7 @@ export default {
             text-overflow: ellipsis;
             white-space: nowrap;
             line-height: 0.4rem;
-            max-width: 3.6rem;
+            max-width: 3.1rem;
             /*display: flex;*/
             /*align-items: center;*/
           }
@@ -444,6 +444,12 @@ export default {
         .jian {
           color: #fff;
           font-size: 0.28rem;
+          .parent {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 4.5rem;
+          }
         }
       }
     }
